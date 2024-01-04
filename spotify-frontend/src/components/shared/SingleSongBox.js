@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import songContext from "../../contexts/songContext";
 
-const SingleSongCard = ({ info, playSound }) => {
-  const { currentSong, setCurrentSong } = useContext(songContext);
+const SingleSongCard = ({ info, playSound, ListKey }) => {
+  const { setCurrentSong } = useContext(songContext);
 
   return (
     <div
@@ -10,18 +10,21 @@ const SingleSongCard = ({ info, playSound }) => {
       onClick={() => {
         setCurrentSong(info);
       }}
+      key={ListKey}
     >
-      <div className="bg-black bg-opacity-40 w-full p-4 rounded-lg hover:bg-gray-400 hover:bg-opacity-20">
-        <div className="pb-4 pt-2">
+      <div className="bg-black bg-opacity-40 w-full  rounded-lg hover:bg-gray-400 hover:bg-opacity-20">
+        <div className="overflow-hidden">
           <img
-            className="w-full h-40 rounded-md" // Set the fixed height class here (e.g., h-40)
+            className="w-full h-56  transform scale-100 hover:scale-110 transition-transform duration-10 "
             src={info.thumbnail}
             alt="label"
           />
         </div>
-        <div className="text-white font-semibold py-3">{info.name}</div>
-        <div className="text-gray-500 text-sm">
-          {info.artist.firstName + " " + info.artist.lastName}
+        <div className="px-4 py-3">
+          <div className="text-white font-semibold py-1">{info.name}</div>
+          <div className="text-gray-500 text-sm py-1">
+            {info.artist.firstName + " " + info.artist.lastName}
+          </div>
         </div>
       </div>
     </div>

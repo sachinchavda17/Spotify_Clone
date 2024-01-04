@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const cookieParser = require("cookie-parser");
 const { getToken } = require("../utils/helpers");
 
+router.use(cookieParser());
 router.post("/register", async (req, res) => {
   const { email, password, firstName, lastName, username } = req.body;
 
@@ -54,5 +56,16 @@ router.post("/login", async (req, res) => {
   delete userToReturn.password;
   return res.status(200).json(userToReturn);
 });
+
+// router.post("/user-detail", async (req, res) => {
+//   try {
+//     const  {email}  = req.body;
+//     console.log(email);
+//     const user = await User.findOne({ email: email });
+//     res.status(200).send({ user: user });
+//   } catch (error) {
+//     res.status(400).send({ err: "cookie not found" });
+//   }
+// });
 
 module.exports = router;

@@ -1,4 +1,10 @@
-import { useContext, useState, useLayoutEffect, useRef } from "react";
+import {
+  useContext,
+  useState,
+  useLayoutEffect,
+  useRef,
+  useEffect,
+} from "react";
 import { Howl, Howler } from "howler";
 import { Icon } from "@iconify/react";
 import spotify_logo from "../images/spotify_logo_white.svg";
@@ -7,18 +13,17 @@ import TextWithHover from "../components/shared/TextWithHover";
 import songContext from "../contexts/songContext";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
+import loggedInUser from "../contexts/logedInUser";
 
 const LoggedInContainer = ({ children, curActiveScreen }) => {
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token)); // Check if the user is logged in
-
+  // const { userFirstName } = useContext(loggedInUser);
   const handleLogout = () => {
-    // Remove the "token" cookie
     removeCookie("token");
     // Update the login status to false
     setIsLoggedIn(false);
   };
-  const token = cookie;
 
   const {
     currentSong,
@@ -29,6 +34,31 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
     setIsPaused,
   } = useContext(songContext);
 
+  const handleTimeUpdate = () => {
+    if (soundPlayed) {
+      const newCurrentTime =
+        (soundPlayed.seek() / soundPlayed.duration()) * 100;
+      setCurrentSong((prevSong) => ({
+        ...prevSong,
+        currentTime: newCurrentTime,
+      }));
+      console.log("currentTime", newCurrentTime);
+    }
+  };
+
+  const handleSeekBarClick = (e) => {
+    if (soundPlayed) {
+      const rect = e.target.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const newTime = (offsetX / rect.width) * soundPlayed.duration();
+      soundPlayed.seek(newTime);
+      setCurrentSong((prevSong) => ({
+        ...prevSong,
+        currentTime: (newTime / soundPlayed.duration()) * 100,
+      }));
+    }
+  };
+
   const firstUpdate = useRef(true);
 
   useLayoutEffect(() => {
@@ -37,11 +67,11 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
       firstUpdate.current = false;
       return;
     }
-
     if (!currentSong) {
       return;
     }
     changeSong(currentSong.track);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSong && currentSong.track]);
 
@@ -78,20 +108,61 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
       setIsPaused(true);
     }
   };
+  // useEffect(() => {
+  //   if (soundPlayed) {
+  //     soundPlayed.on("end", () => {
+  //       // Logic to handle song end
+  //       // For example, you may want to play the next song in the playlist.
+  //       // Or you can reset the player state.
+  //       // setCurrentSong(null);
+  //       // setSoundPlayed(null);
+  //       // setIsPaused(false);
+  //     });
 
+  //     soundPlayed.on("play", () => {
+  //       // Logic to handle song play
+  //       // For example, you can update UI to indicate that the song is playing.
+  //       // You can also start updating the seek bar circle position.
+  //     });
+
+  //     soundPlayed.on("pause", () => {
+  //       // Logic to handle song pause
+  //       // For example, you can update UI to indicate that the song is paused.
+  //       // You can also stop updating the seek bar circle position.
+  //     });
+
+  //     soundPlayed.on("stop", () => {
+  //       // Logic to handle song stop
+  //       // For example, you can update UI to indicate that the song has stopped.
+  //       // You can also reset the player state.
+  //       // setCurrentSong(null);
+  //       // setSoundPlayed(null);
+  //       // setIsPaused(false);
+  //     });
+
+  //     soundPlayed.on("seek", () => {
+  //       // Logic to handle song seek
+  //       handleTimeUpdate();
+  //     });
+  //   }
+  // }, [soundPlayed]);
+  
   return (
-    <div className="h-full w-full bg-app-black">
-      <div className={`${currentSong ? "h-9/10" : "h-full"} w-full flex`}>
+    <div className="h-full w-full bg-black">
+      <div className={`${currentSong ? "h-[75vh]" : "h-full"} w-full flex`}>
         {/* This first div will be the left panel */}
-        <div className="h-full w-1/5 bg-black flex flex-col justify-between pb-10">
+        <div
+          style={{ width: "20vw", height: currentSong ? "75vh" : "100vh" }}
+          className="bg-black flex flex-col justify-between pb-10 md:w-1/4 lg:w-1/5"
+        >
           <div>
             {/* This div is for logo */}
-            <div className="logoDiv p-6">
+            <div className="logoDiv p-6 bg-app-black m-2 rounded">
               <Link to="/home">
                 <img src={spotify_logo} alt="spotify logo" width={125} />
               </Link>
             </div>
-            <div className="py-5">
+            <div className="py-5 bg-app-black m-2 rounded">
               <IconText
                 iconName={"material-symbols:home"}
                 displayText={"Home"}
@@ -110,62 +181,81 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 active={curActiveScreen === "library"}
                 targetLink={"/library"}
               />
-              <IconText
-                iconName={"material-symbols:library-music-sharp"}
-                displayText={"My Music"}
-                targetLink="/myMusic"
-                active={curActiveScreen === "myMusic"}
-              />
+              {isLoggedIn && (
+                <IconText
+                  iconName={"material-symbols:library-music-sharp"}
+                  displayText={"My Music"}
+                  targetLink="/myMusic"
+                  active={curActiveScreen === "myMusic"}
+                />
+              )}
             </div>
-            <div className="pt-5">
-              <IconText
-                iconName={"material-symbols:add-box"}
-                displayText={"Create Playlist"}
-                targetLink={"/createplaylist"}
-              />
-              <IconText
-                iconName={"mdi:cards-heart"}
-                displayText={"Liked Songs"}
-                targetLink={"/likedsong"}
-              />
-            </div>
+            {isLoggedIn && (
+              <div className="py-5 bg-app-black m-2 rounded">
+                <IconText
+                  iconName={"material-symbols:add-box"}
+                  displayText={"Create Playlist"}
+                  targetLink={"/createplaylist"}
+                />
+                <IconText
+                  iconName={"mdi:cards-heart"}
+                  displayText={"Liked Songs"}
+                  targetLink={"/likedsong"}
+                />
+              </div>
+            )}
           </div>
           <div className="px-5">
             <div className="border border-gray-300 hover:border-white text-gray-300 hover:text-white  w-2/5 flex px-2 py-1 rounded-full items-center justify-center cursor-pointer">
-              <Icon icon="mingcute:earth-line" />
-              <div className="ml-2 text-sm font-semibold">English</div>
+              <div className="w-full">
+                <Icon icon="mingcute:earth-line" />
+              </div>
+              <div className="ml-1 mr-1  text-sm font-semibold">English</div>
             </div>
           </div>
         </div>
         {/* This second div will be the right part(main content) */}
-        <div className="h-full w-4/5 bg-app-black overflow-auto">
-          <div className="navbar w-full h-1/10 bg-black bg-opacity-30 flex items-center justify-end">
-            <div className="w-1/2 flex h-full">
-              <div className="w-2/3 flex justify-around items-center">
-                <TextWithHover displayText={"Premium"} />
-                <TextWithHover displayText={"Support"} />
-                <TextWithHover displayText={"Download"} />
-                <div className="h-1/2 border-r border-white"></div>
+        <div
+          style={{ width: "80vw", height: currentSong ? "85vh" : "100vh" }}
+          className=" overflow-auto bg-app-black rounded  w-full md:w-3/4 lg:w-4/5"
+        >
+          <div className="navbar px-8  py-3 w-full h-1/10  bg-black bg-opacity-40 rounded flex items-center justify-end overflow-hidden">
+            <div className="w-full flex justify-between h-full pr-4 ">
+              <div className="flex justify-around items-center">
+                <div className="text-2xl">
+                  <Icon icon="mingcute:left-fill" color="white" />
+                </div>
+                <div className="text-2xl">
+                  <Icon icon="mingcute:right-fill" color="white" />
+                </div>
               </div>
-              <div className="w-1/3 flex justify-around h-full items-center">
-                <Link to="/uploadsong">
-                  <TextWithHover displayText={"Upload Song"} />
-                </Link>
-                <div className=" toogle-login-logout bg-white w-10 h-10 flex items-center justify-center rounded-full font-semibold cursor-pointer">
-                  <div className="w-1/3 flex justify-around h-full items-center">
+              <div className={`flex justify-end h-full items-center`}>
+                {isLoggedIn ? (
+                  <div className="px-3">
+                    <Link to="/uploadsong">
+                      <TextWithHover displayText={"Upload Song"} />
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="px-3">
+                    <Link to="/signup">
+                      <TextWithHover displayText={"Signup"} />
+                    </Link>
+                  </div>
+                )}
+                <div className=" toogle-login-logout bg-gray-500 flex items-center justify-center rounded-full font-semibold cursor-pointer">
+                  <div className=" flex justify-around h-full items-center">
                     {isLoggedIn ? (
-                      // Render the logout button if the user is logged in
                       <div
-                        className="bg-white w-10 h-10 flex items-center justify-center rounded-full font-semibold cursor-pointer"
+                        className="bg-gray-500 text-white  px-4 py-2  flex items-center justify-center rounded-full font-semibold cursor-pointer"
                         onClick={handleLogout}
                       >
-                        <Icon icon="humbleicons:logout" />
+                        Logout
                       </div>
                     ) : (
-                      // Render the "LOG IN" button if the user is not logged in
                       <Link to="/login">
-                        <div className="bg-white w-10 h-10 flex items-center justify-center rounded-full font-semibold cursor-pointer">
-                          LOG IN
+                        <div className="text-sm text-white bg-gray-500  px-4 py-2 flex items-center justify-center rounded-full font-semibold cursor-pointer">
+                          LOGIN
                         </div>
                       </Link>
                     )}
@@ -174,17 +264,22 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
               </div>
             </div>
           </div>
-          <div className="content p-8 pt-0 overflow-auto">{children}</div>
+          <div className=" relative content p-8 pt-0 overflow-auto ">
+            {children}
+          </div>
         </div>
       </div>
       {/* This div is the current playing song */}
       {currentSong && (
-        <div className="w-full h-1/10 bg-black bg-opacity-30 text-white flex items-center px-4">
-          <div className="w-1/4 flex items-center">
+        <div
+          style={{ height: "15vh" }}
+          className="w-full bg-app-black  text-white flex items-center px-4 z-10 overflow-hidden"
+        >
+          <div className="w-1/4  h-full flex items-center">
             <img
               src={currentSong.thumbnail}
               alt="currentSongThumbail"
-              className="h-14 w-14 rounded"
+              className="h-14 w-14 rounded p-1"
             />
             <div className="pl-4">
               <div className="text-sm hover:underline cursor-pointer">
@@ -197,8 +292,8 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
               </div>
             </div>
           </div>
-          <div className="w-1/2 flex justify-center h-full flex-col items-center">
-            <div className="flex w-1/3 justify-between items-center">
+          <div className="w-1/2 h-full flex justify-center  flex-col items-center">
+            <div className="flex h-1/2 w-1/3 justify-between items-center">
               {/* controls for the playing song go here */}
               <Icon
                 icon="ph:shuffle-fill"
@@ -217,7 +312,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                     : "ic:baseline-pause-circle"
                 }
                 fontSize={50}
-                className={`cursor-pointer text-gray-500 hover:text-white `}
+                className={`cursor-pointer text-white   `}
                 onClick={togglePlayPause}
               />
               <Icon
@@ -232,6 +327,16 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
               />
             </div>
             {/* <div>Progress Bar Here</div> */}
+            <div
+              className="seekbar w-full h-1 mt-3 border border-1 rounded bg-white rounded cursor-pointer"
+              onClick={(e) => handleSeekBarClick(e)}
+            >
+              <div
+                onChange={handleTimeUpdate(currentSong.currentTime)}
+                className="circle w-4 h-4 bottom-1.5  bg-white border rounded-full relative"
+                style={{ left: `${currentSong.currentTime}%` }}
+              ></div>
+            </div>
           </div>
           <div className="w-1/4 flex justify-end pr-4 space-x-4 items-center">
             <Icon

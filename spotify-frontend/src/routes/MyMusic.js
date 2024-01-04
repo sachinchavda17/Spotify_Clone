@@ -30,7 +30,7 @@ const MyMusic = () => {
       ) : (
         <div>
           <h1 className="text-white text-xl font-semibold pb-4 pl-2 pt-8">
-            Loading
+            Loading..
           </h1>
         </div>
       )}

@@ -1,26 +1,34 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Icon } from "@iconify/react";
 import TextInput from "../components/shared/TextInput";
 import PasswordInput from "../components/shared/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
 import { makeUnauthenticatedPOSTRequest } from "../utils/serverHelpers";
 import { useCookies } from "react-cookie";
-
+import { useForm } from "react-hook-form";
+import loggedInUser from "../contexts/logedInUser";
 const LoginComponent = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [cookies, setCookie] = useCookies(["token"]);
   const navigate = useNavigate();
+  const { setUserFirstName } = useContext(loggedInUser);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { setUser } = useContext(loggedInUser);
 
-  const login = async () => {
-    const data = { email, password };
+  const login = async (loginData) => {
+    const data = { email: loginData.email, password: loginData.password };
     const response = await makeUnauthenticatedPOSTRequest("/auth/login", data);
     if (response && !response.err) {
       const token = response.token;
       const date = new Date();
-      date.setDate(date.getDate() + 30);
+      date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
       setCookie("token", token, { path: "/", expires: date });
+      setUserFirstName(loginData.email);
       alert("Success");
+      setUser(loginData.email);
       navigate("/home");
     } else {
       alert("Failure");
@@ -35,32 +43,32 @@ const LoginComponent = () => {
         </Link>
       </div>
       <div className="inputRegion w-1/3 py-10 flex items-center justify-center flex-col text-gray-200 ">
-        {/*  I will have my 2 inputs(email and password) and I will have my sign up instead button*/}
         <div className="font-bold mb-4">To continue, log in to Spotify.</div>
-        <TextInput
-          label="Email address or username"
-          placeholder="Email address or username"
-          className="my-6"
-          value={email}
-          setValue={setEmail}
-        />
-        <PasswordInput
-          label="Password"
-          placeholder="Password"
-          value={password}
-          setValue={setPassword}
-        />
-        <div className=" w-full flex items-center justify-end my-8 transition-shadow ">
-          <button
-            className="bg-green-600 font-semibold p-3 px-10 rounded-full "
-            onClick={(e) => {
-              e.preventDefault();
-              login();
-            }}
-          >
-            LOG IN
-          </button>
-        </div>
+        <form
+          onSubmit={handleSubmit((data) => login(data))}
+          className="w-full "
+        >
+          <TextInput
+            label="Email Address"
+            placeholder=" Enter your email"
+            className="my-6"
+            register={register}
+            registerName={"email"}
+            errors={errors.email}
+          />
+          <PasswordInput
+            label="Password"
+            placeholder="Enter your Password"
+            register={register}
+            registerName={"password"}
+            errors={errors.password}
+          />
+          <div className=" w-full flex items-center justify-end my-8 transition-shadow ">
+            <button className="bg-green-600 font-semibold p-3 px-10 rounded-full ">
+              LOG IN
+            </button>
+          </div>
+        </form>
         <div className="w-full border border-solid border-gray-300"></div>
         <div className="my-6 font-semibold text-lg ">
           Don't have an account?

@@ -15,8 +15,11 @@ module.exports = {
             },
         },
     },
+    content: [
+        "./src/**/*.{js,jsx,ts,tsx}",
+    ],
     variants: {
         extend: {},
     },
-    plugins: [],
+    plugins: [require('tailwindcss/base'), require('tailwindcss/components'), require('tailwindcss/utilities')],
 };

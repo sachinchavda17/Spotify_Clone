@@ -8,16 +8,19 @@ import TextWithHover from "../components/shared/TextWithHover";
 import { makeAuthenticatedPOSTRequest } from "../utils/serverHelpers";
 import { useNavigate } from "react-router-dom";
 import LoggedInContainer from "../containers/LoggedInContainer";
+import { useForm } from "react-hook-form";
 
 const UploadSong = () => {
-  const [name, setName] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
   const [playlistUrl, setPlaylistUrl] = useState("");
   const [uploadedSongFileName, setUploadedSongFileName] = useState();
   const navigate = useNavigate();
-
-  const submitSong = async () => {
-    const data = { name, thumbnail, track: playlistUrl };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const submitSong = async (songData) => {
+    const data = { name:songData.name, thumbnail:songData.thumbnail, track: playlistUrl };
     const response = await makeAuthenticatedPOSTRequest("/song/create", data);
     if (response.err) {
       alert("Could not create song");
@@ -28,48 +31,50 @@ const UploadSong = () => {
   };
 
   return (
-    <LoggedInContainer >
-      <div className="text-2xl font-semibold mb-5 text-white mt-8">
-            Upload Your Music
+    <LoggedInContainer>
+      <form onSubmit={handleSubmit((data) => submitSong(data))}>
+        <div className="text-2xl font-semibold mb-5 text-white mt-8">
+          Upload Your Music
+        </div>
+        <div className="w-2/3 flex space-x-3">
+          <div className="w-1/2">
+            <TextInput
+              label="Song Name"
+              labelClassName={"text-white"}
+              placeholder="Enter song name"
+              register={register}
+              registerName={"name"}
+            />
           </div>
-          <div className="w-2/3 flex space-x-3">
-            <div className="w-1/2">
-              <TextInput
-                label="Name"
-                labelClassName={"text-white"}
-                placeholder="Name"
-                value={name}
-                setValue={setName}
-              />
+          <div className="w-1/2">
+            <TextInput
+              label="Thumbnail"
+              labelClassName={"text-white"}
+              placeholder="Thumbnail"
+              register={register}
+              registerName={"thumbnail"}
+            />
+          </div>
+        </div>
+        <div className="py-5 ">
+          {uploadedSongFileName ? (
+            <div className="bg-green-600 rounded-full p-3 w-1/3 ">
+              {uploadedSongFileName.substring(0, 35)}...
             </div>
-            <div className="w-1/2">
-              <TextInput
-                label="Thumbnail"
-                labelClassName={"text-white"}
-                placeholder="Thumbnail"
-                value={thumbnail}
-                setValue={setThumbnail}
-              />
-            </div>
-          </div>
-          <div className="py-5 ">
-            {uploadedSongFileName ? (
-              <div className="bg-green-600 rounded-full p-3 w-1/3 ">
-                {uploadedSongFileName.substring(0, 35)}...
-              </div>
-            ) : (
-              <CloudinaryUpload
-                setUrl={setPlaylistUrl}
-                setName={setUploadedSongFileName}
-              />
-            )}
-          </div>
-          <div
-            className="bg-green-600 w-40 flex items-center justify-center p-4 rounded-full cursor-pointer font-semibold transition-shadow transform hover:scale-105 transition-transform  "
-            onClick={submitSong}
-          >
-            Submit Song
-          </div>
+          ) : (
+            <CloudinaryUpload
+              setUrl={setPlaylistUrl}
+              setName={setUploadedSongFileName}
+            />
+          )}
+        </div>
+        <button
+          className="bg-green-600 w-40 flex items-center justify-center p-4 rounded-full cursor-pointer font-semibold transition-shadow transform hover:scale-105 transition-transform  "
+         type="submit"
+        >
+          Submit Song
+        </button>
+      </form>
     </LoggedInContainer>
   );
 };

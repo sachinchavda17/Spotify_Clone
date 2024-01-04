@@ -2,15 +2,16 @@ const TextInput = ({
     label,
     placeholder,
     className,
-    value,
-    setValue,
     labelClassName,
+    register,
+    registerName,
+    errors
 }) => {
     return (
         <div
             className={`textInputDiv flex flex-col space-y-2 w-full  ${className}`}
         >
-            <label for={label} className={`font-semibold ${labelClassName}`}>
+            <label htmlFor={label} className={`font-semibold ${labelClassName}`}>
                 {label}
             </label>
             <input
@@ -18,10 +19,7 @@ const TextInput = ({
                 placeholder={placeholder}
                 className="p-3 border text-white border-gray-400 border-solid rounded placeholder-gray-500 bg-transparent transition-shadow "
                 id={label}
-                value={value}
-                onChange={(e) => {
-                    setValue(e.target.value);
-                }}
+                {...register(registerName, { required: `${registerName} is required` })}
             />
         </div>
     );
