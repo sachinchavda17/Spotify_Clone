@@ -12,16 +12,32 @@ import SearchPage from "./routes/SearchPage";
 import { useCookies } from "react-cookie";
 import songContext from "./contexts/songContext";
 import loggedInUser from "./contexts/logedInUser";
-import Sidebar from "./components/shared/Sidebar";
+import MusicFooter from "./components/shared/MusicFooter";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
   const [soundPlayed, setSoundPlayed] = useState(null);
+  const [isPaused, setIsPaused] = useState(true);
+  const [volume, setVolume] = useState(1);
+  const [seek, setSeek] = useState(0);
+
   const [user, setUser] = useState(null);
   const [myMusic, setMyMusic] = useState(null);
   const [userFirstName, setUserFirstName] = useState(null);
-  const [isPaused, setIsPaused] = useState(true);
   const [cookie, setCookie] = useCookies(["token"]);
+
+  const songContextState = {
+    currentSong,
+    setCurrentSong,
+    soundPlayed,
+    setSoundPlayed,
+    isPaused,
+    setIsPaused,
+    volume,
+    setVolume,
+    seek,
+    setSeek,
+  };
   return (
     <div className="w-screen h-screen font-poppins">
       <BrowserRouter>
@@ -37,22 +53,14 @@ function App() {
               setUserFirstName,
             }}
           >
-            <songContext.Provider
-              value={{
-                currentSong,
-                setCurrentSong,
-                soundPlayed,
-                setSoundPlayed,
-                isPaused,
-                setIsPaused,
-              }}
-            >
+            <songContext.Provider value={songContextState}>
               <Routes>
                 <Route path="/" element={<LoggedInHomeComponent />} />
                 <Route path="/uploadSong" element={<UploadSong />} />
                 <Route path="/myMusic" element={<MyMusic />} />
                 <Route path="/search" element={<SearchPage />} />
-                <Route path="/sidebar" element={<Sidebar />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/music" element={<MusicFooter />} />
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </songContext.Provider>
@@ -63,6 +71,7 @@ function App() {
             <Route path="/" element={<HomeComponent />} />
             <Route path="/login" element={<LoginComponent />} />
             <Route path="/signup" element={<SignupComponent />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         )}

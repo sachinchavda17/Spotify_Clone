@@ -7,43 +7,64 @@ import { Link, useNavigate } from "react-router-dom";
 import { makeUnauthenticatedPOSTRequest } from "../utils/serverHelpers";
 import { useForm } from "react-hook-form";
 import loggedInUser from "../contexts/logedInUser";
+import ErrorMsg from "../components/shared/ErrorMsg";
+import SuccessMsg from "../components/shared/SuccessMsg";
+
 const SignupComponent = () => {
   const [cookie, setCookie] = useCookies(["token"]);
   const navigate = useNavigate();
-  const { setUser } = useContext(loggedInUser)
+  const { setUser } = useContext(loggedInUser);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
   const signUp = async (signupdata) => {
-    if (signupdata.password !== signupdata.confirmPassword) {
-      alert("Password does not match. Please check again");
-      return;
+    try {
+      if (signupdata.password !== signupdata.confirmPassword) {
+        throw new Error("Password does not match. Please check again");
+      }
+
+      const data = {
+        email: signupdata.email,
+        password: signupdata.password,
+        username: signupdata.username,
+        firstName: signupdata.firstName,
+        lastName: signupdata.lastName,
+      };
+
+      const response = await makeUnauthenticatedPOSTRequest(
+        "/auth/register",
+        data
+      );
+
+      if (response && !response.err) {
+        const token = response.token;
+        const date = new Date();
+        date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
+        setCookie("token", token, { path: "/", expires: date });
+
+        setSuccess("Success");
+        setUser(signupdata.email);
+        setTimeout(() => {
+          setSuccess(null);
+          navigate("/");
+        }, 5000);
+      } else {
+        setError("Failure");
+      }
+    } catch (err) {
+      setError(err.message);
     }
-    const data = {
-      email: signupdata.email,
-      password: signupdata.password,
-      username: signupdata.username,
-      firstName: signupdata.firstName,
-      lastName: signupdata.lastName,
-    };
-    const response = await makeUnauthenticatedPOSTRequest(
-      "/auth/register",
-      data
-    );
-    if (response && !response.err) {
-      const token = response.token;
-      const date = new Date();
-      date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
-      setCookie("token", token, { path: "/", expires: date });
-      alert("Success");
-      setUser(signupdata.email)
-      navigate("/home");
-    } else {
-      alert("Failure");
-    }
+  };
+
+  const closeErrorSuccess = () => {
+    setError(null);
+    setSuccess(null);
   };
 
   return (
@@ -54,7 +75,6 @@ const SignupComponent = () => {
         </Link>
       </div>
       <div className="inputRegion w-1/3 py-10 flex items-center justify-center flex-col">
-        {/*  I will have my 2 inputs(email and password) and I will have my sign up instead button*/}
         <div className="font-bold mb-4 text-2xl">
           Sign up for free to start listening.
         </div>
@@ -118,6 +138,10 @@ const SignupComponent = () => {
               Sign Up
             </button>
           </div>
+          {error && <ErrorMsg errText={error} closeError={closeErrorSuccess} />}
+          {success && (
+            <SuccessMsg successText={success} closeSuccess={closeErrorSuccess} />
+          )}
         </form>
         <div className="w-full border border-solid border-gray-300"></div>
         <div className="my-6 font-semibold text-lg">

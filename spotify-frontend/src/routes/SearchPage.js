@@ -3,19 +3,34 @@ import LoggedInContainer from "../containers/LoggedInContainer";
 import { Icon } from "@iconify/react";
 import { makeAuthenticatedGETRequest } from "../utils/serverHelpers";
 import SingleSongCard from "../components/shared/SingleSongCard";
+import ErrorMsg from "../components/shared/ErrorMsg";
+import Loading from "../components/shared/Loading";
 
 const SearchPage = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [songData, setSongData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const searchSong = async (searchText) => {
-    const response = await makeAuthenticatedGETRequest(
-      "/song/get/songname/" + searchText
-    );
-    setSongData(response.data);
+    try {
+      setLoading(true);
+      const response = await makeAuthenticatedGETRequest(
+        "/song/get/songname/" + searchText
+      );
+      setSongData(response.data);
+      setError(null);
+    } catch (error) {
+      setSongData([]);
+      setError("Error fetching data");
+    } finally {
+      setLoading(false);
+    }
   };
-
+  const closeErrorSuccess = () => {
+    setError("");
+  };
   return (
     <LoggedInContainer curActiveScreen="search">
       <div className="w-full py-6">
@@ -38,30 +53,31 @@ const SearchPage = () => {
             value={searchText}
             onChange={(e) => {
               setSearchText(e.target.value);
-              searchSong(e.target.value);
             }}
             onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                    searchSong(searchText);
-                }
+              if (e.key === "Enter") {
+                searchSong(searchText);
+              }
             }}
           />
         </div>
-        {songData.length > 0 ? (
+        {loading ? (
+          <Loading />
+        ) : error ? (
+          <ErrorMsg errText={error} closeError={closeErrorSuccess} />
+        ) : songData.length > 0 ? (
           <div className="pt-10 space-y-3">
             <div className="text-white">
               Showing search results for
               <span className="font-bold"> {searchText}</span>
             </div>
-            {songData.map((item) => {
-              return (
-                <SingleSongCard
-                  info={item}
-                  key={JSON.stringify(item)}
-                  playSound={() => {}}
-                />
-              );
-            })}
+            {songData.map((item) => (
+              <SingleSongCard
+                info={item}
+                key={JSON.stringify(item)}
+                playSound={() => {}}
+              />
+            ))}
           </div>
         ) : (
           <div className="text-gray-400 pt-10">Nothing to show here.</div>

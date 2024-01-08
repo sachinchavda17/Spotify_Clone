@@ -9,6 +9,8 @@ import { makeAuthenticatedPOSTRequest } from "../utils/serverHelpers";
 import { useNavigate } from "react-router-dom";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { useForm } from "react-hook-form";
+import ErrorMsg from "../components/shared/ErrorMsg";
+import SuccessMsg from "../components/shared/SuccessMsg";
 
 const UploadSong = () => {
   const [playlistUrl, setPlaylistUrl] = useState("");
@@ -19,15 +21,34 @@ const UploadSong = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
   const submitSong = async (songData) => {
-    const data = { name:songData.name, thumbnail:songData.thumbnail, track: playlistUrl };
-    const response = await makeAuthenticatedPOSTRequest("/song/create", data);
-    if (response.err) {
-      alert("Could not create song");
-      return;
+    try {
+      const data = {
+        name: songData.name,
+        thumbnail: songData.thumbnail,
+        track: playlistUrl,
+      };
+      const response = await makeAuthenticatedPOSTRequest("/song/create", data);
+
+      if (response.err) {
+        setError("Could not create song");
+      }
+      setSuccess("Song Created");
+      setTimeout(() => {
+        setSuccess(null);
+        navigate("/");
+      }, 2000);
+    } catch (err) {
+      setError(err.message);
     }
-    alert("Success");
-    navigate("/home");
+  };
+
+  const closeErrorSuccess = () => {
+    setError(null);
+    setSuccess(null);
   };
 
   return (
@@ -56,7 +77,7 @@ const UploadSong = () => {
             />
           </div>
         </div>
-        <div className="py-5 ">
+        <div className="py-5">
           {uploadedSongFileName ? (
             <div className="bg-green-600 rounded-full p-3 w-1/3 ">
               {uploadedSongFileName.substring(0, 35)}...
@@ -69,11 +90,15 @@ const UploadSong = () => {
           )}
         </div>
         <button
-          className="bg-green-600 w-40 flex items-center justify-center p-4 rounded-full cursor-pointer font-semibold transition-shadow transform hover:scale-105 transition-transform  "
-         type="submit"
+          className="bg-green-600 w-40 flex items-center justify-center p-4 rounded-full cursor-pointer font-semibold transition-shadow transform hover:scale-105 transition-transform"
+          type="submit"
         >
           Submit Song
         </button>
+        {error && <ErrorMsg errText={error} closeError={closeErrorSuccess} />}
+        {success && (
+          <SuccessMsg successText={success} closeSuccess={closeErrorSuccess} />
+        )}
       </form>
     </LoggedInContainer>
   );

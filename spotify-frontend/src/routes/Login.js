@@ -7,8 +7,12 @@ import { makeUnauthenticatedPOSTRequest } from "../utils/serverHelpers";
 import { useCookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import loggedInUser from "../contexts/logedInUser";
+import ErrorMsg from "../components/shared/ErrorMsg";
+import SuccessMsg from "../components/shared/SuccessMsg";
 const LoginComponent = () => {
   const [cookies, setCookie] = useCookies(["token"]);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const navigate = useNavigate();
   const { setUserFirstName } = useContext(loggedInUser);
   const {
@@ -19,20 +23,40 @@ const LoginComponent = () => {
   const { setUser } = useContext(loggedInUser);
 
   const login = async (loginData) => {
-    const data = { email: loginData.email, password: loginData.password };
-    const response = await makeUnauthenticatedPOSTRequest("/auth/login", data);
-    if (response && !response.err) {
-      const token = response.token;
-      const date = new Date();
-      date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
-      setCookie("token", token, { path: "/", expires: date });
-      setUserFirstName(loginData.email);
-      alert("Success");
-      setUser(loginData.email);
-      navigate("/home");
-    } else {
-      alert("Failure");
+    try {
+      const data = { email: loginData.email, password: loginData.password };
+      const response = await makeUnauthenticatedPOSTRequest(
+        "/auth/login",
+        data
+      );
+      if (response && !response.err) {
+        const token = response.token;
+        const date = new Date();
+        date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
+        setCookie("token", token, { path: "/", expires: date });
+
+        setUserFirstName(loginData.email);
+        setUser(loginData.email);
+
+        setSuccess("Success");
+        setError(null);
+        setTimeout(() => {
+          setSuccess(null);
+          navigate("/");
+        }, 5000);
+      } else {
+        setError(response?.err || "Login failed");
+        setSuccess(null);
+      }
+    } catch (err) {
+      setError("An error occurred");
+      setSuccess(null);
     }
+  };
+
+  const closeErrorSuccess = () => {
+    setSuccess("");
+    setError("");
   };
 
   return (
@@ -68,6 +92,18 @@ const LoginComponent = () => {
               LOG IN
             </button>
           </div>
+          {error && errors && (
+            <ErrorMsg
+              errText={error || errors}
+              closeError={closeErrorSuccess}
+            />
+          )}
+          {success && (
+            <SuccessMsg
+              successText={success}
+              closeSuccess={closeErrorSuccess}
+            />
+          )}
         </form>
         <div className="w-full border border-solid border-gray-300"></div>
         <div className="my-6 font-semibold text-lg ">

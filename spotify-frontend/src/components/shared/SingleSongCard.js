@@ -6,7 +6,7 @@ const SingleSongCard = ({ info, playSound }) => {
 
   return (
     <div
-      className="flex hover:bg-gray-400 hover:bg-opacity-20 p-2 rounded-sm border border-2 rounded border-gray-500"
+      className="flex hover:bg-gray-400 hover:bg-opacity-20 p-2 rounded-sm  rounded border-gray-500"
       onClick={() => {
         setCurrentSong(info);
       }}
