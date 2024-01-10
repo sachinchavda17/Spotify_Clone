@@ -7,8 +7,8 @@ const songContext = createContext({
   setSoundPlayed: () => {},
   isPaused: null,
   setIsPaused: () => {},
-  volume:0.5,
-  setvalume:()=>{},
+  volume:0,
+  setVolume:()=>{},
   seek:0,
   setSeek:()=>{},
   

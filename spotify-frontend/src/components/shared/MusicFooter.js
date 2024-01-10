@@ -1,10 +1,16 @@
 // MusicFooter.js
-import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { Howl } from "howler";
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
 import songContext from "../../contexts/songContext.js";
-
+import { secondsToHms } from "../../containers/functionContainer";
 const MusicFooter = () => {
   const {
     isPaused,
@@ -18,12 +24,13 @@ const MusicFooter = () => {
     soundPlayed,
     setSoundPlayed,
   } = useContext(songContext);
+  console.log({currentSong});
 
   setSoundPlayed(currentSong.track);
   const soundRef = useRef(null);
   const [liked, setLiked] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // Declare sound variable using const
     const sound = new Howl({
       src: [soundPlayed],
@@ -42,7 +49,7 @@ const MusicFooter = () => {
       onplay: () => {
         setInterval(() => {
           setSeek(soundRef.current.seek());
-        }, 10);
+        }, 100);
         setIsPaused(false);
         console.log("Song Played");
       },
@@ -61,7 +68,7 @@ const MusicFooter = () => {
     return () => {
       sound.unload();
     };
-  }, [soundPlayed, volume]);
+  }, [soundPlayed]);
 
   const playPauseHandler = () => {
     if (isPaused) {
@@ -84,11 +91,13 @@ const MusicFooter = () => {
 
   const muteHandler = () => {
     setVolume(volume === 0 ? 1 : 0);
+    soundRef.current.volume(volume === 0 ? 1 : 0);
   };
 
   const volumeChangeHandler = (e) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
+    soundRef.current.volume(newVolume);
   };
 
   const seekChangeHandler = (e) => {
@@ -101,11 +110,13 @@ const MusicFooter = () => {
     <div className="fixed bottom-0 left-0 w-full bg-gray-800 text-white px-4 py-1 ">
       <div className="flex items-center justify-between">
         <div className="flex items-center w-1/4">
-          <img
-            src={currentSong.thumbnail}
-            alt="Song Cover"
-            className="w-16 h-16  mr-4"
-          />
+          <Link to={"/playedsong"}>
+            <img
+              src={currentSong.thumbnail}
+              alt="Song Cover"
+              className="w-16 h-16  mr-4"
+            />
+          </Link>
           <div>
             <p className="text-sm">{currentSong.name}</p>
             {currentSong.artist.firstName + " " + currentSong.artist.lastName}
@@ -142,7 +153,7 @@ const MusicFooter = () => {
             </button>
           </div>
           <div className="flex items-center justify-between space-x-4 w-2/3">
-            <span className="">{secondsToHms(seek)}</span>
+            <span className="w-1/9">{secondsToHms(seek)}</span>
             <input
               type="range"
               value={seek}
@@ -151,7 +162,9 @@ const MusicFooter = () => {
               max={soundRef.current?.duration()}
               className={`w-full cursor-pointer rounded appearance-none h-2 bg-gradient-to-r from-gray-400 to-gray-400`}
             />
-            <span>{secondsToHms(soundRef.current?.duration())}</span>
+            <span className="w-1/9">
+              {secondsToHms(soundRef.current?.duration())}
+            </span>
           </div>
         </div>
         <div className="flex items-center space-x-4 w-1/4">
@@ -197,31 +210,3 @@ const MusicFooter = () => {
 };
 
 export default MusicFooter;
-
-function secondsToHms(seconds) {
-  if (seconds === 0) return "00:00";
-
-  let duration = seconds;
-  let hours = duration / 3600;
-  duration = duration % 3600;
-
-  let min = parseInt(duration / 60);
-  duration = duration % 60;
-
-  let sec = parseInt(duration);
-
-  if (sec < 10) {
-    sec = `0${sec}`;
-  }
-  if (min < 10) {
-    min = `0${min}`;
-  }
-
-  if (parseInt(hours, 10) > 0) {
-    return `${parseInt(hours, 10)}h ${min}m ${sec}s`;
-  } else if (min === 0) {
-    return `00m ${sec}s`;
-  } else {
-    return `${min}:${sec}`;
-  }
-}

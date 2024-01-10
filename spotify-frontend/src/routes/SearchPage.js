@@ -1,10 +1,15 @@
 import { useState } from "react";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { Icon } from "@iconify/react";
-import { makeAuthenticatedGETRequest } from "../utils/serverHelpers";
+import {
+  makeAuthenticatedGETRequest,
+  makeLogoutGETRequest,
+} from "../utils/serverHelpers";
 import SingleSongCard from "../components/shared/SingleSongCard";
 import ErrorMsg from "../components/shared/ErrorMsg";
 import Loading from "../components/shared/Loading";
+import { useCookies } from "react-cookie";
+import { Link } from "react-router-dom";
 
 const SearchPage = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -13,13 +18,23 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [cookie, setCookie, removeCookie] = useCookies(["token"]);
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
+
   const searchSong = async (searchText) => {
     try {
       setLoading(true);
-      const response = await makeAuthenticatedGETRequest(
-        "/song/get/songname/" + searchText
-      );
-      setSongData(response.data);
+      if (isLoggedIn) {
+        const response = await makeAuthenticatedGETRequest(
+          "/song/get/songname/" + searchText
+        );
+        setSongData(response.data);
+      } else {
+        const response = await makeLogoutGETRequest(
+          "/song/get/logout/songname/" + searchText
+        );
+        setSongData(response.data);
+      }
       setError(null);
     } catch (error) {
       setSongData([]);
@@ -71,13 +86,23 @@ const SearchPage = () => {
               Showing search results for
               <span className="font-bold"> {searchText}</span>
             </div>
-            {songData.map((item) => (
-              <SingleSongCard
-                info={item}
-                key={JSON.stringify(item)}
-                playSound={() => {}}
-              />
-            ))}
+            {songData.map((item) =>
+              isLoggedIn ? (
+                <SingleSongCard
+                  info={item}
+                  key={JSON.stringify(item)}
+                  playSound={() => {}}
+                />
+              ) : (
+                <Link to={"/login"}>
+                  <SingleSongCard
+                    info={item}
+                    key={JSON.stringify(item)}
+                    playSound={() => {}}
+                  />
+                </Link>
+              )
+            )}
           </div>
         ) : (
           <div className="text-gray-400 pt-10">Nothing to show here.</div>

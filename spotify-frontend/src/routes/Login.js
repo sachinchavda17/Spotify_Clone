@@ -21,6 +21,7 @@ const LoginComponent = () => {
     formState: { errors },
   } = useForm();
   const { setUser } = useContext(loggedInUser);
+  console.log(errors);
 
   const login = async (loginData) => {
     try {
@@ -85,16 +86,16 @@ const LoginComponent = () => {
             placeholder="Enter your Password"
             register={register}
             registerName={"password"}
-            errors={errors.password}
+            error={errors.password}
           />
-          <div className=" w-full flex items-center justify-end my-8 transition-shadow ">
+          <div className=" w-full flex items-center justify-end mb-8 mt-4 transition-shadow ">
             <button className="bg-green-600 font-semibold p-3 px-10 rounded-full ">
               LOG IN
             </button>
           </div>
           {error && errors && (
             <ErrorMsg
-              errText={error || errors}
+              errText={error || errors.email.message}
               closeError={closeErrorSuccess}
             />
           )}

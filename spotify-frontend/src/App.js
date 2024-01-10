@@ -13,6 +13,7 @@ import { useCookies } from "react-cookie";
 import songContext from "./contexts/songContext";
 import loggedInUser from "./contexts/logedInUser";
 import MusicFooter from "./components/shared/MusicFooter";
+import SongDetails from "./components/shared/SongDetails";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
@@ -61,6 +62,7 @@ function App() {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/music" element={<MusicFooter />} />
+                <Route path="/playedsong" element={<SongDetails />} />
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </songContext.Provider>

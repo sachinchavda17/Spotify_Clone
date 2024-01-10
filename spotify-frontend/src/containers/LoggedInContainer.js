@@ -17,32 +17,34 @@ import loggedInUser from "../contexts/logedInUser";
 import MusicFooter from "../components/shared/MusicFooter";
 
 const LoggedInContainer = ({ children, curActiveScreen }) => {
+  const { currentSong, setCurrentSong } = useContext(songContext);
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
-  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token)); // Check if the user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
   // const { userFirstName } = useContext(loggedInUser);
   const handleLogout = () => {
     removeCookie("token");
-    // Update the login status to false
     setIsLoggedIn(false);
+    setCurrentSong(null);
   };
 
-  const { currentSong } = useContext(songContext);
-
-  const firstUpdate = useRef(true);
-  useLayoutEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
-  }, [firstUpdate, currentSong]);
+  // const firstUpdate = useRef(true);
+  // useLayoutEffect(() => {
+  //   if (firstUpdate.current) {
+  //     firstUpdate.current = false;
+  //     return;
+  //   }
+  //   if (!currentSong) {
+  //     return;
+  //   }
+  // }, [currentSong && currentSong.track]);
 
   return (
     <div className="h-full w-full bg-black">
-      <div className={`${currentSong ? "h-[75vh]" : "h-full"} w-full flex`}>
+      <div className={`${currentSong ? "h-[85vh]" : "h-full"} w-full flex`}>
         {/* This first div will be the left panel */}
         <div
           style={{ width: "20vw", height: currentSong ? "75vh" : "100vh" }}
-          className="bg-black flex flex-col justify-between pb-10 md:w-1/4 lg:w-1/5"
+          className="bg-black overflow-y-auto  flex flex-col justify-between pb-10 md:w-1/4 lg:w-1/5"
         >
           <div>
             {/* This div is for logo */}
@@ -91,36 +93,24 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                   displayText={"Liked Songs"}
                   targetLink={"/likedsong"}
                 />
-                <div className="px-5 my-2">
-                  <div className="border border-gray-300 hover:border-white text-gray-300 hover:text-white  w-2/5 flex px-2 py-1 rounded-full items-center justify-center cursor-pointer">
-                    <div className="w-full">
-                      <Icon icon="mingcute:earth-line" />
-                    </div>
-                    <div className="ml-1 mr-1  text-sm font-semibold">
-                      English
-                    </div>
-                  </div>
-                </div>
               </div>
             )}
           </div>
-          {!isLoggedIn && (
-            <div className="px-5">
-              <div className="border border-gray-300 hover:border-white text-gray-300 hover:text-white  w-2/5 flex px-2 py-1 rounded-full items-center justify-center cursor-pointer">
-                <div className="w-full">
-                  <Icon icon="mingcute:earth-line" />
-                </div>
-                <div className="ml-1 mr-1  text-sm font-semibold">English</div>
+          <div className="px-5">
+            <div className="border border-gray-300 hover:border-white text-gray-300 hover:text-white  w-2/5 flex px-2 py-1 rounded-full items-center justify-center cursor-pointer">
+              <div className="w-full">
+                <Icon icon="mingcute:earth-line" />
               </div>
+              <div className="ml-1 mr-1  text-sm font-semibold">English</div>
             </div>
-          )}
+          </div>
         </div>
         {/* This second div will be the right part(main content) */}
         <div
           style={{ width: "80vw", height: currentSong ? "85vh" : "100vh" }}
           className=" overflow-auto bg-app-black rounded  w-full md:w-3/4 lg:w-4/5"
         >
-          <div className="navbar px-8  py-3 w-full h-1/10  bg-black bg-opacity-40 rounded flex items-center justify-end overflow-hidden">
+          <div className="navbar  px-8  py-3 w-full h-1/10  bg-black bg-opacity-40 rounded flex items-center justify-end overflow-hidden">
             <div className="w-full flex justify-between h-full pr-4 ">
               <div className="flex justify-around items-center">
                 <div className="text-2xl">

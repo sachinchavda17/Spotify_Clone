@@ -1,12 +1,28 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import songContext from "../../contexts/songContext";
+import { Howl } from "howler";
+import { secondsToHms } from "../../containers/functionContainer";
 
 const SingleSongCard = ({ info, playSound }) => {
   const { currentSong, setCurrentSong } = useContext(songContext);
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    const music = new Howl({
+      src: [info.track],
+      html5: true,
+      onload: () => {},
+    });
+    return () => {
+      music.unload();
+      setDuration(music.duration());
+    };
+  }, [info.track]);
+  console.log(duration);
 
   return (
     <div
-      className="flex hover:bg-gray-400 hover:bg-opacity-20 p-2 rounded-sm  rounded border-gray-500"
+      className="flex hover:bg-gray-400 hover:bg-opacity-20 p-2 rounded-sm  rounded border-gray-500 "
       onClick={() => {
         setCurrentSong(info);
       }}
@@ -29,7 +45,7 @@ const SingleSongCard = ({ info, playSound }) => {
           </div>
         </div>
         <div className="w-1/6 flex items-center justify-center text-gray-400 text-sm">
-          <div>3:44</div>
+          <div>{secondsToHms(duration)}</div>
         </div>
       </div>
     </div>

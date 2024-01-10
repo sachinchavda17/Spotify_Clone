@@ -11,7 +11,7 @@ const ErrorMsg = ({ errText = "error", closeError, reload, className }) => {
         <strong className="font-bold">{errText}</strong>
         <span className="block mt-1">Please Try again !!</span>
       </div>
-      {reload && (
+      {reload ? (
         <span>
           <button
             className="reload-btn px-2 py-1 bg-blue-500 text-white rounded border border-blue-500 cursor-pointer"
@@ -20,15 +20,16 @@ const ErrorMsg = ({ errText = "error", closeError, reload, className }) => {
             Reload
           </button>
         </span>
+      ) : (
+        <div>
+          <Icon
+            icon="maki:cross"
+            size={20}
+            className="error-close fill-current text-red-700 h-6 w-6"
+            onClick={closeError}
+          />
+        </div>
       )}
-      <div>
-        <Icon
-          icon="maki:cross"
-          size={20}
-          className="error-close fill-current text-red-700 h-6 w-6"
-          onClick={closeError}
-        />
-      </div>
     </div>
   );
 };

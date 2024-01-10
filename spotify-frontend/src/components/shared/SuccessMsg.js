@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 
 const SuccessMsg = ({ successText="hey", closeSuccess }) => {
   return (
-    <div className="success-full bg-green-200 border border-green-500 text-green-700 px-4 py-3 rounded relative flex items-center justify-between mb-4">
+    <div className="success-full bg-green-200 border border-green-500 text-green-700 px-4 py-5 rounded relative flex items-center justify-between mb-4">
       <div className="success-msg">
         <strong className="font-bold">{successText}</strong>
         <span className="block mt-1">Thank you</span>

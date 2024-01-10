@@ -26,7 +26,7 @@ const SignupComponent = () => {
   const signUp = async (signupdata) => {
     try {
       if (signupdata.password !== signupdata.confirmPassword) {
-        throw new Error("Password does not match. Please check again");
+        setError("Password does not match. Please check again");
       }
 
       const data = {
@@ -53,12 +53,12 @@ const SignupComponent = () => {
         setTimeout(() => {
           setSuccess(null);
           navigate("/");
-        }, 5000);
+        }, 2000);
       } else {
-        setError("Failure");
+        setError(response.err);
       }
     } catch (err) {
-      setError(err.message);
+      setError(err);
     }
   };
 
@@ -90,21 +90,21 @@ const SignupComponent = () => {
             className="my-6"
             registerName="email"
             register={register}
-            errors={errors}
+            errors={errors.email}
           />
           <TextInput
             label="Username"
             placeholder="Enter your username"
             registerName="username"
             register={register}
-            errors={errors}
+            errors={errors.username}
           />
           <PasswordInput
             label="Create Password"
             placeholder="create a strong password"
             registerName="password"
             register={register}
-            errors={errors}
+            errors={errors.password}
             className="my-6"
           />
           <PasswordInput
@@ -112,7 +112,7 @@ const SignupComponent = () => {
             placeholder="Enter password again"
             registerName="confirmPassword"
             register={register}
-            errors={errors}
+            error={errors.confirmPassword}
             className="my-6"
           />
           <TextInput
@@ -121,14 +121,14 @@ const SignupComponent = () => {
             className="my-6"
             registerName="firstName"
             register={register}
-            errors={errors}
+            error={errors.firstName}
           />
           <TextInput
             label="Last Name"
             placeholder="Enter Your Last Name"
             registerName="lastName"
             register={register}
-            errors={errors}
+            errors={errors.lastName}
           />
           <div className=" w-full flex items-center justify-center  transition-shadow  my-8">
             <button
@@ -140,7 +140,10 @@ const SignupComponent = () => {
           </div>
           {error && <ErrorMsg errText={error} closeError={closeErrorSuccess} />}
           {success && (
-            <SuccessMsg successText={success} closeSuccess={closeErrorSuccess} />
+            <SuccessMsg
+              successText={success}
+              closeSuccess={closeErrorSuccess}
+            />
           )}
         </form>
         <div className="w-full border border-solid border-gray-300"></div>
