@@ -6,14 +6,12 @@ import PasswordInput from "../components/shared/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
 import { makeUnauthenticatedPOSTRequest } from "../utils/serverHelpers";
 import { useForm } from "react-hook-form";
-import loggedInUser from "../contexts/logedInUser";
 import ErrorMsg from "../components/shared/ErrorMsg";
 import SuccessMsg from "../components/shared/SuccessMsg";
 
 const SignupComponent = () => {
   const [cookie, setCookie] = useCookies(["token"]);
   const navigate = useNavigate();
-  const { setUser } = useContext(loggedInUser);
   const {
     register,
     handleSubmit,
@@ -49,7 +47,6 @@ const SignupComponent = () => {
         setCookie("token", token, { path: "/", expires: date });
 
         setSuccess("Success");
-        setUser(signupdata.email);
         setTimeout(() => {
           setSuccess(null);
           navigate("/");
@@ -74,8 +71,8 @@ const SignupComponent = () => {
           <Icon icon="logos:spotify" width="150" />
         </Link>
       </div>
-      <div className="inputRegion w-1/3 py-10 flex items-center justify-center flex-col">
-        <div className="font-bold mb-4 text-2xl">
+      <div className="inputRegion w-full px-5 sm:w-1/3 py-10 flex items-center justify-center flex-col">
+        <div className="font-bold mb-4 text-2xl text-center">
           Sign up for free to start listening.
         </div>
         <form

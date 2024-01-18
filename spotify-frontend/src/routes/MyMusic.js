@@ -4,6 +4,7 @@ import { makeAuthenticatedGETRequest } from "../utils/serverHelpers";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import ErrorMsg from "../components/shared/ErrorMsg";
 import Loading from "../components/shared/Loading";
+import NewHome from "./NewHome";
 
 const MyMusic = () => {
   const [songData, setSongData] = useState([]);
@@ -29,7 +30,8 @@ const MyMusic = () => {
   };
 
   return (
-    <LoggedInContainer curActiveScreen="myMusic">
+    // <LoggedInContainer curActiveScreen="myMusic">
+    <NewHome curActiveScreen="myMusic">
       {loading ? (
         <Loading />
       ) : error ? (
@@ -50,7 +52,8 @@ const MyMusic = () => {
           </div>
         </div>
       )}
-    </LoggedInContainer>
+    </NewHome>
+    // </LoggedInContainer>
   );
 };
 

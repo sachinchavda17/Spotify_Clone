@@ -11,6 +11,7 @@ import LoggedInContainer from "../containers/LoggedInContainer";
 import { useForm } from "react-hook-form";
 import ErrorMsg from "../components/shared/ErrorMsg";
 import SuccessMsg from "../components/shared/SuccessMsg";
+import NewHome from "./NewHome";
 
 const UploadSong = () => {
   const [playlistUrl, setPlaylistUrl] = useState("");
@@ -55,7 +56,8 @@ const UploadSong = () => {
   };
 
   return (
-    <LoggedInContainer>
+    // <LoggedInContainer>
+    <NewHome curActiveScreen="upload">
       <form onSubmit={handleSubmit((data) => submitSong(data))}>
         <div className="text-2xl font-semibold mb-5 text-white mt-8">
           Upload Your Music
@@ -118,7 +120,8 @@ const UploadSong = () => {
           <SuccessMsg successText={success} closeSuccess={closeErrorSuccess} />
         )}
       </form>
-    </LoggedInContainer>
+      {/* </LoggedInContainer> */}
+    </NewHome>
   );
 };
 

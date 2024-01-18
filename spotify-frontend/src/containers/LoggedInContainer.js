@@ -13,26 +13,25 @@ import TextWithHover from "../components/shared/TextWithHover";
 import songContext from "../contexts/songContext";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
-import loggedInUser from "../contexts/logedInUser";
 import MusicFooter from "../components/shared/MusicFooter";
 
 const LoggedInContainer = ({ children, curActiveScreen }) => {
   const { currentSong, setCurrentSong } = useContext(songContext);
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
-  // const { userFirstName } = useContext(loggedInUser);
+  
   const handleLogout = () => {
     removeCookie("token");
     setIsLoggedIn(false);
     setCurrentSong(null);
   };
 
-  // const firstUpdate = useRef(true);
+  const firstUpdate = useRef(true);
   // useLayoutEffect(() => {
-  //   if (firstUpdate.current) {
-  //     firstUpdate.current = false;
-  //     return;
-  //   }
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
   //   if (!currentSong) {
   //     return;
   //   }
@@ -65,6 +64,12 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 displayText={"Search"}
                 active={curActiveScreen === "search"}
                 targetLink={"/search"}
+              />
+              <IconText
+                iconName={"icomoon-free:book"}
+                displayText={"Responsive"}
+                active={curActiveScreen === "responsive"}
+                targetLink={"/res"}
               />
               <IconText
                 iconName={"icomoon-free:books"}

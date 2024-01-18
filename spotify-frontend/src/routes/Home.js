@@ -5,6 +5,7 @@ import SingleSongBox from "../components/shared/SingleSongBox";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import ErrorMsg from "../components/shared/ErrorMsg";
 import Loading from "../components/shared/Loading";
+import NewHome from "./NewHome";
 
 const Home = () => {
   const [songData, setSongData] = useState([]);
@@ -31,13 +32,15 @@ const Home = () => {
   };
 
   return (
-    <LoggedInContainer curActiveScreen="home">
+    // <LoggedInContainer curActiveScreen="home">
+    <NewHome>
+
       {loading ? (
         <Loading />
-      ) : error ? (
-        <ErrorMsg errText={error} reload={true} closeError={closeErrorSuccess} />
-      ) : (
-        <div className="py-5 grid gap-2 grid-cols-4 overflow-auto">
+        ) : error ? (
+          <ErrorMsg errText={error} reload={true} closeError={closeErrorSuccess} />
+          ) : (
+            <div className="py-5 grid gap-2 grid-cols-1 sm:grid-cols-4 overflow-auto ">
           {songData.length &&
             songData.map((item, ind) => (
               <Link to={"/login"} key={ind}>
@@ -46,7 +49,8 @@ const Home = () => {
             ))}
         </div>
       )}
-    </LoggedInContainer>
+      </NewHome>
+    // </LoggedInContainer>
   );
 };
 

@@ -11,20 +11,17 @@ import MyMusic from "./routes/MyMusic";
 import SearchPage from "./routes/SearchPage";
 import { useCookies } from "react-cookie";
 import songContext from "./contexts/songContext";
-import loggedInUser from "./contexts/logedInUser";
 import MusicFooter from "./components/shared/MusicFooter";
 import SongDetails from "./components/shared/SongDetails";
+import NewHome from "./routes/NewHome";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
   const [soundPlayed, setSoundPlayed] = useState(null);
   const [isPaused, setIsPaused] = useState(true);
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0.5);
   const [seek, setSeek] = useState(0);
 
-  const [user, setUser] = useState(null);
-  const [myMusic, setMyMusic] = useState(null);
-  const [userFirstName, setUserFirstName] = useState(null);
   const [cookie, setCookie] = useCookies(["token"]);
 
   const songContextState = {
@@ -44,29 +41,20 @@ function App() {
       <BrowserRouter>
         {cookie.token ? (
           // logged in routes
-          <loggedInUser.Provider
-            value={{
-              user,
-              setUser,
-              myMusic,
-              setMyMusic,
-              userFirstName,
-              setUserFirstName,
-            }}
-          >
-            <songContext.Provider value={songContextState}>
-              <Routes>
-                <Route path="/" element={<LoggedInHomeComponent />} />
-                <Route path="/uploadSong" element={<UploadSong />} />
-                <Route path="/myMusic" element={<MyMusic />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/music" element={<MusicFooter />} />
-                <Route path="/playedsong" element={<SongDetails />} />
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </songContext.Provider>
-          </loggedInUser.Provider>
+
+          <songContext.Provider value={songContextState}>
+            <Routes>
+              <Route path="/" element={<LoggedInHomeComponent />} />
+              <Route path="/uploadSong" element={<UploadSong />} />
+              <Route path="/myMusic" element={<MyMusic />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/music" element={<MusicFooter />} />
+              <Route path="/playedsong" element={<SongDetails />} />
+              <Route path="/res" element={<NewHome />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </songContext.Provider>
         ) : (
           // logged out routes
           <Routes>

@@ -89,15 +89,6 @@ router.get("/get/logout/allsong/", async (req, res) => {
   }
 });
 
-router.get("/get/logout/allsong/", async (req, res) => {
-  try {
-    const songs = await Song.find({}).populate("artist");
-    return res.status(200).json({ data: songs });
-  } catch (error) {
-    return res.status(301).json({ err: error });
-  }
-});
-
 router.get(
   "/get/logout/songname/:songName",
    async (req, res) => {

@@ -10,6 +10,7 @@ import ErrorMsg from "../components/shared/ErrorMsg";
 import Loading from "../components/shared/Loading";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
+import NewHome from "./NewHome";
 
 const SearchPage = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -43,14 +44,17 @@ const SearchPage = () => {
       setLoading(false);
     }
   };
+
   const closeErrorSuccess = () => {
     setError("");
   };
+
   return (
-    <LoggedInContainer curActiveScreen="search">
+    // <LoggedInContainer curActiveScreen="search">
+    <NewHome curActiveScreen="search">
       <div className="w-full py-6">
         <div
-          className={`w-1/3 p-3 text-sm rounded-full bg-gray-800 px-5 flex text-white space-x-3 items-center ${
+          className={`w-full md:w-1/3 p-3 text-sm rounded-full bg-gray-800 px-5 flex text-white space-x-3 items-center ${
             isInputFocused ? "border border-white" : ""
           }`}
         >
@@ -68,6 +72,7 @@ const SearchPage = () => {
             value={searchText}
             onChange={(e) => {
               setSearchText(e.target.value);
+              searchSong(e.target.value);
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -86,29 +91,20 @@ const SearchPage = () => {
               Showing search results for
               <span className="font-bold"> {searchText}</span>
             </div>
-            {songData.map((item) =>
-              isLoggedIn ? (
-                <SingleSongCard
-                  info={item}
-                  key={JSON.stringify(item)}
-                  playSound={() => {}}
-                />
-              ) : (
-                <Link to={"/login"}>
-                  <SingleSongCard
-                    info={item}
-                    key={JSON.stringify(item)}
-                    playSound={() => {}}
-                  />
-                </Link>
-              )
-            )}
+            {songData.map((item) => (
+              <Link
+                to={isLoggedIn ? `/song/${item._id}` : "/login"}
+                key={JSON.stringify(item)}
+              >
+                <SingleSongCard info={item} playSound={() => {}} />
+              </Link>
+            ))}
           </div>
         ) : (
           <div className="text-gray-400 pt-10">Nothing to show here.</div>
         )}
       </div>
-    </LoggedInContainer>
+    </NewHome>
   );
 };
 

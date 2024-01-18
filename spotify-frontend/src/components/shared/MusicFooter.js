@@ -1,4 +1,3 @@
-// MusicFooter.js
 import React, {
   useContext,
   useEffect,
@@ -24,7 +23,7 @@ const MusicFooter = () => {
     soundPlayed,
     setSoundPlayed,
   } = useContext(songContext);
-  console.log({currentSong});
+  console.log({ currentSong });
 
   setSoundPlayed(currentSong.track);
   const soundRef = useRef(null);
@@ -40,7 +39,6 @@ const MusicFooter = () => {
       onend: () => {
         setIsPaused(true);
         console.log("Song Ended");
-        // Logic for what to do when the song ends
       },
       onpause: () => {
         setIsPaused(true);
@@ -70,13 +68,24 @@ const MusicFooter = () => {
     };
   }, [soundPlayed]);
 
-  const playPauseHandler = () => {
-    if (isPaused) {
-      soundRef.current.play();
-    } else {
-      soundRef.current.pause();
+  const playPauseHandler = (e) => {
+    if (e.key === " ") {
+      e.preventDefault();
+      if (isPaused) {
+        soundRef.current.play();
+      } else {
+        soundRef.current.pause();
+      }
+      setIsPaused(!isPaused);
+    } else if (e.type === "click") {
+      // Toggle play/pause on button click
+      if (isPaused) {
+        soundRef.current.play();
+      } else {
+        soundRef.current.pause();
+      }
+      setIsPaused(!isPaused);
     }
-    setIsPaused(!isPaused);
   };
 
   const nextSongHandler = () => {
@@ -107,32 +116,38 @@ const MusicFooter = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-gray-800 text-white px-4 py-1 ">
+    <div
+      className="fixed bottom-0 left-0 w-full bg-gray-800 text-white px-4 py-1 z-100 "
+      tabIndex="0"
+      onKeyDown={(e) => playPauseHandler(e)}
+    >
       <div className="flex items-center justify-between">
-        <div className="flex items-center w-1/4">
+        <div className="flex items-center w-1/2 sm:w-1/4">
           <Link to={"/playedsong"}>
             <img
               src={currentSong.thumbnail}
               alt="Song Cover"
-              className="w-16 h-16  mr-4"
+              className="w-12 h-12 sm:w-16 sm:h-16  mr-4"
             />
           </Link>
           <div>
             <p className="text-sm">{currentSong.name}</p>
-            {currentSong.artist.firstName + " " + currentSong.artist.lastName}
+            <p className="hidden sm:block">
+              {currentSong.artist.firstName + " " + currentSong.artist.lastName}
+            </p>
           </div>
         </div>
-        <div className="flex items-center space-x-4 flex-col w-2/3">
+        <div className="flex items-center space-x-4 flex-col w-1/4 sm:w-2/3">
           <div className="flex items-center space-x-4">
             <button onClick={prevSongHandler} className="pl-5">
               <Icon
                 icon="bi:skip-backward"
                 fontSize={25}
-                className="cursor-pointer text-gray-500 hover:text-white"
+                className="cursor-pointer text-gray-500 hover:text-white hidden sm:block"
               />
             </button>
 
-            <button onClick={playPauseHandler} className="text-3xl">
+            <button onClick={(e) => playPauseHandler(e)} className="text-3xl">
               <Icon
                 icon={
                   isPaused
@@ -148,11 +163,11 @@ const MusicFooter = () => {
               <Icon
                 icon="bi:skip-forward"
                 fontSize={25}
-                className="cursor-pointer text-gray-500 hover:text-white"
+                className="cursor-pointer text-gray-500 hover:text-white hidden sm:block"
               />
             </button>
           </div>
-          <div className="flex items-center justify-between space-x-4 w-2/3">
+          <div className="hidden sm:flex items-center justify-between space-x-4 w-2/3 hidden ">
             <span className="w-1/9">{secondsToHms(seek)}</span>
             <input
               type="range"
@@ -171,7 +186,7 @@ const MusicFooter = () => {
           <Icon
             icon="ic:round-playlist-add"
             fontSize={30}
-            className="cursor-pointer text-gray-500 hover:text-white"
+            className="cursor-pointer text-gray-500 hover:text-white hidden sm:block"
           />
           <Icon
             icon={`${liked ? "ph:heart-bold" : "ph:heart-fill"}`}
@@ -191,11 +206,11 @@ const MusicFooter = () => {
                   : volume < 5
                   ? "text-gray-300"
                   : "text-white"
-              } hover:text-gray-100`}
+              } hover:text-gray-100 hidden sm:block `}
             />
           </button>
           <input
-            className="appearance-none h-2 rounded bg-gray-400"
+            className="appearance-none h-2 rounded bg-gray-400 hidden sm:block"
             type="range"
             value={volume}
             onChange={(e) => volumeChangeHandler(e)}
