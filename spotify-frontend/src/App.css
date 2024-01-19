@@ -1,3 +1,7 @@
 *{
   transition: .2s !important ;
 }
+
+input{
+  outline: none !important;
+}

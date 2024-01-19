@@ -32,7 +32,7 @@ const LoggedInHome = () => {
 
   return (
     // <LoggedInContainer curActiveScreen="home">
-    <NewHome curActiveScreen="home">
+      <NewHome curActiveScreen="home">
       {loading ? (
         <Loading />
       ) : error ? (

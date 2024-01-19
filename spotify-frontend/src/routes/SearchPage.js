@@ -50,7 +50,6 @@ const SearchPage = () => {
   };
 
   return (
-    // <LoggedInContainer curActiveScreen="search">
     <NewHome curActiveScreen="search">
       <div className="w-full py-6">
         <div
@@ -58,11 +57,11 @@ const SearchPage = () => {
             isInputFocused ? "border border-white" : ""
           }`}
         >
-          <Icon icon="ic:outline-search" className="text-lg" />
+          <Icon icon="ic:outline-search" fontSize={30} className="text-lg" />
           <input
             type="text"
             placeholder="What do you want to listen to?"
-            className="w-full bg-gray-800 outline-none"
+            className=" text-sm w-full bg-gray-800 outline-none focus:outline-none"
             onFocus={() => {
               setIsInputFocused(true);
             }}

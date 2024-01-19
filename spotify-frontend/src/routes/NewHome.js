@@ -16,9 +16,10 @@ const NewHome = ({ children, curActiveScreen }) => {
     removeCookie("token");
     setIsLoggedIn(false);
   };
+  
 
   return (
-    <div className="bg-black">
+    <div className="bg-black w-full h-full">
       <nav className="fixed top-0 z-50 w-full text-white border-b border-gray-200 bg-app-black border-gray-700">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
@@ -104,12 +105,12 @@ const NewHome = ({ children, curActiveScreen }) => {
                           Profile
                         </Link>
                         <Link
-                          to={"/upload"}
+                          to={"/uploadSong"}
                           className={
                             "bg-gray-100 block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
                           }
                         >
-                          Upload
+                          Upload Song
                         </Link>
                         <div
                           onClick={handleLogout}
@@ -181,10 +182,8 @@ const NewHome = ({ children, curActiveScreen }) => {
           </div>
         </aside>
 
-        <div className={`p-4 sm:ml-64 bg-app-black `}>
-          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg  border-gray-700 mt-14  overflow-auto">
-            {children}
-          </div>
+        <div className="p-8 bg-app-black rounded-lg  sm:ml-64  bg-app-black mt-14  overflow-auto ">
+          {children}
         </div>
       </div>
       {/* <div className="sm:ml-64 relative content p-8 pt-0 mt-14 bg-app-black overflow-auto ">

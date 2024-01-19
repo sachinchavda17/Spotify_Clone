@@ -120,8 +120,8 @@ const UploadSong = () => {
           <SuccessMsg successText={success} closeSuccess={closeErrorSuccess} />
         )}
       </form>
-      {/* </LoggedInContainer> */}
     </NewHome>
+    //  </LoggedInContainer>
   );
 };
 

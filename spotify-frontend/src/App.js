@@ -14,6 +14,7 @@ import songContext from "./contexts/songContext";
 import MusicFooter from "./components/shared/MusicFooter";
 import SongDetails from "./components/shared/SongDetails";
 import NewHome from "./routes/NewHome";
+import LoggedInContainer from "./containers/LoggedInContainer";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
@@ -48,10 +49,10 @@ function App() {
               <Route path="/uploadSong" element={<UploadSong />} />
               <Route path="/myMusic" element={<MyMusic />} />
               <Route path="/search" element={<SearchPage />} />
-              <Route path="/search" element={<SearchPage />} />
+              <Route path="/profile" element={<SearchPage />} />
               <Route path="/music" element={<MusicFooter />} />
               <Route path="/playedsong" element={<SongDetails />} />
-              <Route path="/res" element={<NewHome />} />
+              <Route path="/res" element={<LoggedInContainer />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </songContext.Provider>
