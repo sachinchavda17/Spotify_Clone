@@ -19,7 +19,6 @@ const LoginComponent = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  console.log(errors);
 
   const login = async (loginData) => {
     try {
@@ -28,18 +27,22 @@ const LoginComponent = () => {
         "/auth/login",
         data
       );
+
       if (response && !response.err) {
         const token = response.token;
-        const date = new Date();
-        date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
-        setCookie("token", token, { path: "/", expires: date });
+        // const date = new Date();
+        // date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
+        setCookie("token", token, { path: "/" });
+
+        // Store login details in local storage
+        localStorage.setItem("currentUser", JSON.stringify(response));
 
         setSuccess("Success");
         setError(null);
         setTimeout(() => {
           setSuccess(null);
           navigate("/");
-        }, 5000);
+        }, 3000);
       } else {
         setError(response?.err || "Login failed");
         setSuccess(null);
@@ -63,7 +66,9 @@ const LoginComponent = () => {
         </Link>
       </div>
       <div className="inputRegion w-full px-5 sm:w-1/3 py-10 flex items-center justify-center flex-col text-gray-200">
-        <div className="font-bold mb-4 text-center">To continue, log in to Spotify.</div>
+        <div className="font-bold mb-4 text-center">
+          To continue, log in to Spotify.
+        </div>
         <form
           onSubmit={handleSubmit((data) => login(data))}
           className="w-full "
@@ -85,12 +90,6 @@ const LoginComponent = () => {
             error={errors.password}
             className="w-full"
           />
-
-          <div className=" w-full flex items-center justify-end mb-8 mt-4 transition-shadow ">
-            <button className="bg-green-600 font-semibold p-3 px-8 rounded-full">
-              LOG IN
-            </button>
-          </div>
           {error && errors && (
             <ErrorMsg
               errText={error || errors.email.message}
@@ -103,6 +102,11 @@ const LoginComponent = () => {
               closeSuccess={closeErrorSuccess}
             />
           )}
+          <div className=" w-full flex items-center justify-end mb-8 mt-4 transition-shadow ">
+            <button className="bg-green-600 font-semibold p-3 px-8 rounded-full">
+              LOG IN
+            </button>
+          </div>
         </form>
         <div className="w-full border border-solid border-gray-300"></div>
         <div className="my-4 font-semibold text-lg">Don't have an account?</div>

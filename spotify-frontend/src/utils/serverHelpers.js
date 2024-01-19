@@ -57,3 +57,23 @@ const getToken = () => {
   );
   return accessToken;
 };
+
+// const getToken = () => {
+//   const userDataString = localStorage.getItem("currentUser");
+//   if (!userDataString) {
+//     return "User data not found in localStorage";
+//   }
+
+//   try {
+//     const userData = JSON.parse(userDataString);
+
+//     if (!userData || !userData.token) {
+//       return "Token not found in user data";
+//     }
+//     const accessToken = userData.token;
+
+//     return accessToken;
+//   } catch (error) {
+//     return "Error parsing user data JSON:", error;
+//   }
+// };

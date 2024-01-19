@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useContext } from "react";
+import React, { useState, Fragment, useContext, useEffect } from "react";
 import IconText from "../components/shared/IconText";
 import spotify_logo from "../images/spotify_logo_white.svg";
 import { Link } from "react-router-dom";
@@ -11,12 +11,25 @@ import MusicFooter from "../components/shared/MusicFooter";
 const NewHome = ({ children, curActiveScreen }) => {
   const { currentSong, setCurrentSong } = useContext(songContext);
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
-  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
+  const [userData, setUserData] = useState(
+    JSON.parse(localStorage.getItem("currentUser")) || null
+  );
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie?.token));
   const handleLogout = () => {
     removeCookie("token");
+    localStorage.removeItem("currentUser");
     setIsLoggedIn(false);
+    setCurrentSong(null);
   };
-  
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      if (user) {
+        setUserData(user);
+      }
+    }
+  }, [isLoggedIn]);
 
   return (
     <div className="bg-black w-full h-full">
@@ -35,13 +48,13 @@ const NewHome = ({ children, curActiveScreen }) => {
                 <svg
                   className="w-6 h-6"
                   aria-hidden="true"
-                  fill="currentColor"
+                  fill="rgba(5, 150, 105, 1)"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    clip-rule="evenodd"
-                    fill-rule="evenodd"
+                    clipRule="evenodd"
+                    fillRule="evenodd"
                     d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
                   ></path>
                 </svg>
@@ -55,9 +68,9 @@ const NewHome = ({ children, curActiveScreen }) => {
                 <Menu as="div" className="relative ml-3">
                   <div>
                     {isLoggedIn ? (
-                      <Menu.Button className="flex max-w-xs items-center rounded-lg bg-gray-800 text-sm  ">
+                      <Menu.Button className="flex max-w-xs items-center rounded-lg bg-gray-600 text-sm  ">
                         <span className="sr-only">Open user menu</span>
-                        <div className="bg-white text-white p-2 cursor-pointer flex items-center rounded-lg">
+                        <div className="bg-green-700 text-white p-2 cursor-pointer flex items-center rounded-lg">
                           <div className="mr-2 overflow-hidden rounded-md">
                             <Icon
                               icon="ep:user-filled"
@@ -66,7 +79,7 @@ const NewHome = ({ children, curActiveScreen }) => {
                             />
                           </div>
                           <div className="mr-2 text-sm capitalize text-black">
-                            Sachin Chavda
+                            {isLoggedIn && userData.firstName}
                           </div>
                           <div>
                             <Icon
@@ -129,11 +142,11 @@ const NewHome = ({ children, curActiveScreen }) => {
           </div>
         </div>
       </nav>
-      <div style={{ height: currentSong ? "85vh" : "100vh" }}>
+      <div>
         <aside
-          style={{ height: currentSong ? "85vh" : "100vh" }}
+          style={{ height: currentSong && "84vh" }}
           id="logo-sidebar"
-          className="fixed top-0 left-0 z-40 w-64  pt-20 h-full transition-transform -translate-x-full   sm:translate-x-0  bg-black  "
+          className="fixed top-0 left-0 z-40 w-64  pt-20 h-full transition-transform -translate-x-full   sm:translate-x-0  bg-black overflow-auto  "
           aria-label="Sidebar"
         >
           <div className="h-full  pb-4 overflow-y-auto ">

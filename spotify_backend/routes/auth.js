@@ -58,11 +58,13 @@ router.post("/login", async (req, res) => {
     }
 
     const token = await getToken(user.email, user);
+    
     const userToReturn = { ...user.toJSON(), token };
+    // console.log(userToReturn)
     delete userToReturn.password;
     return res.status(200).json(userToReturn);
   } catch (error) {
-    return res.status(400).json({ msg: error });
+    return res.status(400).json({ err: error });
   }
 });
 

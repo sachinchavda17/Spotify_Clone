@@ -21,21 +21,22 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
   
   const handleLogout = () => {
+    localStorage.removeItem("currentUser");
     removeCookie("token");
     setIsLoggedIn(false);
     setCurrentSong(null);
   };
 
   const firstUpdate = useRef(true);
-  // useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
     }
-  //   if (!currentSong) {
-  //     return;
-  //   }
-  // }, [currentSong && currentSong.track]);
+    if (!currentSong) {
+      return;
+    }
+  }, [currentSong && currentSong.track]);
 
   return (
     <div className="h-full w-full bg-black">
@@ -166,7 +167,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
         </div>
       </div>
       {/* This div is the current playing song */}
-      {currentSong ? <MusicFooter /> : null}
+      {currentSong &&  <MusicFooter /> }
     </div>
   );
 };

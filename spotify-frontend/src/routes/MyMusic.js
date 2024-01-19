@@ -15,6 +15,15 @@ const MyMusic = () => {
     const getData = async () => {
       try {
         const response = await makeAuthenticatedGETRequest("/song/get/mysongs");
+        const currentUserString = localStorage.getItem("currentUser");
+        const currentUser = currentUserString
+          ? JSON.parse(currentUserString)
+          : null;
+        if (currentUser) {
+          currentUser.MyMusic = response;
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
+
         setSongData(response.data);
       } catch (error) {
         setError("Error fetching data");

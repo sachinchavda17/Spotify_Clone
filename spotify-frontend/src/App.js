@@ -1,6 +1,6 @@
 import "./output.css";
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginComponent from "./routes/Login";
 import SignupComponent from "./routes/Signup";
@@ -15,6 +15,8 @@ import MusicFooter from "./components/shared/MusicFooter";
 import SongDetails from "./components/shared/SongDetails";
 import NewHome from "./routes/NewHome";
 import LoggedInContainer from "./containers/LoggedInContainer";
+import MusicPlayer from "./routes/Song";
+import Userprofile from "./components/shared/UserProfile";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
@@ -22,8 +24,29 @@ function App() {
   const [isPaused, setIsPaused] = useState(true);
   const [volume, setVolume] = useState(0.5);
   const [seek, setSeek] = useState(0);
-
   const [cookie, setCookie] = useCookies(["token"]);
+  // const [userData, setUserData] = useState(
+  //   JSON.parse(localStorage.getItem("currentUser")) || null
+  // );
+  
+  // useEffect(() => {
+  //   if (currentSong) {
+  //     const currentUserString = localStorage.getItem("currentUser");
+  //     const currentUser = currentUserString
+  //       ? JSON.parse(currentUserString)
+  //       : null;
+  //     if (currentUser) {
+  //       currentUser.currentSong = currentSong;
+  //       currentSong.soundPlayed = soundPlayed;
+  //       currentSong.soundPlayed = soundPlayed;
+  //       currentSong.isPaused = isPaused;
+  //       currentSong.volume = volume;
+  //       currentSong.seek = seek;
+  //       localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  //     }
+  //   }
+  // }, [currentSong]);
+
 
   const songContextState = {
     currentSong,
@@ -42,17 +65,16 @@ function App() {
       <BrowserRouter>
         {cookie.token ? (
           // logged in routes
-
           <songContext.Provider value={songContextState}>
             <Routes>
               <Route path="/" element={<LoggedInHomeComponent />} />
               <Route path="/uploadSong" element={<UploadSong />} />
               <Route path="/myMusic" element={<MyMusic />} />
               <Route path="/search" element={<SearchPage />} />
-              <Route path="/profile" element={<SearchPage />} />
+              <Route path="/profile" element={<Userprofile />} />
               <Route path="/music" element={<MusicFooter />} />
               <Route path="/playedsong" element={<SongDetails />} />
-              <Route path="/res" element={<LoggedInContainer />} />
+              <Route path="/res" element={<MusicPlayer />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </songContext.Provider>

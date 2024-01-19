@@ -15,6 +15,14 @@ const LoggedInHome = () => {
     const getData = async () => {
       try {
         const response = await makeAuthenticatedGETRequest("/song/get/allsong");
+        const currentUserString = localStorage.getItem("currentUser");
+        let currentUser = currentUserString
+          ? JSON.parse(currentUserString)
+          : null;
+        if (currentUser) {
+          currentUser.allSongs = response;
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
         setSongData(response.data);
       } catch (error) {
         setError("Error fetching data");
@@ -32,7 +40,7 @@ const LoggedInHome = () => {
 
   return (
     // <LoggedInContainer curActiveScreen="home">
-      <NewHome curActiveScreen="home">
+    <NewHome curActiveScreen="home">
       {loading ? (
         <Loading />
       ) : error ? (
@@ -42,7 +50,7 @@ const LoggedInHome = () => {
           closeError={closeErrorSuccess}
         />
       ) : (
-        <div className="py-5 grid gap-2 grid-cols-1 sm:grid-cols-4 overflow-auto max-lg:grid-cols-3 max-md:grid-cols-2">
+        <div className="py-5 grid gap-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 overflow-auto max-lg:grid-cols-3 max-md:grid-cols-2">
           {songData.map((item) => (
             <SingleSongBox
               info={item}

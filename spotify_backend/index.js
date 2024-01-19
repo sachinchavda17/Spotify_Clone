@@ -13,18 +13,22 @@ const port = 8080;
 
 app.use(cors());
 app.use(express.json());
-
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to Mongo ! ");
-  })
-  .catch((err) => {
-    console.error(`Error while connecting to mongo ${err} `);
-  });
+try {
+  mongoose
+    .connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => {
+      console.log("Connected to Mongo ! ");
+    })
+    .catch((err) => {
+      console.error(`Error while connecting to mongo ${err} `);
+      return res.status(400).json({ err: err });
+    });
+} catch (error) {
+  return res.status(400).json({ err: error });
+}
 
 // setup passport-jwt
 let opts = {};

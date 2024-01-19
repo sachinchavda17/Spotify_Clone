@@ -42,10 +42,12 @@ const SignupComponent = () => {
 
       if (response && !response.err) {
         const token = response.token;
-        const date = new Date();
-        date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
-        setCookie("token", token, { path: "/", expires: date });
-
+        // const date = new Date();
+        // date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
+        // setCookie("token", token, { path: "/", expires: date });
+        setCookie("token", token, { path: "/" });
+        
+        localStorage.setItem("currentUser", JSON.stringify(response));
         setSuccess("Success");
         setTimeout(() => {
           setSuccess(null);

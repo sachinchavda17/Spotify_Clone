@@ -34,14 +34,17 @@ const Home = () => {
   return (
     // <LoggedInContainer curActiveScreen="home">
     <NewHome>
-
       {loading ? (
         <Loading />
-        ) : error ? (
-          <ErrorMsg errText={error} reload={true} closeError={closeErrorSuccess} />
-          ) : (
-            <div className="py-5 grid gap-2 grid-cols-1 sm:grid-cols-4 overflow-auto ">
-          {songData.length &&
+      ) : error ? (
+        <ErrorMsg
+          errText={error}
+          reload={true}
+          closeError={closeErrorSuccess}
+        />
+      ) : (
+        <div className="py-5 grid gap-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 overflow-auto max-lg:grid-cols-3 max-md:grid-cols-2">
+          {songData &&
             songData.map((item, ind) => (
               <Link to={"/login"} key={ind}>
                 <SingleSongBox info={item} ListKey={ind} />
@@ -49,7 +52,7 @@ const Home = () => {
             ))}
         </div>
       )}
-      </NewHome>
+    </NewHome>
     // </LoggedInContainer>
   );
 };
