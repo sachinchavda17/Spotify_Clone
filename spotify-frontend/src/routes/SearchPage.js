@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { Icon } from "@iconify/react";
 import {
@@ -10,7 +10,7 @@ import ErrorMsg from "../components/shared/ErrorMsg";
 import Loading from "../components/shared/Loading";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
-import NewHome from "./NewHome";
+import songContext from "../contexts/songContext";
 
 const SearchPage = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -21,6 +21,8 @@ const SearchPage = () => {
 
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
+
+  const { currentSong } = useContext(songContext);
 
   const searchSong = async (searchText) => {
     try {
@@ -50,14 +52,17 @@ const SearchPage = () => {
   };
 
   return (
-    <NewHome curActiveScreen="search">
-      <div className="w-full py-6">
+    <LoggedInContainer curActiveScreen="search">
+      <div className={`${currentSong ? " mb-20 " : ""} w-full py-6`}>
+        <div className={`  text-white text-xl font-semibold pb-4 pl-2 pt-2`}>
+          Search Song : <span className="font-bold"> {searchText}</span>
+        </div>
         <div
-          className={`w-full md:w-1/3 p-3 text-sm rounded-full bg-gray-800 px-5 flex text-white space-x-3 items-center ${
+          className={`w-full md:w-1/3  py-2 text-sm rounded-full bg-gray-800 px-5 flex text-white space-x-3 items-center ${
             isInputFocused ? "border border-white" : ""
           }`}
         >
-          <Icon icon="ic:outline-search" fontSize={30} className="text-lg" />
+          <Icon icon="ic:outline-search" fontSize={30} className="text-2xl" />
           <input
             type="text"
             placeholder="What do you want to listen to?"
@@ -85,25 +90,22 @@ const SearchPage = () => {
         ) : error ? (
           <ErrorMsg errText={error} closeError={closeErrorSuccess} />
         ) : songData.length > 0 ? (
-          <div className="pt-10 space-y-3">
+          <div className="pt-3 space-y-3 h-full">
             <div className="text-white">
               Showing search results for
               <span className="font-bold"> {searchText}</span>
             </div>
             {songData.map((item) => (
-              <Link
-                to={isLoggedIn ? `/song/${item._id}` : "/login"}
-                key={JSON.stringify(item)}
-              >
+              <Link to={!isLoggedIn && "/login"} key={JSON.stringify(item)}>
                 <SingleSongCard info={item} playSound={() => {}} />
               </Link>
             ))}
           </div>
         ) : (
-          <div className="text-gray-400 pt-10">Nothing to show here.</div>
+          <div className="text-gray-400 pt-3 h-full">Nothing to show here.</div>
         )}
       </div>
-    </NewHome>
+    </LoggedInContainer>
   );
 };
 

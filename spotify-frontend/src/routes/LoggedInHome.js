@@ -1,15 +1,16 @@
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { makeAuthenticatedGETRequest } from "../utils/serverHelpers";
 import SingleSongBox from "../components/shared/SingleSongBox";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import ErrorMsg from "../components/shared/ErrorMsg";
 import Loading from "../components/shared/Loading";
-import NewHome from "./NewHome";
+import songContext from "../contexts/songContext";
 
 const LoggedInHome = () => {
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {currentSong} = useContext(songContext)
 
   useEffect(() => {
     const getData = async () => {
@@ -39,8 +40,7 @@ const LoggedInHome = () => {
   };
 
   return (
-    // <LoggedInContainer curActiveScreen="home">
-    <NewHome curActiveScreen="home">
+    <LoggedInContainer curActiveScreen="home">
       {loading ? (
         <Loading />
       ) : error ? (
@@ -50,7 +50,11 @@ const LoggedInHome = () => {
           closeError={closeErrorSuccess}
         />
       ) : (
-        <div className="py-5 grid gap-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 overflow-auto max-lg:grid-cols-3 max-md:grid-cols-2">
+        <div
+          className={` ${
+            currentSong ? "mb-20" : ""
+          } py-5 grid gap-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 overflow-auto max-lg:grid-cols-3 max-md:grid-cols-2`}
+        >
           {songData.map((item) => (
             <SingleSongBox
               info={item}
@@ -60,8 +64,7 @@ const LoggedInHome = () => {
           ))}
         </div>
       )}
-      {/* </LoggedInContainer> */}
-    </NewHome>
+      </LoggedInContainer>
   );
 };
 

@@ -8,14 +8,22 @@ router.use(cookieParser());
 
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, firstName, lastName, username } = req.body;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      username,
+      profileBackground,
+      profileText,
+    } = req.body;
 
     // user Exists or not
     const user = await User.findOne({ email: email });
     if (user) {
       return res
         .status(403)
-        .json({ error: "A user with this email already exists" });
+        .json({ err: "A user with this email already exists" });
     }
     const newUserData = {
       email,
@@ -23,6 +31,8 @@ router.post("/register", async (req, res) => {
       firstName,
       lastName,
       username,
+      profileBackground,
+      profileText,
     };
     const newUser = await User.create(newUserData);
     // console.log(newUserData);
@@ -36,7 +46,7 @@ router.post("/register", async (req, res) => {
     delete userToReturn.password;
     return res.status(200).json(userToReturn);
   } catch (error) {
-    return res.status(400).json({ msg: error });
+    return res.status(400).json({ err: error });
   }
 });
 
@@ -58,7 +68,7 @@ router.post("/login", async (req, res) => {
     }
 
     const token = await getToken(user.email, user);
-    
+
     const userToReturn = { ...user.toJSON(), token };
     // console.log(userToReturn)
     delete userToReturn.password;

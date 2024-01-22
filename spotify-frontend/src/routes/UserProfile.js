@@ -1,23 +1,18 @@
-import React from "react";
-import NewHome from "../../routes/NewHome";
+import React, { useContext } from "react";
+import songContext from "../contexts/songContext";
+import LoggedInContainer from "../containers/LoggedInContainer";
 const UserProfile = () => {
   const user = JSON.parse(localStorage.getItem("currentUser"));
   const date = new Date().toDateString();
-
-  const getRandomColor = () => {
-    const colors = [
-      "bg-red-500",
-      "bg-blue-500",
-      "bg-green-500",
-      "bg-yellow-500",
-    ];
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
-  };
+  const { currentSong } = useContext(songContext);
 
   return (
-    <NewHome>
-      <div className=" rounded p-5 sm:p-10 bg-black h-full w-full text-white">
+    <LoggedInContainer>
+      <div
+        className={` ${
+          currentSong ? "mb-20" : ""
+        } rounded p-5 sm:p-10 bg-app-black h-full w-full text-white`}
+      >
         <h1
           className={`text-3xl sm:text-4xl font-bold text-center py-3 border-b border-gray-700`}
         >
@@ -26,7 +21,11 @@ const UserProfile = () => {
         <div className=" py-5 pt-7  sm:py-7 flex items-center flex-col sm:flex-row justify-around">
           <div className="left flex sm:w-1/4  space-x-2 items-center  sm:flex-col sm:space-y-5   ">
             <div
-              className={`w-32 flex mb-5 sm:mb-0 justify-center items-center text-6xl h-32 ${getRandomColor()} rounded-full `}
+              className={`w-32 flex mb-5 sm:mb-0 justify-center items-center text-6xl h-32 ${
+                user?.profileBackground
+                  ? user?.profileBackground
+                  : "bg-blue-500"
+              } ${user?.profileText}  rounded-full `}
             >
               {user.firstName[0] + user.lastName[0]}
             </div>
@@ -54,11 +53,15 @@ const UserProfile = () => {
                 <span className="font-semibold">Join Date : </span>
                 <span>{user.joinDate ? user.joinDate : date}</span>
               </div>
+              <div className="w-full text-center bg-gray-800 py-2 px-5 rounded-xl ">
+                <span className="font-semibold">Is Artist : </span>
+                <span>{JSON.parse(user.isArtist) ? "Yes" : "No"}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </NewHome>
+    </LoggedInContainer>
   );
 };
 

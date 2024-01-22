@@ -5,7 +5,6 @@ import SingleSongBox from "../components/shared/SingleSongBox";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import ErrorMsg from "../components/shared/ErrorMsg";
 import Loading from "../components/shared/Loading";
-import NewHome from "./NewHome";
 
 const Home = () => {
   const [songData, setSongData] = useState([]);
@@ -32,8 +31,7 @@ const Home = () => {
   };
 
   return (
-    // <LoggedInContainer curActiveScreen="home">
-    <NewHome>
+    <LoggedInContainer curActiveScreen="home">
       {loading ? (
         <Loading />
       ) : error ? (
@@ -52,8 +50,7 @@ const Home = () => {
             ))}
         </div>
       )}
-    </NewHome>
-    // </LoggedInContainer>
+    </LoggedInContainer>
   );
 };
 

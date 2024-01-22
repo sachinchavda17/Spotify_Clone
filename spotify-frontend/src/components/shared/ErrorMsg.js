@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 
-const ErrorMsg = ({ errText = "error", closeError, reload, className }) => {
+const ErrorMsg = ({ errText, closeError, reload, className }) => {
   return (
     <div
       className={`error-full flex justify-between items-center bg-pink-200 border border-red-600 text-red-700 px-4 py-3 my-3 rounded ${className}`}

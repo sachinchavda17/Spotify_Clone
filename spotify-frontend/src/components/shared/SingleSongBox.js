@@ -1,14 +1,17 @@
 import { useContext } from "react";
 import songContext from "../../contexts/songContext";
+import { Link } from "react-router-dom";
 
-const SingleSongCard = ({ info, playSound, ListKey }) => {
+const SingleSongBox = ({ info, playSound, ListKey, edit }) => {
   const { setCurrentSong } = useContext(songContext);
-
+  const songId = info._id
   return (
     <div
       className="flex p-1 sm:p-2 rounded-sm w-full justify-between space-x-4"
       onClick={() => {
-        setCurrentSong(info);
+        if (!edit) {
+          setCurrentSong(info);
+        }
       }}
       key={ListKey}
     >
@@ -21,14 +24,23 @@ const SingleSongCard = ({ info, playSound, ListKey }) => {
           />
         </div>
         <div className="px-4 py-3">
-          <div className="text-white text-sm sm:text-base font-semibold py-1">{info.name}</div>
+          <div className="text-white text-sm sm:text-base font-semibold py-1">
+            {info.name}
+          </div>
           <div className="text-gray-500  text-xs sm:text-sm py-1">
             {info.artist.firstName + " " + info.artist.lastName}
           </div>
+          {edit && (
+            <Link to={`/edit/${songId}`}>
+              <div className="bg-green-600 border border-gray-900 rounded-lg p-2 w-full text-center cursor-pointer">
+                Edit
+              </div>
+            </Link>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default SingleSongCard;
+export default SingleSongBox;

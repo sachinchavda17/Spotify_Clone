@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { Icon } from "@iconify/react";
-import songContext from "../../contexts/songContext";
+import songContext from "../contexts/songContext";
 import { Link, Navigate } from "react-router-dom";
-import LoggedInContainer from "../../containers/LoggedInContainer";
-import NewHome from "../../routes/NewHome";
+import LoggedInContainer from "../containers/LoggedInContainer";
+import NewHome from "../containers/LoggedInContainer";
 
 export default function SongDetails() {
   const {
@@ -20,8 +20,7 @@ export default function SongDetails() {
     setSoundPlayed,
   } = useContext(songContext);
   return (
-    // <LoggedInContainer>
-    <NewHome>
+    <LoggedInContainer curActiveScreen={"home"}>
       {!currentSong ? (
         <Navigate to={"/"} replace={true} />
       ) : (
@@ -68,7 +67,6 @@ export default function SongDetails() {
           </div>
         </div>
       )}
-    </NewHome>
-    // </LoggedInContainer> 
+    </LoggedInContainer>
   );
 }

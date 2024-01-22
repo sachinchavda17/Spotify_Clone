@@ -1,6 +1,6 @@
 import "./output.css";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginComponent from "./routes/Login";
 import SignupComponent from "./routes/Signup";
@@ -12,11 +12,10 @@ import SearchPage from "./routes/SearchPage";
 import { useCookies } from "react-cookie";
 import songContext from "./contexts/songContext";
 import MusicFooter from "./components/shared/MusicFooter";
-import SongDetails from "./components/shared/SongDetails";
-import NewHome from "./routes/NewHome";
-import LoggedInContainer from "./containers/LoggedInContainer";
-import MusicPlayer from "./routes/Song";
-import Userprofile from "./components/shared/UserProfile";
+import SongDetails from "./routes/SongDetails";
+import Userprofile from "./routes/UserProfile";
+import EditPage from "./routes/EditPage";
+import EditSongPage from "./components/shared/EditSong";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
@@ -25,28 +24,6 @@ function App() {
   const [volume, setVolume] = useState(0.5);
   const [seek, setSeek] = useState(0);
   const [cookie, setCookie] = useCookies(["token"]);
-  // const [userData, setUserData] = useState(
-  //   JSON.parse(localStorage.getItem("currentUser")) || null
-  // );
-  
-  // useEffect(() => {
-  //   if (currentSong) {
-  //     const currentUserString = localStorage.getItem("currentUser");
-  //     const currentUser = currentUserString
-  //       ? JSON.parse(currentUserString)
-  //       : null;
-  //     if (currentUser) {
-  //       currentUser.currentSong = currentSong;
-  //       currentSong.soundPlayed = soundPlayed;
-  //       currentSong.soundPlayed = soundPlayed;
-  //       currentSong.isPaused = isPaused;
-  //       currentSong.volume = volume;
-  //       currentSong.seek = seek;
-  //       localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  //     }
-  //   }
-  // }, [currentSong]);
-
 
   const songContextState = {
     currentSong,
@@ -74,7 +51,9 @@ function App() {
               <Route path="/profile" element={<Userprofile />} />
               <Route path="/music" element={<MusicFooter />} />
               <Route path="/playedsong" element={<SongDetails />} />
-              <Route path="/res" element={<MusicPlayer />} />
+              <Route path="/edit" element={<EditPage />} />
+              <Route path="/edit/:songId" element={<EditSongPage />} />
+              <Route path="/profileedit/:userId" element={<EditSongPage />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </songContext.Provider>

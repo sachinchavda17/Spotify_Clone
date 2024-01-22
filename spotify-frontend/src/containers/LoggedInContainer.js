@@ -1,59 +1,156 @@
-import {
-  useContext,
-  useState,
-  useLayoutEffect,
-  useRef,
-  useEffect,
-} from "react";
-import { Howl, Howler } from "howler";
-import { Icon } from "@iconify/react";
-import spotify_logo from "../images/spotify_logo_white.svg";
+import React, { useState, Fragment, useContext, useEffect } from "react";
 import IconText from "../components/shared/IconText";
-import TextWithHover from "../components/shared/TextWithHover";
-import songContext from "../contexts/songContext";
-import { useCookies } from "react-cookie";
+import spotify_logo from "../images/spotify_logo_white.svg";
 import { Link } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { Icon } from "@iconify/react";
+import { Menu, Transition } from "@headlessui/react";
+import songContext from "../contexts/songContext";
 import MusicFooter from "../components/shared/MusicFooter";
 
 const LoggedInContainer = ({ children, curActiveScreen }) => {
   const { currentSong, setCurrentSong } = useContext(songContext);
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
-  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
-  
+  const [userData, setUserData] = useState(
+    JSON.parse(localStorage.getItem("currentUser")) || null
+  );
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie?.token));
   const handleLogout = () => {
-    localStorage.removeItem("currentUser");
     removeCookie("token");
+    localStorage.removeItem("currentUser");
     setIsLoggedIn(false);
     setCurrentSong(null);
   };
 
-  const firstUpdate = useRef(true);
-  useLayoutEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
+  useEffect(() => {
+    if (isLoggedIn) {
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      if (user) {
+        setUserData(user);
+      }
     }
-    if (!currentSong) {
-      return;
-    }
-  }, [currentSong && currentSong.track]);
+  }, [isLoggedIn]);
 
   return (
-    <div className="h-full w-full bg-black">
-      <div className={`${currentSong ? "h-[85vh]" : "h-full"} w-full flex`}>
-        {/* This first div will be the left panel */}
-        <div
-          style={{ width: "20vw", height: currentSong ? "75vh" : "100vh" }}
-          className="bg-black overflow-y-auto  flex flex-col justify-between pb-10 md:w-1/4 lg:w-1/5"
-        >
-          <div>
-            {/* This div is for logo */}
-            <div className="logoDiv p-6 bg-app-black m-2 rounded">
-              <Link to="/home">
+    <div className="bg-black w-full h-full">
+      <nav className="fixed top-0 z-50 w-full text-white border-b border-gray-200 bg-app-black border-gray-700">
+        <div className="px-3 py-3 lg:px-5 lg:pl-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center justify-start rtl:justify-end">
+              <button
+                data-drawer-target="logo-sidebar"
+                data-drawer-toggle="logo-sidebar"
+                aria-controls="logo-sidebar"
+                type="button"
+                className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 text-gray-400 hover:bg-gray-700 focus:ring-gray-600"
+              >
+                <span className="sr-only">Open sidebar</span>
+                <svg
+                  className="w-6 h-6"
+                  aria-hidden="true"
+                  fill="rgba(5, 150, 105, 1)"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+                  ></path>
+                </svg>
+              </button>
+              <Link to="/home" className="flex ms-2 md:me-24">
                 <img src={spotify_logo} alt="spotify logo" width={125} />
               </Link>
             </div>
-            <div className="py-5 bg-app-black m-2 rounded">
+            <div className="flex items-center">
+              <div className="flex items-center ms-3">
+                <Menu as="div" className="relative ml-3">
+                  <div>
+                    {isLoggedIn ? (
+                      <Menu.Button className="flex max-w-xs items-center rounded-lg bg-gray-600 text-sm  ">
+                        <span className="sr-only">Open user menu</span>
+                        <div className="bg-green-700 text-white p-2 cursor-pointer flex items-center rounded-lg">
+                          <div className="mr-2 overflow-hidden rounded-md">
+                            <Icon
+                              icon="ep:user-filled"
+                              width={"23"}
+                              color="black"
+                            />
+                          </div>
+                          <div className="mr-2 text-sm capitalize text-black">
+                            {isLoggedIn && userData?.firstName}
+                          </div>
+                          <div>
+                            <Icon
+                              icon="mingcute:down-fill"
+                              width={"20"}
+                              color="black"
+                            />
+                          </div>
+                        </div>
+                      </Menu.Button>
+                    ) : (
+                      <Link to="/login">
+                        <div className="text-sm text-white bg-green-600  px-4 py-2 flex items-center justify-center rounded-full font-semibold cursor-pointer">
+                          LOGIN
+                        </div>
+                      </Link>
+                    )}
+                  </div>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div>
+                        <Link
+                          to={"/profile"}
+                          className={
+                            "bg-gray-800 block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                          }
+                        >
+                          Profile
+                        </Link>
+                        <Link
+                          to={"/uploadSong"}
+                          className={
+                            "bg-gray-800 block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                          }
+                        >
+                          Upload Song
+                        </Link>
+                        <div
+                          onClick={handleLogout}
+                          className={
+                            "bg-gray-800 block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                          }
+                        >
+                          Logout
+                        </div>
+                      </div>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div>
+        <aside
+          style={{ height: currentSong && "84vh" }}
+          id="logo-sidebar"
+          className="fixed top-0 left-0 z-40 w-64  pt-20 h-full transition-transform -translate-x-full   sm:translate-x-0  bg-black overflow-auto  "
+          aria-label="Sidebar"
+        >
+          <div className="h-full  pb-4 overflow-y-auto ">
+            <div className="py-5 px-2 bg-app-black m-2 rounded">
               <IconText
                 iconName={"material-symbols:home"}
                 displayText={"Home"}
@@ -67,16 +164,10 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 targetLink={"/search"}
               />
               <IconText
-                iconName={"icomoon-free:book"}
-                displayText={"Responsive"}
-                active={curActiveScreen === "responsive"}
-                targetLink={"/res"}
-              />
-              <IconText
-                iconName={"icomoon-free:books"}
-                displayText={"Library"}
-                active={curActiveScreen === "library"}
-                targetLink={"/library"}
+                iconName={"basil:edit-solid"}
+                displayText={"Edit Page"}
+                active={curActiveScreen === "edit"}
+                targetLink={"/edit"}
               />
               {isLoggedIn && (
                 <IconText
@@ -88,7 +179,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
               )}
             </div>
             {isLoggedIn && (
-              <div className="py-5 bg-app-black m-2 rounded">
+              <div className="py-5 px-2 bg-app-black m-2 rounded">
                 <IconText
                   iconName={"material-symbols:add-box"}
                   displayText={"Create Playlist"}
@@ -102,72 +193,14 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
               </div>
             )}
           </div>
-          <div className="px-5">
-            <div className="border border-gray-300 hover:border-white text-gray-300 hover:text-white  w-2/5 flex px-2 py-1 rounded-full items-center justify-center cursor-pointer">
-              <div className="w-full">
-                <Icon icon="mingcute:earth-line" />
-              </div>
-              <div className="ml-1 mr-1  text-sm font-semibold">English</div>
-            </div>
-          </div>
-        </div>
-        {/* This second div will be the right part(main content) */}
-        <div
-          style={{ width: "80vw", height: currentSong ? "85vh" : "100vh" }}
-          className=" overflow-auto bg-app-black rounded  w-full md:w-3/4 lg:w-4/5"
-        >
-          <div className="navbar  px-8  py-3 w-full h-1/10  bg-black bg-opacity-40 rounded flex items-center justify-end overflow-hidden">
-            <div className="w-full flex justify-between h-full pr-4 ">
-              <div className="flex justify-around items-center">
-                <div className="text-2xl">
-                  <Icon icon="mingcute:left-fill" color="white" />
-                </div>
-                <div className="text-2xl">
-                  <Icon icon="mingcute:right-fill" color="white" />
-                </div>
-              </div>
-              <div className={`flex justify-end h-full items-center`}>
-                {isLoggedIn ? (
-                  <div className="px-3">
-                    <Link to="/uploadsong">
-                      <TextWithHover displayText={"Upload Song"} />
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="px-3">
-                    <Link to="/signup">
-                      <TextWithHover displayText={"Signup"} />
-                    </Link>
-                  </div>
-                )}
-                <div className=" toogle-login-logout bg-gray-500 flex items-center justify-center rounded-full font-semibold cursor-pointer">
-                  <div className=" flex justify-around h-full items-center">
-                    {isLoggedIn ? (
-                      <div
-                        className="bg-green-600 text-white  px-4 py-2  flex items-center justify-center rounded-full font-semibold cursor-pointer"
-                        onClick={handleLogout}
-                      >
-                        Logout
-                      </div>
-                    ) : (
-                      <Link to="/login">
-                        <div className="text-sm text-white bg-green-600  px-4 py-2 flex items-center justify-center rounded-full font-semibold cursor-pointer">
-                          LOGIN
-                        </div>
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className=" relative content p-8 pt-0 overflow-auto ">
-            {children}
-          </div>
+        </aside>
+
+        <div className="p-8 h-full bg-app-black rounded-lg  sm:ml-64  bg-app-black mt-14  overflow-auto ">
+          {children}
         </div>
       </div>
       {/* This div is the current playing song */}
-      {currentSong &&  <MusicFooter /> }
+      {currentSong ? <MusicFooter /> : null}
     </div>
   );
 };

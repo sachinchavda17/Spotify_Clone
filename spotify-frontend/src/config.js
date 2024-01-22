@@ -1,1 +1,0 @@
-export const cloudinary_upload_preset = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET

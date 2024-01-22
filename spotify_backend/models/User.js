@@ -38,6 +38,16 @@ const User = new mongoose.Schema({
     type: String,
     default: "",
   },
+  isArtist: {
+    type: Boolean,
+    default: false,
+  },
+  profileBackground: {
+    type: String,
+  },
+  profileText: {
+    type: String,
+  },
 });
 
 const UserModel = mongoose.model("User", User);

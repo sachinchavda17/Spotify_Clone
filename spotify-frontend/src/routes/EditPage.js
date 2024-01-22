@@ -1,17 +1,17 @@
-import { useState, useEffect, useCallback, useContext } from "react";
-import SingleSongCard from "../components/shared/SingleSongCard";
-import { makeAuthenticatedGETRequest } from "../utils/serverHelpers";
-import LoggedInContainer from "../containers/LoggedInContainer";
-import ErrorMsg from "../components/shared/ErrorMsg";
+import { useState, useEffect, useContext } from "react";
 import Loading from "../components/shared/Loading";
-import NewHome from "../containers/LoggedInContainer";
+import ErrorMsg from "../components/shared/ErrorMsg";
+import SingleSongBox from "../components/shared/SingleSongBox";
+import { makeAuthenticatedGETRequest } from "../utils/serverHelpers";
 import songContext from "../contexts/songContext";
+import LoggedInContainer from "../containers/LoggedInContainer";
 
-const MyMusic = () => {
+const EditPage = () => {
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { currentSong } = useContext(songContext);
+  const {currentSong} = useContext(songContext)
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -40,21 +40,21 @@ const MyMusic = () => {
   };
 
   return (
-    <LoggedInContainer curActiveScreen="myMusic">
+    <LoggedInContainer curActiveScreen="edit">
       {loading ? (
         <Loading />
       ) : error ? (
         <ErrorMsg errText={error} closeError={closeErrorSuccess} />
       ) : (
-        <div className={`${currentSong ? " mb-20 " : ""}`}>
-          <div className={`  text-white text-xl font-semibold pb-4 pl-2 pt-8`}>
+        <div className={`${currentSong?"mb-10":"mb-1"}`}>
+          <div className="text-white text-2xl font-semibold pb-4 pl-2 pt-8">
             My Songs
           </div>
-          <div className="space-y-3 overflow-auto">
+          <div className="py-5 grid gap-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 overflow-auto max-lg:grid-cols-3 max-md:grid-cols-2">
             {songData.map((item) => (
-              <SingleSongCard
+              <SingleSongBox
                 info={item}
-                playSound={() => {}}
+                edit={1}
                 key={JSON.stringify(item)}
               />
             ))}
@@ -65,4 +65,4 @@ const MyMusic = () => {
   );
 };
 
-export default MyMusic;
+export default EditPage;

@@ -1,9 +1,10 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import songContext from "../../contexts/songContext";
 import { Howl } from "howler";
-import { secondsToHms } from "../../containers/functionContainer";
+import { Icon } from "@iconify/react";
 
 const SingleSongCard = ({ info, playSound }) => {
+  const [liked, setLiked] = useState(false);
   const { currentSong, setCurrentSong } = useContext(songContext);
   const [duration, setDuration] = useState(0);
 
@@ -18,11 +19,10 @@ const SingleSongCard = ({ info, playSound }) => {
       setDuration(music.duration());
     };
   }, [info.track]);
-  console.log(duration);
 
   return (
     <div
-      className="flex hover:bg-gray-400 hover:bg-opacity-20 p-2 rounded-sm  rounded border-gray-500 "
+      className={` flex hover:bg-gray-400 hover:bg-opacity-20 p-2 rounded-sm  rounded border-gray-500 `}
       onClick={() => {
         setCurrentSong(info);
       }}
@@ -45,7 +45,14 @@ const SingleSongCard = ({ info, playSound }) => {
           </div>
         </div>
         <div className="w-1/6 flex items-center justify-center text-gray-400 text-sm">
-          <div>{secondsToHms(duration)}</div>
+        <Icon
+            icon={`${liked ? "ph:heart-bold" : "ph:heart-fill"}`}
+            fontSize={25}
+            className={`cursor-pointer    ${
+              liked ? "text-gray-500 hover:text-white" : " text-green-500"
+            } `}
+            onClick={() => setLiked(!liked)}
+          />
         </div>
       </div>
     </div>
