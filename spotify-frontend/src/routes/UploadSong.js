@@ -69,8 +69,8 @@ const UploadSong = () => {
           <div className="text-2xl  font-semibold mb-5 text-gray-200 mt-8">
             Upload Your Music
           </div>
-          <div className="w-2/3 flex space-x-3">
-            <div className="w-1/2">
+          <div className=" w-full lg:w-2/3 flex space-x-3">
+            <div className=" w-full lg:w-1/2">
               <TextInput
                 label="Song Name"
                 labelClassName={"text-white"}
@@ -81,8 +81,8 @@ const UploadSong = () => {
               />
             </div>
           </div>
-          <div className="w-2/3 flex space-x-3">
-            <div className="pt-5">
+          <div className="w-full lg:w-2/3 flex flex-col lg:flex-row lg:space-x-3">
+            <div className=" pt-5">
               {thumbnailName ? (
                 <div className="bg-green-600 rounded-full p-3  ">
                   {thumbnailName.substring(0, 50)}...

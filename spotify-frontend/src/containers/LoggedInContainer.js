@@ -14,12 +14,18 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
   const [userData, setUserData] = useState(
     JSON.parse(localStorage.getItem("currentUser")) || null
   );
+  // console.log(userData)
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie?.token));
   const handleLogout = () => {
     removeCookie("token");
     localStorage.removeItem("currentUser");
     setIsLoggedIn(false);
     setCurrentSong(null);
+  };
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   useEffect(() => {
@@ -43,6 +49,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 aria-controls="logo-sidebar"
                 type="button"
                 className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 text-gray-400 hover:bg-gray-700 focus:ring-gray-600"
+                onClick={toggleSidebar} // Make sure the click event is handled
               >
                 <span className="sr-only">Open sidebar</span>
                 <svg
@@ -68,9 +75,9 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 <Menu as="div" className="relative ml-3">
                   <div>
                     {isLoggedIn ? (
-                      <Menu.Button className="flex max-w-xs items-center rounded-lg bg-gray-600 text-sm  ">
+                      <Menu.Button className="flex max-w-xs items-center sm:rounded-lg sm:bg-gray-600 text-sm  ">
                         <span className="sr-only">Open user menu</span>
-                        <div className="bg-green-700 text-white p-2 cursor-pointer flex items-center rounded-lg">
+                        <div className="bg-green-700 text-white p-2 cursor-pointer hidden sm:flex items-center rounded-lg">
                           <div className="mr-2 overflow-hidden rounded-md">
                             <Icon
                               icon="ep:user-filled"
@@ -89,10 +96,17 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                             />
                           </div>
                         </div>
+                        <div className="sm:hidden  ">
+                          <Icon
+                            icon="ri:more-2-fill"
+                            width={"25"}
+                            color="green"
+                          />
+                        </div>
                       </Menu.Button>
                     ) : (
                       <Link to="/login">
-                        <div className="text-sm text-white bg-green-600  px-4 py-2 flex items-center justify-center rounded-full font-semibold cursor-pointer">
+                        <div className="text-sm text-black font-bold bg-green-600  px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
                           LOGIN
                         </div>
                       </Link>
@@ -144,9 +158,12 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
       </nav>
       <div>
         <aside
-          style={{ height: currentSong && "84vh" }}
           id="logo-sidebar"
-          className="fixed top-0 left-0 z-40 w-64  pt-20 h-full transition-transform -translate-x-full   sm:translate-x-0  bg-black overflow-auto  "
+          className={` ${
+            currentSong ? " h-auto " : "h-full"
+          } fixed top-0 left-0 z-40 w-64 pt-20  transition-transform ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } sm:translate-x-0 bg-black overflow-auto`}
           aria-label="Sidebar"
         >
           <div className="h-full  pb-4 overflow-y-auto ">
@@ -163,12 +180,14 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 active={curActiveScreen === "search"}
                 targetLink={"/search"}
               />
-              <IconText
-                iconName={"basil:edit-solid"}
-                displayText={"Edit Page"}
-                active={curActiveScreen === "edit"}
-                targetLink={"/edit"}
-              />
+              {isLoggedIn && (
+                <IconText
+                  iconName={"basil:edit-solid"}
+                  displayText={"Edit Page"}
+                  active={curActiveScreen === "edit"}
+                  targetLink={"/edit"}
+                />
+              )}
               {isLoggedIn && (
                 <IconText
                   iconName={"material-symbols:library-music-sharp"}
@@ -195,7 +214,11 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
           </div>
         </aside>
 
-        <div className="p-8 h-full bg-app-black rounded-lg  sm:ml-64  bg-app-black mt-14  overflow-auto ">
+        <div
+          className={`${
+            currentSong ? " h-auto " : ""
+          } p-8 h-full  rounded-lg  sm:ml-64  bg-app-black mt-14  overflow-auto `}
+        >
           {children}
         </div>
       </div>

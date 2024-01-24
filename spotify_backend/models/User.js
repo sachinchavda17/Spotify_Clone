@@ -30,10 +30,12 @@ const User = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  likedPlaylists: {
-    type: String,
-    default: "",
-  },
+  likedSongs: [
+    {
+      type: [mongoose.Types.ObjectId],
+      ref: "Song",
+    },
+  ],
   subscribedArtists: {
     type: String,
     default: "",

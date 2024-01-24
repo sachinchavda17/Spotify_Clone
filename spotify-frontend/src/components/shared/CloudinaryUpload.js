@@ -35,11 +35,11 @@ const CloudinaryUpload = ({ setUrl, setName, displayName, edit }) => {
       disabled={buttonLoading}
       className={`${
         edit ? "" : "hover:scale-105"
-      } bg-green-600 text-black cursor-pointer  rounded-xl p-4 font-semibold transition-shadow transform  transition-transform`}
+      } w-full lg:w-base bg-green-600 text-black cursor-pointer  rounded-xl p-4 font-semibold transition-shadow transform  transition-transform`}
       onClick={() => uploadWidget()}
     >
       {buttonLoading ? (
-        <div className="px-3 py-0">
+        <div className=" px-3 py-0">
           <Icon
             icon="line-md:loading-alt-loop"
             color="#eee"

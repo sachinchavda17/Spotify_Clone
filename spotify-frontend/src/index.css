@@ -5,14 +5,26 @@
 
 ::-webkit-scrollbar {
     width: 7px;
-    height: 7px ;
+    height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: rgb(169, 163, 163);
 }
 
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: #808080;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #605f5f;
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+body {
+    background-color: black;
 }

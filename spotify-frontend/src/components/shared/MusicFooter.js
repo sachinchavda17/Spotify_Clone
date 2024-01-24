@@ -10,6 +10,7 @@ import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
 import songContext from "../../contexts/songContext.js";
 import { secondsToHms } from "../../containers/functionContainer";
+import { makeLogoutGETRequest } from "../../utils/serverHelpers.js";
 const MusicFooter = () => {
   const {
     isPaused,
@@ -23,13 +24,52 @@ const MusicFooter = () => {
     soundPlayed,
     setSoundPlayed,
   } = useContext(songContext);
-  console.log({ currentSong });
 
   setSoundPlayed(currentSong.track);
   const soundRef = useRef(null);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(null); // Changed to null to represent initial loading state
+  const [isPopoverVisible, setIsPopoverVisible] = useState(false);
+  const [isLikedPopover, setIsLikedPopover] = useState("");
 
+  const showPopover = () => {
+    setIsPopoverVisible(true);
+  };
+
+  const hidePopover = () => {
+    setIsPopoverVisible(false);
+  };
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const userId = currentUser._id;
+  const songId = currentSong._id;
+
+  const fetchLikedStatus = async () => {
+    try {
+      const response = await makeLogoutGETRequest(
+        `/song/liked/${userId}/${songId}`
+      );
+      const likedStatus =
+        response && response.liked !== undefined ? response.liked : false;
+      setLiked(likedStatus);
+    } catch (err) {
+      setLiked(false);
+    }
+  };
+
+  const likeToggleFetch = async () => {
+    try {
+      const response = await makeLogoutGETRequest(
+        `/song/like/${userId}/${songId}`
+      );
+      setLiked(response.msg);
+    } catch (err) {
+      setLiked("Error toggling like");
+    }
+  };
   useEffect(() => {
+    fetchLikedStatus();
+  });
+  useEffect(() => {
+    fetchLikedStatus();
     // Declare sound variable using const
     const sound = new Howl({
       src: [soundPlayed],
@@ -188,27 +228,55 @@ const MusicFooter = () => {
             fontSize={30}
             className="cursor-pointer text-gray-500 hover:text-white hidden sm:block"
           />
-          <Icon
-            icon={`${liked ? "ph:heart-bold" : "ph:heart-fill"}`}
-            fontSize={25}
-            className={`cursor-pointer    ${
-              liked ? "text-gray-500 hover:text-white" : " text-green-500"
-            } `}
-            onClick={() => setLiked(!liked)}
-          />
-          <button onClick={muteHandler}>
+          <div className="relative">
             <Icon
-              icon={volume === 0 ? "bi:volume-mute" : "bi:volume-up"}
+              onMouseEnter={() => setIsLikedPopover(true)}
+              onMouseLeave={() => setIsLikedPopover(false)}
+              icon={`${!liked ? "ph:heart-bold" : "ph:heart-fill"}`}
               fontSize={25}
-              className={`cursor-pointer ${
-                volume === 0
-                  ? "text-gray-500"
-                  : volume < 5
-                  ? "text-gray-300"
-                  : "text-white"
-              } hover:text-gray-100 hidden sm:block `}
+              className={`cursor-pointer    ${
+                !liked ? "text-gray-500 hover:text-white" : " text-green-500"
+              } `}
+              onClick={() => likeToggleFetch()}
             />
-          </button>
+            {isLikedPopover && (
+              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
+                <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg border-gray-600 bg-gray-700">
+                  <h3 className="font-semibold text-gray-200">
+                    {liked ? "Like" : "Dislike"}
+                  </h3>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="relative">
+            <button
+              onClick={muteHandler}
+              onMouseEnter={showPopover}
+              onMouseLeave={hidePopover}
+            >
+              <Icon
+                icon={volume === 0 ? "bi:volume-mute" : "bi:volume-up"}
+                fontSize={25}
+                className={`cursor-pointer ${
+                  volume === 0
+                    ? "text-gray-500"
+                    : volume < 5
+                    ? "text-gray-300"
+                    : "text-white"
+                } hover:text-gray-100 hidden sm:block `}
+              />
+            </button>
+
+            {isPopoverVisible && (
+              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
+                <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg border-gray-600 bg-gray-700">
+                  <h3 className="font-semibold text-gray-200">{volume}</h3>
+                </div>
+              </div>
+            )}
+          </div>
+
           <input
             className="appearance-none h-2 rounded bg-gray-400 hidden sm:block"
             type="range"

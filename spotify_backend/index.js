@@ -22,12 +22,13 @@ try {
     .then(() => {
       console.log("Connected to Mongo ! ");
     })
-    .catch((err) => {
+    .catch((err)   => {
       console.error(`Error while connecting to mongo ${err} `);
-      return res.status(400).json({ err: err });
+      // return res.status(400).json({ err: err });
     });
 } catch (error) {
-  return res.status(400).json({ err: error });
+  console.error(`Error while connecting to mongo ${err} `);
+  // return res.status(400).json({ err: error });
 }
 
 // setup passport-jwt

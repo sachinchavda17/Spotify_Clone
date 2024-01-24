@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 const ErrorMsg = ({ errText, closeError, reload, className }) => {
   return (
     <div
-      className={`error-full flex justify-between items-center bg-pink-200 border border-red-600 text-red-700 px-4 py-3 my-3 rounded ${className}`}
+      className={`error-full flex justify-between items-center bg-red-400 border border-red-600 text-black px-4 py-3 my-3 rounded ${className}`}
       style={{ width: className }}
     >
       <div className="error-msg  ">
@@ -25,7 +25,7 @@ const ErrorMsg = ({ errText, closeError, reload, className }) => {
           <Icon
             icon="maki:cross"
             size={20}
-            className="error-close fill-current text-red-700 h-6 w-6"
+            className="error-close fill-current text-black h-6 w-6"
             onClick={closeError}
           />
         </div>

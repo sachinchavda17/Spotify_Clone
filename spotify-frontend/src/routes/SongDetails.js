@@ -1,10 +1,8 @@
 import { useContext, useState } from "react";
-import { RadioGroup } from "@headlessui/react";
 import { Icon } from "@iconify/react";
 import songContext from "../contexts/songContext";
 import { Link, Navigate } from "react-router-dom";
 import LoggedInContainer from "../containers/LoggedInContainer";
-import NewHome from "../containers/LoggedInContainer";
 
 export default function SongDetails() {
   const {
