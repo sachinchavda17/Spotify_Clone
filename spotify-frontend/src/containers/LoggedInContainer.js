@@ -66,7 +66,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                   ></path>
                 </svg>
               </button>
-              <Link to="/home" className="flex ms-2 md:me-24">
+              <Link to="/" className="flex ms-2 md:me-24">
                 <img src={spotify_logo} alt="spotify logo" width={125} />
               </Link>
             </div>

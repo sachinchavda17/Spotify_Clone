@@ -106,7 +106,7 @@ router.get("/get/logout/songname/:songName", async (req, res) => {
   }
 });
 
-router.get("/edit/:songId", async (req, res) => {
+router.get("/edit/:songId", passport.authenticate("jwt", { session: false }), async (req, res) => {
   try {
     const { songId } = req.params;
     const song = await Song.findOne({ _id: songId }).populate();
@@ -151,30 +151,41 @@ router.get(
 );
 
 // API to like a song
-router.get("/like/:userId/:songId", async (req, res) => {
-  try {
-    const { userId, songId } = req.params;
+router.get(
+  "/like/:userId/:songId",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const { userId, songId } = req.params;
 
-    // Check if the user already liked the song
-    const user = await User.findById(userId);
-    console.log(user);
-    if (user.likedSongs.includes(songId)) {
-      // If the song is already liked, remove it from the likedSongs array
-      await User.updateOne({ _id: userId }, { $pull: { likedSongs: songId } });
-      return res.status(200).json({ msg: "Song unliked successfully" });
-    } else {
-      // If the song is not liked, add it to the likedSongs array
-      await User.updateOne({ _id: userId }, { $push: { likedSongs: songId } });
-      return res.status(200).json({ msg: "Song liked successfully" });
+      // Check if the user already liked the song
+      const user = await User.findById(userId);
+      console.log(user);
+      if (user.likedSongs.includes(songId)) {
+        // If the song is already liked, remove it from the likedSongs array
+        await User.updateOne(
+          { _id: userId },
+          { $pull: { likedSongs: songId } }
+        );
+        return res.status(200).json({ msg: "Song unliked successfully" });
+      } else {
+        // If the song is not liked, add it to the likedSongs array
+        await User.updateOne(
+          { _id: userId },
+          { $push: { likedSongs: songId } }
+        );
+        return res.status(200).json({ msg: "Song liked successfully" });
+      }
+    } catch (error) {
+      return res.status(301).json({ err: error.msg });
     }
-  } catch (error) {
-    return res.status(301).json({ err: error.msg });
   }
-});
+);
 
 // API to remove a liked song
 router.get(
   "/liked/:userId/:songId",
+  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const { userId, songId } = req.params;
@@ -190,6 +201,41 @@ router.get(
       const likedStatus = user.likedSongs.includes(songId);
 
       return res.status(200).json({ liked: likedStatus });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ err: "Internal Server Error" });
+    }
+  }
+);
+router.get(
+  "/likedsong/:userId",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      // Find the user by userId
+      const user = await User.findById(userId).populate();
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Check if the songId is in the likedSongs array of the user
+      const likedSongs = user.likedSongs;
+      const likedSongData = [];
+      if (likedSongs) {
+        for (let i = 0; i < likedSongs.length; i++) {
+          const element = likedSongs[i];
+          let song = await Song.findById(element);
+          likedSongData.push(song);
+        }
+        return res.status(200).json({ data: likedSongData });
+      } else {
+        return res
+          .status(200)
+          .json({ err: "You haven't Like any song till now" });
+      }
     } catch (err) {
       console.error(err);
       return res.status(500).json({ err: "Internal Server Error" });

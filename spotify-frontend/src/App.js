@@ -16,6 +16,7 @@ import SongDetails from "./routes/SongDetails";
 import Userprofile from "./routes/UserProfile";
 import EditPage from "./routes/EditPage";
 import EditSongPage from "./components/shared/EditSong";
+import LikedSongs from "./routes/LikedSongs";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
@@ -54,6 +55,7 @@ function App() {
               <Route path="/edit" element={<EditPage />} />
               <Route path="/edit/:songId" element={<EditSongPage />} />
               <Route path="/profileedit/:userId" element={<EditSongPage />} />
+              <Route path="/likedsong" element={<LikedSongs />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </songContext.Provider>

@@ -2,10 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import songContext from "../../contexts/songContext";
 import { Howl } from "howler";
 import { Icon } from "@iconify/react";
-import {
-  makeAuthenticatedGETRequest,
-  makeLogoutGETRequest,
-} from "../../utils/serverHelpers";
+import { makeAuthenticatedGETRequest } from "../../utils/serverHelpers";
 import SuccessMsg from "./SuccessMsg";
 import ErrorMsg from "./ErrorMsg";
 
@@ -21,7 +18,7 @@ const SingleSongCard = ({ info, playSound }) => {
 
   const fetchLikedStatus = async () => {
     try {
-      const response = await makeLogoutGETRequest(
+      const response = await makeAuthenticatedGETRequest(
         `/song/liked/${userId}/${songId}`
       );
       const likedStatus =
@@ -37,7 +34,7 @@ const SingleSongCard = ({ info, playSound }) => {
 
   const likeToggleFetch = async () => {
     try {
-      const response = await makeLogoutGETRequest(
+      const response = await makeAuthenticatedGETRequest(
         `/song/like/${userId}/${songId}`
       );
       setLiked(response.msg);
