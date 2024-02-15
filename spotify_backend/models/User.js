@@ -22,10 +22,6 @@ const User = new mongoose.Schema({
     type: String,
     required: true,
   },
-  likedSongs: {
-    type: String,
-    default: [],
-  },
   joinDate: {
     type: Date,
     default: Date.now(),

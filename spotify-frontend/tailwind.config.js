@@ -1,6 +1,9 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  purge: [],
-  darkMode: "dark", // or 'media' or 'class'
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/flowbite/**/*.js"
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -13,23 +16,7 @@ module.exports = {
       backgroundColor: {
         "app-black": "#121212",
       },
-      gridTemplateRows: {
-        "[auto,auto,1fr]": "auto auto 1fr",
-      },
     },
   },
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/flowbite/**/*.js"
-  ],
-  variants: {
-    extend: {},
-  },
-  plugins: [
-    require("tailwindcss/base"),
-    require("tailwindcss/components"),
-    require("tailwindcss/utilities"),
-    require("flowbite/plugin"),
-    require("@tailwindcss/aspect-ratio"),
-  ],
+  plugins: [],
 };
