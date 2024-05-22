@@ -52,6 +52,9 @@ passport.use(
   })
 );
 
+app.get("/",(req,res)=>{
+  res.send("Server is running....")
+})
 app.use("/auth", authRoutes);
 app.use("/song", songRoutes);
 

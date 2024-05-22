@@ -23,7 +23,7 @@ function App() {
   const [isPaused, setIsPaused] = useState(true);
   const [volume, setVolume] = useState(0.5);
   const [seek, setSeek] = useState(0);
-  const [cookie, setCookie] = useCookies(["token"]);
+  const [cookie] = useCookies(["token"]);
 
   const songContextState = {
     currentSong,

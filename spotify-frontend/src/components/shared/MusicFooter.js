@@ -1,7 +1,6 @@
 import React, {
   useContext,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -20,7 +19,6 @@ const MusicFooter = () => {
     seek,
     setSeek,
     currentSong,
-    setCurrentSong,
     soundPlayed,
     setSoundPlayed,
   } = useContext(songContext);
@@ -207,7 +205,7 @@ const MusicFooter = () => {
               />
             </button>
           </div>
-          <div className="hidden sm:flex items-center justify-between space-x-4 w-2/3 hidden ">
+          <div className=" hidden sm:flex items-center justify-between space-x-4 w-2/3  ">
             <span className="w-1/9">{secondsToHms(seek)}</span>
             <input
               type="range"
@@ -240,8 +238,8 @@ const MusicFooter = () => {
               onClick={() => likeToggleFetch()}
             />
             {isLikedPopover && (
-              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
-                <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg border-gray-600 bg-gray-700">
+              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm  transition-opacity duration-300  border  rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
+                <div className="px-3 py-2  border-b  rounded-t-lg border-gray-600 bg-gray-700">
                   <h3 className="font-semibold text-gray-200">
                     {liked ? "Like" : "Dislike"}
                   </h3>
@@ -269,8 +267,8 @@ const MusicFooter = () => {
             </button>
 
             {isPopoverVisible && (
-              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
-                <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg border-gray-600 bg-gray-700">
+              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm  transition-opacity duration-300  border  rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
+                <div className="px-3 py-2  border-b rounded-t-lg border-gray-600 bg-gray-700">
                   <h3 className="font-semibold text-gray-200">{volume}</h3>
                 </div>
               </div>

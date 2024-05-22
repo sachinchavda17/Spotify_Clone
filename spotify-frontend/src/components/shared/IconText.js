@@ -5,7 +5,7 @@ const IconText = ({ iconName, displayText, active, targetLink, onClick }) => {
   return (
     <Link
       to={targetLink}
-      className="flex items-center p-2 text-gray-900 rounded-lg text-white hover:bg-gray-700 hover:text-white"
+      className="flex items-center p-2  rounded-lg text-white hover:bg-gray-700 hover:text-white"
     >
       <div
         className="flex items-center justify-start cursor-pointer"

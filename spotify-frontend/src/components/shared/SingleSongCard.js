@@ -3,17 +3,14 @@ import songContext from "../../contexts/songContext";
 import { Howl } from "howler";
 import { Icon } from "@iconify/react";
 import { makeAuthenticatedGETRequest } from "../../utils/serverHelpers";
-import SuccessMsg from "./SuccessMsg";
-import ErrorMsg from "./ErrorMsg";
 
 const SingleSongCard = ({ info, playSound }) => {
   const [liked, setLiked] = useState(null); // Changed to null to represent initial loading state
-  const { currentSong, setCurrentSong } = useContext(songContext);
+  const { setCurrentSong } = useContext(songContext);
   const [duration, setDuration] = useState(0);
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const userId = currentUser._id;
   const songId = info._id;
-  const [showModal, setShowModal] = useState(false);
   const [isLikedPopover, setIsLikedPopover] = useState("");
 
   const fetchLikedStatus = async () => {
@@ -59,7 +56,7 @@ const SingleSongCard = ({ info, playSound }) => {
   return (
     <>
       <div
-        className={` flex hover:bg-gray-400 hover:bg-opacity-20 p-2 rounded-sm  rounded border-gray-500 `}
+        className={` flex hover:bg-gray-400 hover:bg-opacity-20 p-2   rounded border-gray-500 `}
       >
         <div
           onClick={() => {
@@ -97,8 +94,8 @@ const SingleSongCard = ({ info, playSound }) => {
                 onClick={() => likeToggleFetch()}
               />
               {isLikedPopover && (
-                <div className="absolute z-10 bottom-0 right-0 mb-4 mr-6 text-sm  transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
-                  <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg border-gray-600 bg-gray-700">
+                <div className="absolute z-10 bottom-0 right-0 mb-4 mr-6 text-sm  transition-opacity duration-300  border  rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
+                  <div className="px-3 py-2  border-b ounded-t-lg border-gray-600 bg-gray-700">
                     <h3 className="font-semibold text-gray-200">
                       {liked ? "Like" : "Dislike"}
                     </h3>

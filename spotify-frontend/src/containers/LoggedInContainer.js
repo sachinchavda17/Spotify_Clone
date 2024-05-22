@@ -39,7 +39,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
 
   return (
     <div className="bg-black w-full h-full">
-      <nav className="fixed top-0 z-50 w-full text-white border-b border-gray-200 bg-app-black border-gray-700">
+      <nav className="fixed top-0 z-50 w-full text-white border-b  bg-app-black border-gray-700">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
@@ -106,7 +106,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                       </Menu.Button>
                     ) : (
                       <Link to="/login">
-                        <div className="text-sm text-black font-bold bg-green-600  px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
+                        <div className="text-sm text-black  bg-green-600  px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
                           LOGIN
                         </div>
                       </Link>
@@ -159,11 +159,9 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
       <div>
         <aside
           id="logo-sidebar"
-          className={` ${
-            currentSong ? " h-auto " : "h-full"
-          } fixed top-0 left-0 z-40 w-64 pt-20  transition-transform ${
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } sm:translate-x-0 bg-black overflow-auto`}
+          className={` ${currentSong ? " h-auto " : "h-full"
+            } fixed top-0 left-0 z-40 w-64 pt-20  transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+            } sm:translate-x-0 bg-black overflow-auto`}
           aria-label="Sidebar"
         >
           <div className="h-full  pb-4 overflow-y-auto ">
@@ -215,9 +213,8 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
         </aside>
 
         <div
-          className={`${
-            currentSong ? " h-auto " : ""
-          } p-8 h-full  rounded-lg  sm:ml-64  bg-app-black mt-14  overflow-auto `}
+          className={`${currentSong ? " h-auto " : ""
+            } p-8 h-full  rounded-lg  sm:ml-64  bg-app-black mt-14  overflow-auto `}
         >
           {children}
         </div>
