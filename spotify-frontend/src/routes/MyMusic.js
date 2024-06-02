@@ -24,7 +24,6 @@ const MyMusic = () => {
           currentUser.MyMusic = response;
           localStorage.setItem("currentUser", JSON.stringify(currentUser));
         }
-
         setSongData(response.data);
       } catch (error) {
         setError("Error fetching data");
@@ -54,7 +53,7 @@ const MyMusic = () => {
             {songData.map((item) => (
               <SingleSongCard
                 info={item}
-                playSound={() => {}}
+                playSound={() => { }}
                 key={JSON.stringify(item)}
               />
             ))}
