@@ -1,18 +1,6 @@
 import { backendUrl } from "./config";
 
-export const makeUnauthenticatedPOSTRequest = async (route, body) => {
-  const response = await fetch(backendUrl + route, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-  const formattedResponse = await response.json();
-  return formattedResponse;
-};
-
-export const makeAuthenticatedPOSTRequest = async (route, body) => {
+export const makePOSTRequest = async (route, body) => {
   const token = getToken();
   const response = await fetch(backendUrl + route, {
     method: "POST",
@@ -26,7 +14,7 @@ export const makeAuthenticatedPOSTRequest = async (route, body) => {
   return formattedResponse;
 };
 
-export const makeAuthenticatedGETRequest = async (route) => {
+export const makeGETRequest = async (route) => {
   const token = getToken();
   const response = await fetch(backendUrl + route, {
     method: "GET",
@@ -39,16 +27,6 @@ export const makeAuthenticatedGETRequest = async (route) => {
   return formattedResponse;
 };
 
-export const makeLogoutGETRequest = async (route) => {
-  const response = await fetch(backendUrl + route, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const formattedResponse = await response.json();
-  return formattedResponse;
-};
 
 const getToken = () => {
   const accessToken = document.cookie.replace(

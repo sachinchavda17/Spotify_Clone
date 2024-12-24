@@ -16,6 +16,7 @@ import Userprofile from "./routes/UserProfile";
 import EditPage from "./routes/EditPage";
 import EditSongPage from "./components/shared/EditSong";
 import LikedSongs from "./routes/LikedSongs";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
@@ -68,6 +69,7 @@ function App() {
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         )}
+        <ToastContainer />
       </BrowserRouter>
     </div>
   );

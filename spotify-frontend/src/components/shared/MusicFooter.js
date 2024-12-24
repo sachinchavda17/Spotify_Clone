@@ -9,7 +9,7 @@ import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
 import songContext from "../../contexts/songContext.js";
 import { secondsToHms } from "../../containers/functionContainer";
-import { makeAuthenticatedGETRequest } from "../../utils/serverHelpers.js";
+import { makeGETRequest } from "../../utils/serverHelpers.js";
 const MusicFooter = () => {
   const {
     isPaused,
@@ -42,7 +42,7 @@ const MusicFooter = () => {
 
   const fetchLikedStatus = async () => {
     try {
-      const response = await makeAuthenticatedGETRequest(
+      const response = await makeGETRequest(
         `/song/liked/${userId}/${songId}`
       );
       const likedStatus =
@@ -55,7 +55,7 @@ const MusicFooter = () => {
 
   const likeToggleFetch = async () => {
     try {
-      const response = await makeAuthenticatedGETRequest(
+      const response = await makeGETRequest(
         `/song/like/${userId}/${songId}`
       );
       setLiked(response.msg);

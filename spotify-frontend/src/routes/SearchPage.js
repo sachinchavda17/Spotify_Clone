@@ -1,12 +1,9 @@
 import { useContext, useState } from "react";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { Icon } from "@iconify/react";
-import {
-  makeAuthenticatedGETRequest,
-  makeLogoutGETRequest,
-} from "../utils/serverHelpers";
+import { makeGETRequest } from "../utils/serverHelpers";
 import SingleSongCard from "../components/shared/SingleSongCard";
-import ErrorMsg from "../components/shared/ErrorMsg";
+import { toast } from "react-toastify";
 import Loading from "../components/shared/Loading";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
@@ -17,7 +14,6 @@ const SearchPage = () => {
   const [searchText, setSearchText] = useState("");
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
@@ -26,29 +22,26 @@ const SearchPage = () => {
 
   const searchSong = async (searchText) => {
     try {
+      if (!searchText) return;
       setLoading(true);
       if (isLoggedIn) {
-        const response = await makeAuthenticatedGETRequest(
+        const response = await makeGETRequest(
           "/song/get/songname/" + searchText
         );
         setSongData(response.data);
       } else {
-        const response = await makeLogoutGETRequest(
+        const response = await makeGETRequest(
           "/song/get/logout/songname/" + searchText
         );
         setSongData(response.data);
       }
-      setError(null);
+      toast.error(null);
     } catch (error) {
       setSongData([]);
-      setError("Error fetching data");
+      toast.error("Error fetching data");
     } finally {
       setLoading(false);
     }
-  };
-
-  const closeErrorSuccess = () => {
-    setError("");
   };
 
   return (
@@ -87,8 +80,6 @@ const SearchPage = () => {
         </div>
         {loading ? (
           <Loading />
-        ) : error ? (
-          <ErrorMsg errText={error} closeError={closeErrorSuccess} />
         ) : songData.length > 0 ? (
           <div className="pt-3 space-y-3 h-full">
             <div className="text-white">

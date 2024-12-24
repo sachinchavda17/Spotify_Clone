@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react";
 import { Menu, Transition } from "@headlessui/react";
 import songContext from "../contexts/songContext";
 import MusicFooter from "../components/shared/MusicFooter";
+import { toast } from "react-toastify";
 
 const LoggedInContainer = ({ children, curActiveScreen }) => {
   const { currentSong, setCurrentSong } = useContext(songContext);
@@ -48,7 +49,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 data-drawer-toggle="logo-sidebar"
                 aria-controls="logo-sidebar"
                 type="button"
-                className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 text-gray-400 hover:bg-gray-700 focus:ring-gray-600"
+                className="inline-flex items-center p-2 text-sm  rounded-lg sm:hidden  focus:outline-none focus:ring-2 text-gray-400 hover:bg-gray-700 focus:ring-gray-600"
                 onClick={toggleSidebar} // Make sure the click event is handled
               >
                 <span className="sr-only">Open sidebar</span>
@@ -67,7 +68,12 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 </svg>
               </button>
               <Link to="/" className="flex ms-2 md:me-24">
-                <img src={spotify_logo} alt="spotify logo" width={125} />
+                <img
+                  src={spotify_logo}
+                  alt="spotify logo"
+                  width={125}
+                  className="hover:opacity-80"
+                />
               </Link>
             </div>
             <div className="flex items-center">
@@ -106,8 +112,8 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                       </Menu.Button>
                     ) : (
                       <Link to="/login">
-                        <div className="text-sm text-black  bg-green-600  px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
-                          LOGIN
+                        <div className="text-sm text-black  bg-green-600 hover:bg-green-700 px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
+                          LOGIN / SIGNUP
                         </div>
                       </Link>
                     )}
@@ -159,9 +165,11 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
       <div>
         <aside
           id="logo-sidebar"
-          className={` ${currentSong ? " h-auto " : "h-full"
-            } fixed top-0 left-0 z-40 w-64 pt-20  transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-            } sm:translate-x-0 bg-black overflow-auto`}
+          className={` ${
+            currentSong ? " h-auto " : "h-full"
+          } fixed top-0 left-0 z-40 w-64 pt-20  transition-transform ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } sm:translate-x-0 bg-black overflow-auto`}
           aria-label="Sidebar"
         >
           <div className="h-full  pb-4 overflow-y-auto ">
@@ -213,8 +221,9 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
         </aside>
 
         <div
-          className={`${currentSong ? " h-auto " : ""
-            } p-8 h-full  rounded-lg  sm:ml-64  bg-app-black mt-14  overflow-auto `}
+          className={`${
+            currentSong ? " h-auto " : ""
+          } p-8 h-full  rounded-lg  sm:ml-64  bg-app-black mt-14  overflow-auto `}
         >
           {children}
         </div>

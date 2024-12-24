@@ -11,6 +11,10 @@ const cors = require("cors");
 const app = express();
 const port = 8080;
 
+const client_id ="76070962bdcd48f882f5261109c9b984" ;
+const client_secret ="9946c23d057c409e85c32f4bf03d5370";
+const redirect_url = "http://localhost:8080/callback";
+
 app.use(cors());
 app.use(express.json());
 try {
@@ -30,6 +34,10 @@ try {
   console.error(`Error while connecting to mongo ${err} `);
   // return res.status(400).json({ err: error });
 }
+
+
+
+
 
 // setup passport-jwt
 let opts = {};

@@ -1,16 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ErrorMsg from "./ErrorMsg";
-import SuccessMsg from "./SuccessMsg";
-import {
-  makeAuthenticatedGETRequest,
-  makeAuthenticatedPOSTRequest,
-} from "../../utils/serverHelpers";
+import { makeGETRequest, makePOSTRequest } from "../../utils/serverHelpers";
 import CloudinaryUpload from "./CloudinaryUpload";
 import songContext from "../../contexts/songContext";
 import Loading from "./Loading";
 import { Icon } from "@iconify/react";
 import LoggedInContainer from "../../containers/LoggedInContainer";
+import { toast } from "react-toastify";
 
 const EditSongPage = () => {
   const [name, setName] = useState("");
@@ -20,15 +16,9 @@ const EditSongPage = () => {
   const [thumbnailName, setThumbnailName] = useState();
   const [song, setSong] = useState([]);
   const { songId } = useParams();
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(null);
   const [buttonLoadingUpdate, setButtonLoadingUpdate] = useState(null);
   const [buttonLoadingDelete, setButtonLoadingDelete] = useState(null);
-  const closeErrorSuccess = () => {
-    setError("");
-    setSuccess("");
-  };
 
   const { currentSong } = useContext(songContext);
   const navigate = useNavigate();
@@ -37,14 +27,12 @@ const EditSongPage = () => {
     const getData = async () => {
       try {
         setLoading(true);
-        const response = await makeAuthenticatedGETRequest(
-          "/song/edit/" + songId
-        );
-        setLoading(false);
+        const response = await makeGETRequest("/song/edit/" + songId);
         setSong(response.data);
       } catch (err) {
+        toast.error("Error fetching song data");
+      } finally {
         setLoading(false);
-        setError("Error fetching song data");
       }
     };
     getData();
@@ -69,7 +57,7 @@ const EditSongPage = () => {
         data.track = song.track || "";
       }
 
-      const response = await makeAuthenticatedPOSTRequest(
+      const response = await makePOSTRequest(
         "/song/edit/" + songId + "/update",
         data
       );
@@ -77,33 +65,32 @@ const EditSongPage = () => {
       setButtonLoadingUpdate(false);
       if (response.err) {
         setButtonLoadingUpdate(false);
-        setError("Could not update Song");
+        toast.error("Could not update Song");
       } else {
         setButtonLoadingUpdate(false);
-        setSuccess("Song Updated.");
+        toast.success("Song Updated.");
         setTimeout(() => {
-          setSuccess("");
           navigate("/");
-        }, 2000);
+        }, 1000);
       }
     } catch (err) {
       setButtonLoadingUpdate(false);
-      setError("Could not update Song");
+      toast.error("Could not update Song");
     }
   };
 
   const deleteProject = async () => {
     try {
       setButtonLoadingDelete(true);
-      await makeAuthenticatedGETRequest("/song/edit/" + songId + "/delete");
-      setButtonLoadingDelete(false);
-      setSuccess("Song deleted successfully");
+      await makeGETRequest("/song/edit/" + songId + "/delete");
+      toast.success("Song deleted successfully");
       setTimeout(() => {
-        setSuccess("");
         navigate("/");
-      }, 2000);
+      }, 1000);
     } catch (err) {
-      setError("Could not delete Song");
+      toast.error("Could not delete Song");
+    } finally {
+      setButtonLoadingDelete(false);
     }
   };
 
@@ -188,15 +175,6 @@ const EditSongPage = () => {
               </div>
             </div>
 
-            {error && (
-              <ErrorMsg errText={error} closeError={closeErrorSuccess} />
-            )}
-            {success && (
-              <SuccessMsg
-                successText={success}
-                closeSuccess={closeErrorSuccess}
-              />
-            )}
             <div className="edit-btns flex  py-3 justify-around">
               <button
                 disabled={buttonLoadingUpdate}

@@ -1,17 +1,12 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
-import spotify_logo from "../images/spotify_logo_white.svg";
 import CloudinaryUpload from "../components/shared/CloudinaryUpload";
-import IconText from "../components/shared/IconText";
 import TextInput from "../components/shared/TextInput";
-import TextWithHover from "../components/shared/TextWithHover";
-import { makeAuthenticatedPOSTRequest } from "../utils/serverHelpers";
+import { makePOSTRequest } from "../utils/serverHelpers";
 import { useNavigate } from "react-router-dom";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { useForm } from "react-hook-form";
-import ErrorMsg from "../components/shared/ErrorMsg";
-import SuccessMsg from "../components/shared/SuccessMsg";
-import NewHome from "../containers/LoggedInContainer";
+import { toast } from "react-toastify";
 
 const UploadSong = () => {
   const [playlistUrl, setPlaylistUrl] = useState("");
@@ -25,8 +20,6 @@ const UploadSong = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
   const currentUser = localStorage.getItem("currentUser");
   const submitSong = async (songData) => {
     try {
@@ -37,29 +30,21 @@ const UploadSong = () => {
         track: playlistUrl,
         userId: currentUser._id,
       };
-      const response = await makeAuthenticatedPOSTRequest("/song/create", data);
-      setButtonLoading(false);
+      const response = await makePOSTRequest("/song/create", data);
       if (response.err) {
-        setButtonLoading(false);
-        setError(response.err);
+        toast.error(response.err || "Error while creating song");
       } else {
-        setSuccess("Song Created");
-        setButtonLoading(false);
+        toast.success("Song Created");
         setTimeout(() => {
-          setSuccess(null);
           navigate("/");
-        }, 2000);
+        }, 1000);
       }
     } catch (err) {
+      toast.error(err.message);
+    }finally{
       setButtonLoading(false);
-      setError(err.message);
-    }
-  };
 
-  const closeErrorSuccess = () => {
-    setButtonLoading(false);
-    setError(null);
-    setSuccess(null);
+    }
   };
 
   return (
@@ -128,13 +113,6 @@ const UploadSong = () => {
               "Submit Song"
             )}
           </button>
-          {error && <ErrorMsg errText={error} closeError={closeErrorSuccess} />}
-          {success && (
-            <SuccessMsg
-              successText={success}
-              closeSuccess={closeErrorSuccess}
-            />
-          )}
         </form>
       </div>
      </LoggedInContainer>

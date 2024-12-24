@@ -4,12 +4,10 @@ import { Icon } from "@iconify/react";
 import TextInput from "../components/shared/TextInput";
 import PasswordInput from "../components/shared/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
-import { makeUnauthenticatedPOSTRequest } from "../utils/serverHelpers";
+import { makePOSTRequest } from "../utils/serverHelpers";
 import { useForm } from "react-hook-form";
-import ErrorMsg from "../components/shared/ErrorMsg";
-import SuccessMsg from "../components/shared/SuccessMsg";
 import profileColor from "../containers/profileColor";
-
+import { toast } from "react-toastify";
 const SignupComponent = () => {
   const [cookie, setCookie] = useCookies(["token"]);
   const [loading, setLoading] = useState(null);
@@ -20,8 +18,6 @@ const SignupComponent = () => {
     formState: { errors },
   } = useForm();
 
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
   const getRandomColor = () => {
     const randomIndex = Math.floor(Math.random() * profileColor.length);
     const colorCombo = profileColor[randomIndex];
@@ -30,12 +26,13 @@ const SignupComponent = () => {
 
   const signUp = async (signupdata) => {
     try {
+      setLoading(true);
       if (signupdata.password !== signupdata.confirmPassword) {
-        setError("Password does not match. Please check again");
+        toast.error("Password does not match. Please check again");
         return; // Return early if passwords do not match
       }
       const colorsCombo = getRandomColor();
-      setLoading(true);
+
       const data = {
         email: signupdata.email,
         password: signupdata.password,
@@ -46,37 +43,35 @@ const SignupComponent = () => {
         profileText: colorsCombo.text,
       };
 
-      const response = await makeUnauthenticatedPOSTRequest(
-        "/auth/register",
-        data
-      );
+      const response = await makePOSTRequest("/auth/register", data);
 
       if (response && !response.err) {
         const token = response.token;
         const date = new Date();
         date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
-        setSuccess("Success");
-        setTimeout(() => {
-          setLoading(false);
-          setCookie("token", token, { path: "/", expires: date });
-          localStorage.setItem("currentUser", JSON.stringify(response));
-          setSuccess(null);
-          navigate("/");
-        }, 2000);
+        toast.success("Successfully Signup");
+        setCookie("token", token, { path: "/", expires: date });
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({
+            firstName: response.firstName,
+            lastName: response.lastName,
+            email: response.email,
+            isArtist: response.isArtist,
+            joinDate: response.joinDate,
+            username: response.username,
+            _id: response._id,
+          })
+        );
+        navigate("/");
       } else {
-        setLoading(false);
-        setError(response.err);
+        toast.error(response.err);
       }
     } catch (err) {
+      toast.error(err);
+    } finally {
       setLoading(false);
-      setError(err);
     }
-  };
-
-  const closeErrorSuccess = () => {
-    setLoading(false);
-    setError(null);
-    setSuccess(null);
   };
 
   return (
@@ -174,13 +169,6 @@ const SignupComponent = () => {
               )}
             </button>
           </div>
-          {error && <ErrorMsg errText={error} closeError={closeErrorSuccess} />}
-          {success && (
-            <SuccessMsg
-              successText={success}
-              closeSuccess={closeErrorSuccess}
-            />
-          )}
         </form>
         <div className="w-full border border-solid border-gray-300"></div>
         <div className="my-6 font-semibold text-lg">

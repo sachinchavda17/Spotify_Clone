@@ -1,18 +1,15 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { Icon } from "@iconify/react";
 import TextInput from "../components/shared/TextInput";
 import PasswordInput from "../components/shared/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
-import { makeUnauthenticatedPOSTRequest } from "../utils/serverHelpers";
+import { makePOSTRequest } from "../utils/serverHelpers";
 import { useCookies } from "react-cookie";
 import { useForm } from "react-hook-form";
-import ErrorMsg from "../components/shared/ErrorMsg";
-import SuccessMsg from "../components/shared/SuccessMsg";
+import { toast } from "react-toastify";
 
 const LoginComponent = () => {
   const [cookies, setCookie] = useCookies(["token"]);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(null);
   const navigate = useNavigate();
   const {
@@ -25,10 +22,7 @@ const LoginComponent = () => {
     try {
       setLoading(true);
       const data = { email: loginData.email, password: loginData.password };
-      const response = await makeUnauthenticatedPOSTRequest(
-        "/auth/login",
-        data
-      );
+      const response = await makePOSTRequest("/auth/login", data);
 
       if (response && !response.err) {
         const token = response.token;
@@ -36,31 +30,30 @@ const LoginComponent = () => {
         date.setDate(date.getDate() + 10 * 60 * 60 * 1000);
 
         // Store login details in local storage
-        setLoading(false);
-        setSuccess("Success");
-        setError(null);
-        setTimeout(() => {
-          localStorage.setItem("currentUser", JSON.stringify(response));
-          setCookie("token", token, { path: "/", expires: date });
-          setSuccess(null);
-          navigate("/");
-        }, 3000);
+        toast.success("Successfully Login");
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({
+            firstName: response.firstName,
+            lastName: response.lastName,
+            email: response.email,
+            isArtist: response.isArtist,
+            joinDate: response.joinDate,
+            username: response.username,
+            _id: response._id,
+          })
+        );
+        setCookie("token", token, { path: "/", expires: date });
+        navigate("/");
       } else {
-        setLoading(false);
-        setError(response?.err || "Login failed");
-        setSuccess(null);
+        toast.error(response?.err || "Login failed");
       }
     } catch (err) {
       setLoading(false);
-      setError("An error occurred" + err);
-      setSuccess(null);
+      toast.error("An error occurred" + err);
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const closeErrorSuccess = () => {
-    setLoading(false);
-    setSuccess("");
-    setError("");
   };
 
   return (
@@ -97,15 +90,6 @@ const LoginComponent = () => {
               error={errors?.password?.message}
               className="w-full"
             />
-            {error && (
-              <ErrorMsg errText={error} closeError={closeErrorSuccess} />
-            )}
-            {success && (
-              <SuccessMsg
-                successText={success}
-                closeSuccess={closeErrorSuccess}
-              />
-            )}
             <div className=" w-full flex items-center justify-end mb-8 mt-4 transition-shadow ">
               <button
                 disabled={loading}

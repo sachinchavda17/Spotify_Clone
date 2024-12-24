@@ -1,54 +1,34 @@
 import LoggedInContainer from "../containers/LoggedInContainer";
-import { makeAuthenticatedGETRequest } from "../utils/serverHelpers";
+import { makeGETRequest } from "../utils/serverHelpers";
 import SingleSongBox from "../components/shared/SingleSongBox";
 import { useState, useEffect, useContext } from "react";
-import ErrorMsg from "../components/shared/ErrorMsg";
+import { toast } from "react-toastify";
 import Loading from "../components/shared/Loading";
 import songContext from "../contexts/songContext";
 
 const LoggedInHome = () => {
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const {currentSong} = useContext(songContext)
+  const { currentSong } = useContext(songContext);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await makeAuthenticatedGETRequest("/song/get/allsong");
-        const currentUserString = localStorage.getItem("currentUser");
-        let currentUser = currentUserString
-          ? JSON.parse(currentUserString)
-          : null;
-        if (currentUser) {
-          currentUser.allSongs = response;
-          localStorage.setItem("currentUser", JSON.stringify(currentUser));
-        }
+        const response = await makeGETRequest("/song/get/allsong");
         setSongData(response.data);
       } catch (error) {
-        setError("Error fetching data");
+        toast.error("Error fetching data");
       } finally {
         setLoading(false);
       }
     };
-
     getData();
   }, []);
-
-  const closeErrorSuccess = () => {
-    setError("");
-  };
 
   return (
     <LoggedInContainer curActiveScreen="home">
       {loading ? (
         <Loading />
-      ) : error ? (
-        <ErrorMsg
-          errText={error}
-          reload={true}
-          closeError={closeErrorSuccess}
-        />
       ) : (
         <div
           className={` ${
@@ -64,7 +44,7 @@ const LoggedInHome = () => {
           ))}
         </div>
       )}
-      </LoggedInContainer>
+    </LoggedInContainer>
   );
 };
 
