@@ -2,9 +2,9 @@ import { useContext, useState } from "react";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { Icon } from "@iconify/react";
 import { makeGETRequest } from "../utils/serverHelpers";
-import SingleSongCard from "../components/shared/SingleSongCard";
+import SingleSongCard from "../components/SingleSongCard";
 import { toast } from "react-toastify";
-import Loading from "../components/shared/Loading";
+import Loading from "../components/Loading";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 import songContext from "../contexts/songContext";
@@ -35,9 +35,8 @@ const SearchPage = () => {
         );
         setSongData(response.data);
       }
-      toast.error(null);
+      console.log(songData)
     } catch (error) {
-      setSongData([]);
       toast.error("Error fetching data");
     } finally {
       setLoading(false);
@@ -51,15 +50,16 @@ const SearchPage = () => {
           Search Song : <span className="font-bold"> {searchText}</span>
         </div>
         <div
-          className={`w-full md:w-1/3  py-2 text-sm rounded-full bg-gray-800 px-5 flex text-white space-x-3 items-center ${
-            isInputFocused ? "border border-white" : ""
+          className={`w-full md:w-1/3  py-2 text-sm rounded-full bg-darkGray px-5 flex text-white space-x-3 gap-2 items-center ${
+            isInputFocused ? "border border-white transition" : ""
           }`}
         >
           <Icon icon="ic:outline-search" fontSize={30} className="text-2xl" />
           <input
             type="text"
             placeholder="What do you want to listen to?"
-            className=" text-sm w-full bg-gray-800 outline-none focus:outline-none"
+            style={{ all: "unset", width:"100%" }}
+            className=" text-sm bg-darkGray "
             onFocus={() => {
               setIsInputFocused(true);
             }}
@@ -87,13 +87,15 @@ const SearchPage = () => {
               <span className="font-bold"> {searchText}</span>
             </div>
             {songData.map((item) => (
-              <Link to={!isLoggedIn && "/login"} key={JSON.stringify(item)}>
+              <Link to={!isLoggedIn && "/login"} key={item._id}>
                 <SingleSongCard info={item} playSound={() => {}} />
               </Link>
             ))}
           </div>
         ) : (
-          <div className="text-gray-400 pt-3 h-full">Nothing to show here.</div>
+          <div className="text-lightGray pt-3 h-full">
+            Nothing to show here.
+          </div>
         )}
       </div>
     </LoggedInContainer>

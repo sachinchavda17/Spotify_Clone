@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { makeGETRequest, makePOSTRequest } from "../../utils/serverHelpers";
+import { makeGETRequest, makePOSTRequest } from "../utils/serverHelpers";
 import CloudinaryUpload from "./CloudinaryUpload";
-import songContext from "../../contexts/songContext";
+import songContext from "../contexts/songContext";
 import Loading from "./Loading";
 import { Icon } from "@iconify/react";
-import LoggedInContainer from "../../containers/LoggedInContainer";
+import LoggedInContainer from "../containers/LoggedInContainer";
 import { toast } from "react-toastify";
 
 const EditSongPage = () => {
@@ -105,15 +105,15 @@ const EditSongPage = () => {
           } w-full h-full flex flex-col items-center bg-black overflow-auto`}
         >
           <div className="form bg-app-black text-white p-6 my-2 lg:px-12 rounded-lg shadow-md w-11/12 md:w-3/4 lg:w-1/2 ">
-            <h1 className="w-full text-gray-200 text-xl border-b border-gray-700 pb-2 text-center">
+            <h1 className="w-full text-lightGray-light text-xl border-b border-darkGray-light pb-2 text-center">
               Editing {song.name}
             </h1>
             <div className="my-3">
-              <label className="text-gray-200 " htmlFor="name">
+              <label className="text-lightGray-light " htmlFor="name">
                 Name
               </label>
               <input
-                className="my-2 px-4 py-2 text-gray-200 bg-gray-800 rounded focus:outline-none border-none w-full"
+                className="my-2 px-4 py-2 text-lightGray-light bg-darkGray rounded focus:outline-none border-none w-full"
                 type="text"
                 name="name"
                 placeholder="Edit song name"
@@ -122,7 +122,7 @@ const EditSongPage = () => {
               />
             </div>
             <div className="my-3">
-              <label className="text-gray-200 " htmlFor="thumbnail">
+              <label className="text-lightGray-light " htmlFor="thumbnail">
                 Edit Thumbnail
               </label>
               <div className="flex items-center justify-center">
@@ -148,7 +148,7 @@ const EditSongPage = () => {
               </div>
             </div>
             <div className="my-3">
-              <label className="text-gray-200 " htmlFor="text">
+              <label className="text-lightGray-light " htmlFor="text">
                 Edit Track
               </label>
               <div class="my-2">
@@ -161,7 +161,7 @@ const EditSongPage = () => {
               </div>
               <div className="my-2">
                 {trackName ? (
-                  <div className="bg-green-600 rounded-full p-3  ">
+                  <div className="bg-primary rounded-full p-3  ">
                     {trackName.substring(0, 50)}...
                   </div>
                 ) : (

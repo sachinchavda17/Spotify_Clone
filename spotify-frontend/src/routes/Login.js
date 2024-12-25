@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
-import TextInput from "../components/shared/TextInput";
-import PasswordInput from "../components/shared/PasswordInput";
+import TextInput from "../components/TextInput";
+import PasswordInput from "../components/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
 import { makePOSTRequest } from "../utils/serverHelpers";
 import { useCookies } from "react-cookie";
@@ -60,12 +60,12 @@ const LoginComponent = () => {
     <div>
       {/* {loading && <Loading fullScreen={true} />} */}
       <div className="w-full h-full flex flex-col items-center bg-black overflow-auto ">
-        <div className="logo p-5 border-b border-solid border-gray-300 w-full flex justify-center">
+        <div className="logo p-5 border-b border-solid border-lightGray-light w-full flex justify-center">
           <Link to={"/"} className="flex justify-center">
             <Icon icon="logos:spotify" width="150" className="w-auto h-12" />
           </Link>
         </div>
-        <div className="inputRegion w-full px-5 sm:w-1/3 py-10 flex items-center justify-center flex-col text-gray-200">
+        <div className="inputRegion w-full px-5 sm:w-1/3 py-10 flex items-center justify-center flex-col text-lightGray-light">
           <div className="font-bold mb-4 text-center">
             To continue, log in to Spotify.
           </div>
@@ -110,13 +110,13 @@ const LoginComponent = () => {
               </button>
             </div>
           </form>
-          <div className="w-full border border-solid border-gray-300"></div>
+          <div className="w-full border border-solid border-lightGray-light"></div>
           <div className="my-4 font-semibold text-lg">
             Don't have an account?
           </div>
 
           <Link to="/signup" className="w-full">
-            <div className="border border-gray-500 hover:border-gray-400 text-gray-500 hover:text-gray-400 w-full flex items-center justify-center py-4 rounded-full font-bold bg-transparent transition-shadow">
+            <div className="border border-lightGray hover:border-lightGray text-lightGray hover:text-lightGray w-full flex items-center justify-center py-4 rounded-full font-bold bg-transparent transition-shadow">
               SIGN UP FOR SPOTIFY
             </div>
           </Link>

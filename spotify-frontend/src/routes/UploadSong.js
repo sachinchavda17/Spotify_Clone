@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
-import CloudinaryUpload from "../components/shared/CloudinaryUpload";
-import TextInput from "../components/shared/TextInput";
+import CloudinaryUpload from "../components/CloudinaryUpload";
+import TextInput from "../components/TextInput";
 import { makePOSTRequest } from "../utils/serverHelpers";
 import { useNavigate } from "react-router-dom";
 import LoggedInContainer from "../containers/LoggedInContainer";
@@ -51,7 +51,7 @@ const UploadSong = () => {
     <LoggedInContainer>
       <div className="h-full w-full">
         <form onSubmit={handleSubmit((data) => submitSong(data))}>
-          <div className="text-2xl  font-semibold mb-5 text-gray-200 mt-8">
+          <div className="text-2xl  font-semibold mb-5 text-lightGray-light mt-8">
             Upload Your Music
           </div>
           <div className=" w-full lg:w-2/3 flex space-x-3">

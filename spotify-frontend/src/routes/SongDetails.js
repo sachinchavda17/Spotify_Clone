@@ -36,18 +36,18 @@ export default function SongDetails() {
             </div>
 
             <div className="lg:w-1/2 lg:p-8 lg:order-2 flex flex-col items-start  ">
-              <h1 className="text-3xl font-bold text-gray-200 mb-2">
+              <h1 className="text-3xl font-bold text-lightGray-light mb-2">
                 {currentSong.name}
               </h1>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-lightGray">
                 {currentSong.artist.firstName} {currentSong.artist.lastName}
               </p>
-              <p className="text-sm text-gray-400 mt-2">
+              <p className="text-sm text-lightGray mt-2">
                 <a
                   href={currentSong.track}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:text-gray-300"
+                  className="underline hover:text-lightGray-light"
                 >
                   Listen on Spotify
                 </a>

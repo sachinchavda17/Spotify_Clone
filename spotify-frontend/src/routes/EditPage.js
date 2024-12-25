@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
-import Loading from "../components/shared/Loading";
+import Loading from "../components/Loading";
 import { toast } from "react-toastify";
-import SingleSongBox from "../components/shared/SingleSongBox";
+import SingleSongBox from "../components/SingleSongBox";
 import { makeGETRequest } from "../utils/serverHelpers";
 import songContext from "../contexts/songContext";
 import LoggedInContainer from "../containers/LoggedInContainer";

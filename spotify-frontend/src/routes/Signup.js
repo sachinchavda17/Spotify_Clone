@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { Icon } from "@iconify/react";
-import TextInput from "../components/shared/TextInput";
-import PasswordInput from "../components/shared/PasswordInput";
+import TextInput from "../components/TextInput";
+import PasswordInput from "../components/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
 import { makePOSTRequest } from "../utils/serverHelpers";
 import { useForm } from "react-hook-form";
@@ -75,8 +75,8 @@ const SignupComponent = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center bg-black overflow-auto text-gray-200">
-      <div className="logo p-5 border-b border-solid border-gray-300 w-full flex justify-center">
+    <div className="w-full h-full flex flex-col items-center bg-black overflow-auto text-lightGray-light">
+      <div className="logo p-5 border-b border-solid border-lightGray-light w-full flex justify-center">
         <Link to={"/"}>
           <Icon icon="logos:spotify" width="150" />
         </Link>
@@ -170,12 +170,12 @@ const SignupComponent = () => {
             </button>
           </div>
         </form>
-        <div className="w-full border border-solid border-gray-300"></div>
+        <div className="w-full border border-solid border-lightGray-light"></div>
         <div className="my-6 font-semibold text-lg">
           Already have an account?
         </div>
         <Link to="/login" className="w-full">
-          <div className="border border-gray-500 hover:border-gray-400 text-gray-500 hover:text-gray-400  w-full flex items-center justify-center py-4 rounded-full font-bold bg-transparent transition-shadow">
+          <div className="border border-lightGray hover:border-lightGray text-lightGray hover:text-lightGray  w-full flex items-center justify-center py-4 rounded-full font-bold bg-transparent transition-shadow">
             LOG IN INSTEAD
           </div>
         </Link>

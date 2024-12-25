@@ -5,25 +5,23 @@ const IconText = ({ iconName, displayText, active, targetLink, onClick }) => {
   return (
     <Link
       to={targetLink}
-      className="flex items-center p-2  rounded-lg text-white hover:bg-gray-700 hover:text-white"
+      className={`flex items-center m-1 p-2 rounded-lg text-lightGray hover:bg-darkGray-light hover:text-lightGray-light transition  ${
+        active && "bg-darkGray-light"
+      } `}
     >
       <div
         className="flex items-center justify-start cursor-pointer"
         onClick={onClick}
       >
-        <div className=" text-gray-500 transition duration-75  ">
+        <div className="">
           <Icon
             icon={iconName}
-            className={`${
-              active ? "text-white" : "text-gray-400"
-            } hover:text-white`}
+            className={`${active && "text-white"} `}
             fontSize={27}
           />
         </div>
         <div
-          className={`${
-            active ? "text-white" : "text-gray-400 "
-          } text-sm font-semibold hover:text-white  ms-3 transition duration-75 `}
+          className={`${active && "text-white"} text-sm font-semibold  ms-3  `}
         >
           {displayText}
         </div>

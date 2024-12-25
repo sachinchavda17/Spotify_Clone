@@ -3,7 +3,7 @@ const TextWithHover = ({displayText, active}) => {
         <div className="flex items-center justify-start cursor-pointer">
             <div
                 className={`${
-                    active ? "text-white" : "text-gray-500"
+                    active ? "text-white" : "text-lightGray"
                 } font-semibold hover:text-white`}
             >
                 {displayText}

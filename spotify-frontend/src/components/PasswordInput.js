@@ -27,7 +27,7 @@ const PasswordInput = ({
       <input
         type={showPassword ? "text" : "password"}
         placeholder={placeholder}
-        className="p-3 border border-gray-400 border-solid rounded placeholder-gray-500 bg-transparent transition-shadow"
+        className="p-3 border border-lightGray border-solid rounded placeholder-lightGray bg-transparent transition-shadow"
         id={label}
         {...register(registerName, {
           required: `${registerName} is required`,
@@ -42,7 +42,7 @@ const PasswordInput = ({
       <div>
         <label
           htmlFor={`${label}-showpassword`}
-          className="py-3 flex items-center space-x-3 text-sm  text-gray-400"
+          className="py-3 flex items-center space-x-3 text-sm  text-lightGray"
         >
           <input
             type="checkbox"

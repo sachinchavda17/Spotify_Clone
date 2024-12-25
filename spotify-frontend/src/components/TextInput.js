@@ -27,7 +27,7 @@ const TextInput = ({
       <input
         type="text"
         placeholder={placeholder}
-        className="p-3 border-1 text-white border-gray-400 border-solid rounded placeholder-gray-500 bg-transparent transition-shadow "
+        className="p-3 border-1 text-white border-lightGray border-solid rounded placeholder-lightGray bg-transparent transition-shadow "
         id={label}
         {...register(registerName, {
           required: `${registerName} is required`,

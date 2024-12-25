@@ -1,15 +1,11 @@
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Howl } from "howler";
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
-import songContext from "../../contexts/songContext.js";
-import { secondsToHms } from "../../containers/functionContainer";
-import { makeGETRequest } from "../../utils/serverHelpers.js";
+import songContext from "../contexts/songContext.js";
+import { secondsToHms } from "../containers/functionContainer.js";
+import { makeGETRequest } from "../utils/serverHelpers.js";
+
 const MusicFooter = () => {
   const {
     isPaused,
@@ -23,52 +19,45 @@ const MusicFooter = () => {
     setSoundPlayed,
   } = useContext(songContext);
 
-  setSoundPlayed(currentSong.track);
   const soundRef = useRef(null);
-  const [liked, setLiked] = useState(null); // Changed to null to represent initial loading state
+  const [liked, setLiked] = useState(null);
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
-  const [isLikedPopover, setIsLikedPopover] = useState("");
+  const [isLikedPopover, setIsLikedPopover] = useState(false);
 
-  const showPopover = () => {
-    setIsPopoverVisible(true);
-  };
-
-  const hidePopover = () => {
-    setIsPopoverVisible(false);
-  };
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const userId = currentUser._id;
-  const songId = currentSong._id;
+  const currentUser = JSON.parse(localStorage.getItem("currentUser "));
+  const userId = currentUser?._id;
+  const songId = currentSong?._id;
 
   const fetchLikedStatus = async () => {
     try {
-      const response = await makeGETRequest(
-        `/song/liked/${userId}/${songId}`
-      );
+      const response = await makeGETRequest(`/song/liked/${userId}/${songId}`);
       const likedStatus =
-        response && response.liked !== undefined ? response.liked : false;
+        response?.liked !== undefined ? response.liked : false;
       setLiked(likedStatus);
     } catch (err) {
+      console.error("Error fetching liked status:", err);
       setLiked(false);
     }
   };
 
   const likeToggleFetch = async () => {
     try {
-      const response = await makeGETRequest(
-        `/song/like/${userId}/${songId}`
-      );
+      const response = await makeGETRequest(`/song/like/${userId}/${songId}`);
       setLiked(response.msg);
     } catch (err) {
+      console.error("Error toggling like:", err);
       setLiked("Error toggling like");
     }
   };
+
   useEffect(() => {
-    fetchLikedStatus();
-  });
+    if (currentSong) {
+      fetchLikedStatus();
+      setSoundPlayed(currentSong.track); // Set soundPlayed when currentSong changes
+    }
+  }, [currentSong, userId, songId]);
+
   useEffect(() => {
-    fetchLikedStatus();
-    // Declare sound variable using const
     const sound = new Howl({
       src: [soundPlayed],
       volume: volume,
@@ -96,15 +85,13 @@ const MusicFooter = () => {
       },
     });
 
-    // Update soundPlayed and volume when they change
-    sound.volume(volume);
-    sound.play();
     soundRef.current = sound;
+    sound.play();
 
     return () => {
       sound.unload();
     };
-  }, [soundPlayed]);
+  }, [soundPlayed, volume]);
 
   const playPauseHandler = (e) => {
     if (e.key === " ") {
@@ -116,7 +103,6 @@ const MusicFooter = () => {
       }
       setIsPaused(!isPaused);
     } else if (e.type === "click") {
-      // Toggle play/pause on button click
       if (isPaused) {
         soundRef.current.play();
       } else {
@@ -137,8 +123,9 @@ const MusicFooter = () => {
   };
 
   const muteHandler = () => {
-    setVolume(volume === 0 ? 1 : 0);
-    soundRef.current.volume(volume === 0 ? 1 : 0);
+    const newVolume = volume === 0 ? 1 : 0;
+    setVolume(newVolume);
+    soundRef.current.volume(newVolume);
   };
 
   const volumeChangeHandler = (e) => {
@@ -155,7 +142,7 @@ const MusicFooter = () => {
 
   return (
     <div
-      className="fixed bottom-0 left-0 w-full bg-gray-800 text-white px-4 py-1 z-100 "
+      className="fixed bottom-0 left-0 w-full bg-darkGray text-white px-4 py-1 z-100"
       tabIndex="0"
       onKeyDown={(e) => playPauseHandler(e)}
     >
@@ -165,7 +152,7 @@ const MusicFooter = () => {
             <img
               src={currentSong.thumbnail}
               alt="Song Cover"
-              className="w-12 h-12 sm:w-16 sm:h-16  mr-4"
+              className="w-12 h-12 sm:w-16 sm:h-16 mr-4"
             />
           </Link>
           <div>
@@ -181,7 +168,7 @@ const MusicFooter = () => {
               <Icon
                 icon="bi:skip-backward"
                 fontSize={25}
-                className="cursor-pointer text-gray-500 hover:text-white hidden sm:block"
+                className="cursor-pointer text-lightGray hover:text-white hidden sm:block"
               />
             </button>
 
@@ -193,7 +180,7 @@ const MusicFooter = () => {
                     : "ic:baseline-pause-circle"
                 }
                 fontSize={50}
-                className={`cursor-pointer text-white   `}
+                className="cursor-pointer text-white"
               />
             </button>
 
@@ -201,22 +188,22 @@ const MusicFooter = () => {
               <Icon
                 icon="bi:skip-forward"
                 fontSize={25}
-                className="cursor-pointer text-gray-500 hover:text-white hidden sm:block"
+                className="cursor-pointer text-lightGray hover:text-white hidden sm:block"
               />
             </button>
           </div>
-          <div className=" hidden sm:flex items-center justify-between space-x-4 w-2/3  ">
+          <div className="hidden sm:flex items-center justify-between space-x-4 w-2/3">
             <span className="w-1/9">{secondsToHms(seek)}</span>
             <input
               type="range"
               value={seek}
               onChange={(e) => seekChangeHandler(e)}
               min="0"
-              max={soundRef.current?.duration()}
-              className={`w-full cursor-pointer rounded appearance-none h-2 bg-gradient-to-r from-gray-400 to-gray-400`}
+              max={soundRef.current?.duration() || 0}
+              className="w-full cursor-pointer rounded appearance-none h-2 bg-gradient-to-r from-lightGray to-lightGray"
             />
             <span className="w-1/9">
-              {secondsToHms(soundRef.current?.duration())}
+              {secondsToHms(soundRef.current?.duration() || 0)}
             </span>
           </div>
         </div>
@@ -224,23 +211,23 @@ const MusicFooter = () => {
           <Icon
             icon="ic:round-playlist-add"
             fontSize={30}
-            className="cursor-pointer text-gray-500 hover:text-white hidden sm:block"
+            className="cursor-pointer text-lightGray hover:text-white hidden sm:block"
           />
           <div className="relative">
             <Icon
               onMouseEnter={() => setIsLikedPopover(true)}
               onMouseLeave={() => setIsLikedPopover(false)}
-              icon={`${!liked ? "ph:heart-bold" : "ph:heart-fill"}`}
+              icon={liked ? "ph:heart-fill" : "ph:heart-bold"}
               fontSize={25}
-              className={`cursor-pointer    ${
-                !liked ? "text-gray-500 hover:text-white" : " text-green-500"
-              } `}
-              onClick={() => likeToggleFetch()}
+              className={`cursor-pointer ${
+                liked ? "text-green-500" : "text-lightGray hover:text-white"
+              }`}
+              onClick={likeToggleFetch}
             />
             {isLikedPopover && (
-              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm  transition-opacity duration-300  border  rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
-                <div className="px-3 py-2  border-b  rounded-t-lg border-gray-600 bg-gray-700">
-                  <h3 className="font-semibold text-gray-200">
+              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm transition-opacity duration-300 border rounded-lg shadow-sm opacity-100 text-lightGray border-darkGray-light bg-darkGray">
+                <div className="px-3 py-2 border-b rounded-t-lg border-dark Gray-light bg-darkGray-light">
+                  <h3 className="font-semibold text-lightGray-light">
                     {liked ? "Like" : "Dislike"}
                   </h3>
                 </div>
@@ -250,33 +237,35 @@ const MusicFooter = () => {
           <div className="relative">
             <button
               onClick={muteHandler}
-              onMouseEnter={showPopover}
-              onMouseLeave={hidePopover}
+              onMouseEnter={() => setIsPopoverVisible(true)}
+              onMouseLeave={() => setIsPopoverVisible(false)}
             >
               <Icon
                 icon={volume === 0 ? "bi:volume-mute" : "bi:volume-up"}
                 fontSize={25}
                 className={`cursor-pointer ${
                   volume === 0
-                    ? "text-gray-500"
-                    : volume < 5
-                    ? "text-gray-300"
+                    ? "text-lightGray"
+                    : volume < 0.5
+                    ? "text-lightGray-light"
                     : "text-white"
-                } hover:text-gray-100 hidden sm:block `}
+                } hover:text-gray-100 hidden sm:block`}
               />
             </button>
 
             {isPopoverVisible && (
-              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm  transition-opacity duration-300  border  rounded-lg shadow-sm opacity-100 text-gray-400 border-gray-600 bg-gray-800">
-                <div className="px-3 py-2  border-b rounded-t-lg border-gray-600 bg-gray-700">
-                  <h3 className="font-semibold text-gray-200">{volume}</h3>
+              <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm transition-opacity duration-300 border rounded-lg shadow-sm opacity-100 text-lightGray border-darkGray-light bg-darkGray">
+                <div className="px-3 py-2 border-b rounded-t-lg border-darkGray-light bg-darkGray-light">
+                  <h3 className="font-semibold text-lightGray-light">
+                    {(volume * 100).toFixed(0)}%
+                  </h3>
                 </div>
               </div>
             )}
           </div>
 
           <input
-            className="appearance-none h-2 rounded bg-gray-400 hidden sm:block"
+            className="appearance-none h-2 rounded bg-lightGray hidden sm:block"
             type="range"
             value={volume}
             onChange={(e) => volumeChangeHandler(e)}

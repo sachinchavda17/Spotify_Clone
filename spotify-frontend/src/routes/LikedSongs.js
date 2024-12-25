@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useContext } from "react";
-import SingleSongCard from "../components/shared/SingleSongCard";
+import SingleSongCard from "../components/SingleSongCard";
 import { makeGETRequest } from "../utils/serverHelpers";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { toast } from "react-toastify";
-import Loading from "../components/shared/Loading";
+import Loading from "../components/Loading";
 import NewHome from "../containers/LoggedInContainer";
 import songContext from "../contexts/songContext";
 

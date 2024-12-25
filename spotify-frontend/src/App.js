@@ -10,13 +10,15 @@ import MyMusic from "./routes/MyMusic";
 import SearchPage from "./routes/SearchPage";
 import { useCookies } from "react-cookie";
 import songContext from "./contexts/songContext";
-import MusicFooter from "./components/shared/MusicFooter";
+import MusicFooter from "./components/MusicFooter";
 import SongDetails from "./routes/SongDetails";
 import Userprofile from "./routes/UserProfile";
 import EditPage from "./routes/EditPage";
-import EditSongPage from "./components/shared/EditSong";
+import EditSongPage from "./components/EditSong";
 import LikedSongs from "./routes/LikedSongs";
 import { ToastContainer } from "react-toastify";
+import { AudioProvider } from "./contexts/AudioContext";
+import AudioPlayer from "./routes/AudioPlayer";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
@@ -44,20 +46,23 @@ function App() {
         {cookie.token ? (
           // logged in routes
           <songContext.Provider value={songContextState}>
-            <Routes>
-              <Route path="/" element={<LoggedInHomeComponent />} />
-              <Route path="/uploadSong" element={<UploadSong />} />
-              <Route path="/myMusic" element={<MyMusic />} />
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/profile" element={<Userprofile />} />
-              <Route path="/music" element={<MusicFooter />} />
-              <Route path="/playedsong" element={<SongDetails />} />
-              <Route path="/edit" element={<EditPage />} />
-              <Route path="/edit/:songId" element={<EditSongPage />} />
-              <Route path="/profileedit/:userId" element={<EditSongPage />} />
-              <Route path="/likedsong" element={<LikedSongs />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
+            <AudioProvider>
+              <Routes>
+                <Route path="/" element={<LoggedInHomeComponent />} />
+                <Route path="/uploadSong" element={<UploadSong />} />
+                <Route path="/myMusic" element={<MyMusic />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/profile" element={<Userprofile />} />
+                <Route path="/music" element={<MusicFooter />} />
+                <Route path="/playedsong" element={<SongDetails />} />
+                <Route path="/edit" element={<EditPage />} />
+                <Route path="/edit/:songId" element={<EditSongPage />} />
+                <Route path="/profileedit/:userId" element={<EditSongPage />} />
+                <Route path="/likedsong" element={<LikedSongs />} />
+                <Route path="/audio" element={<AudioPlayer />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </AudioProvider>
           </songContext.Provider>
         ) : (
           // logged out routes
@@ -69,7 +74,7 @@ function App() {
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         )}
-        <ToastContainer />
+        <ToastContainer autoClose={3000} />
       </BrowserRouter>
     </div>
   );

@@ -1,9 +1,9 @@
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { makeGETRequest } from "../utils/serverHelpers";
-import SingleSongBox from "../components/shared/SingleSongBox";
+import SingleSongBox from "../components/SingleSongBox";
 import { useState, useEffect, useContext } from "react";
 import { toast } from "react-toastify";
-import Loading from "../components/shared/Loading";
+import Loading from "../components/Loading";
 import songContext from "../contexts/songContext";
 
 const LoggedInHome = () => {

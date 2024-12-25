@@ -1,8 +1,8 @@
-import { openUploadWidget } from "../../utils/CloudinaryService";
+import { openUploadWidget } from "../utils/CloudinaryService.js";
 import {
   cloudinary_upload_preset,
   cloudinary_cloudName,
-} from "../../utils/config.js";
+} from "../utils/config.js";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import songContext from "../../contexts/songContext";
+import songContext from "../contexts/songContext";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 
@@ -16,7 +16,7 @@ const SingleSongBox = ({ info, playSound, ListKey, edit }) => {
       }}
       key={ListKey}
     >
-      <div className="bg-black bg-opacity-40 w-full   rounded-lg hover:bg-gray-400 hover:bg-opacity-20">
+      <div className="bg-black bg-opacity-40 w-full   rounded-lg hover:bg-lightGray hover:bg-opacity-20">
         <div className="overflow-hidden">
           <img
             className="h-34 sm:w-full sm:h-56  transform scale-100 hover:scale-110 transition-transform duration-10 "
@@ -25,19 +25,19 @@ const SingleSongBox = ({ info, playSound, ListKey, edit }) => {
           />
         </div>
         <div className="px-4 py-3">
-          <div className="text-white text-sm sm:text-base font-semibold py-1">
+          <div className="text-lightGray-light text-sm sm:text-base font-semibold py-1">
             {info.name}
           </div>
-          <div className="text-gray-500  text-xs sm:text-sm py-1">
+          <div className="text-lightGray  text-xs sm:text-sm py-1">
             {info.artist.firstName + " " + info.artist.lastName}
           </div>
           {edit && (
             <Link to={`/edit/${songId}`}>
-              <div className="bg-green-600 border border-gray-900 rounded-lg p-2 w-full text-center cursor-pointer flex justify-center space-x-2 ">
+              <div className="bg-green-600 border border-darkGray rounded-lg p-2 w-full text-center cursor-pointer flex justify-center items-center space-x-2 ">
                 <span>Edit</span>
                 <Icon
                   icon={"bitcoin-icons:edit-filled"}
-                  className={`text-gray-700 hover:text-black`}
+                  className={`text-darkGray hover:text-black`}
                   fontSize={25}
                 />
               </div>

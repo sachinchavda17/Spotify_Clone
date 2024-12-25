@@ -1,12 +1,12 @@
 import React, { useState, Fragment, useContext, useEffect } from "react";
-import IconText from "../components/shared/IconText";
+import IconText from "../components/IconText";
 import spotify_logo from "../images/spotify_logo_white.svg";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { Icon } from "@iconify/react";
 import { Menu, Transition } from "@headlessui/react";
 import songContext from "../contexts/songContext";
-import MusicFooter from "../components/shared/MusicFooter";
+import MusicFooter from "../components/MusicFooter";
 import { toast } from "react-toastify";
 
 const LoggedInContainer = ({ children, curActiveScreen }) => {
@@ -40,7 +40,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
 
   return (
     <div className="bg-black w-full h-full">
-      <nav className="fixed top-0 z-50 w-full text-white border-b  bg-app-black border-gray-700">
+      <nav className="fixed top-0 z-50 w-full text-white border-b  bg-app-black border-darkGray-light">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
@@ -49,7 +49,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 data-drawer-toggle="logo-sidebar"
                 aria-controls="logo-sidebar"
                 type="button"
-                className="inline-flex items-center p-2 text-sm  rounded-lg sm:hidden  focus:outline-none focus:ring-2 text-gray-400 hover:bg-gray-700 focus:ring-gray-600"
+                className="inline-flex items-center p-2 text-sm  rounded-lg sm:hidden  focus:outline-none focus:ring-2 text-lightGray hover:bg-darkGray-light focus:ring-darkGray-light"
                 onClick={toggleSidebar} // Make sure the click event is handled
               >
                 <span className="sr-only">Open sidebar</span>
@@ -81,7 +81,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 <Menu as="div" className="relative ml-3">
                   <div>
                     {isLoggedIn ? (
-                      <Menu.Button className="flex max-w-xs items-center sm:rounded-lg sm:bg-gray-600 text-sm  ">
+                      <Menu.Button className="flex max-w-xs items-center sm:rounded-lg sm:bg-darkGray-light text-sm  ">
                         <span className="sr-only">Open user menu</span>
                         <div className="bg-green-700 text-white p-2 cursor-pointer hidden sm:flex items-center rounded-lg">
                           <div className="mr-2 overflow-hidden rounded-md">
@@ -112,7 +112,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                       </Menu.Button>
                     ) : (
                       <Link to="/login">
-                        <div className="text-sm text-black  bg-green-600 hover:bg-green-700 px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
+                        <div className="text-sm text-black  bg-primary hover:bg-primary-light px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
                           LOGIN / SIGNUP
                         </div>
                       </Link>
@@ -127,12 +127,12 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-darkGray py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <div>
                         <Link
                           to={"/profile"}
                           className={
-                            "bg-gray-800 block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                            "bg-darkGray block px-4 py-2 text-sm text-lightGray-light hover:bg-darkGray-light"
                           }
                         >
                           Profile
@@ -140,7 +140,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                         <Link
                           to={"/uploadSong"}
                           className={
-                            "bg-gray-800 block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                            "bg-darkGray block px-4 py-2 text-sm text-lightGray-light hover:bg-darkGray-light"
                           }
                         >
                           Upload Song
@@ -148,7 +148,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                         <div
                           onClick={handleLogout}
                           className={
-                            "bg-gray-800 block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                            "bg-darkGray block px-4 py-2 text-sm text-lightGray-light hover:bg-darkGray-light"
                           }
                         >
                           Logout
@@ -167,7 +167,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
           id="logo-sidebar"
           className={` ${
             currentSong ? " h-auto " : "h-full"
-          } fixed top-0 left-0 z-40 w-64 pt-20  transition-transform ${
+          } fixed top-0 left-0 z-40 w-64 pt-20  transition-all duration-200 ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } sm:translate-x-0 bg-black overflow-auto`}
           aria-label="Sidebar"
@@ -185,6 +185,12 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 displayText={"Search"}
                 active={curActiveScreen === "search"}
                 targetLink={"/search"}
+              />
+              <IconText
+                iconName={"material-symbols:search-rounded"}
+                displayText={"audio"}
+                active={curActiveScreen === "audio"}
+                targetLink={"/audio"}
               />
               {isLoggedIn && (
                 <IconText
