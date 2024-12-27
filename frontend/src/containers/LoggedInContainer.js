@@ -1,16 +1,17 @@
 import React, { useState, Fragment, useContext, useEffect } from "react";
 import IconText from "../components/IconText";
-import spotify_logo from "../images/spotify_logo_white.svg";
+import spotify_logo from "../images/logo3.png";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { Icon } from "@iconify/react";
 import { Menu, Transition } from "@headlessui/react";
-import songContext from "../contexts/songContext";
 import MusicFooter from "../components/MusicFooter";
 import { toast } from "react-toastify";
+import { useAudio } from "../contexts/AudioContext";
 
 const LoggedInContainer = ({ children, curActiveScreen }) => {
-  const { currentSong, setCurrentSong } = useContext(songContext);
+  const {currentSong} = useAudio()
+  console.log(currentSong)
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [userData, setUserData] = useState(
     JSON.parse(localStorage.getItem("currentUser")) || null
@@ -21,7 +22,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
     removeCookie("token");
     localStorage.removeItem("currentUser");
     setIsLoggedIn(false);
-    setCurrentSong(null);
+    // setCurrentSong(null);
   };
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -70,7 +71,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
               <Link to="/" className="flex ms-2 md:me-24">
                 <img
                   src={spotify_logo}
-                  alt="spotify logo"
+                  alt="BeatFlow logo"
                   width={125}
                   className="hover:opacity-80"
                 />
@@ -235,7 +236,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
         </div>
       </div>
       {/* This div is the current playing song */}
-      {currentSong ? <MusicFooter /> : null}
+      {currentSong && <MusicFooter /> }
     </div>
   );
 };

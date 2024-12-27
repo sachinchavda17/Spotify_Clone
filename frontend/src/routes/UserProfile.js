@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
-import songContext from "../contexts/songContext";
 import LoggedInContainer from "../containers/LoggedInContainer";
+import { useAudio } from "../contexts/AudioContext";
 const UserProfile = () => {
   const user = JSON.parse(localStorage.getItem("currentUser"));
+const {currentSong} = useAudio()
+
   const date = new Date().toDateString();
-  const { currentSong } = useContext(songContext);
 
   return (
     <LoggedInContainer>

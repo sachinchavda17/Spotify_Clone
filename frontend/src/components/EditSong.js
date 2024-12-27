@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { makeGETRequest, makePOSTRequest } from "../utils/serverHelpers";
 import CloudinaryUpload from "./CloudinaryUpload";
-import songContext from "../contexts/songContext";
 import Loading from "./Loading";
 import { Icon } from "@iconify/react";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { toast } from "react-toastify";
+import { useAudio } from "../contexts/AudioContext";
 
 const EditSongPage = () => {
   const [name, setName] = useState("");
@@ -20,7 +20,7 @@ const EditSongPage = () => {
   const [buttonLoadingUpdate, setButtonLoadingUpdate] = useState(null);
   const [buttonLoadingDelete, setButtonLoadingDelete] = useState(null);
 
-  const { currentSong } = useContext(songContext);
+  const {currentSong} = useAudio()
   const navigate = useNavigate();
 
   useEffect(() => {

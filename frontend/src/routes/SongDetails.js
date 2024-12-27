@@ -1,22 +1,11 @@
 import { useContext, useState } from "react";
 import { Icon } from "@iconify/react";
-import songContext from "../contexts/songContext";
 import { Link, Navigate } from "react-router-dom";
 import LoggedInContainer from "../containers/LoggedInContainer";
+import { useAudio } from "../contexts/AudioContext";
 
 export default function SongDetails() {
-  const {
-    isPaused,
-    setIsPaused,
-    volume,
-    setVolume,
-    seek,
-    setSeek,
-    currentSong,
-    setCurrentSong,
-    soundPlayed,
-    setSoundPlayed,
-  } = useContext(songContext);
+  const { currentSong } = useAudio();
   return (
     <LoggedInContainer curActiveScreen={"home"}>
       {!currentSong ? (
@@ -28,8 +17,8 @@ export default function SongDetails() {
               {/* <div className="aspect-w-4 aspect-h-5 lg:aspect-w-1 lg:aspect-h-1"> */}
               <div className="h-60 w-60">
                 <img
-                  src={currentSong.thumbnail}
-                  alt={currentSong.name}
+                  src={currentSong?.thumbnail}
+                  alt={currentSong?.name}
                   className="h-full w-full object-cover rounded-md"
                 />
               </div>
@@ -37,19 +26,19 @@ export default function SongDetails() {
 
             <div className="lg:w-1/2 lg:p-8 lg:order-2 flex flex-col items-start  ">
               <h1 className="text-3xl font-bold text-lightGray-light mb-2">
-                {currentSong.name}
+                {currentSong?.name}
               </h1>
               <p className="text-sm text-lightGray">
-                {currentSong.artist.firstName} {currentSong.artist.lastName}
+                {currentSong?.artist?.firstName} {currentSong?.artist?.lastName}
               </p>
               <p className="text-sm text-lightGray mt-2">
                 <a
-                  href={currentSong.track}
+                  href={currentSong?.track}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline hover:text-lightGray-light"
                 >
-                  Listen on Spotify
+                  Listen on BeatFlow
                 </a>
               </p>
 

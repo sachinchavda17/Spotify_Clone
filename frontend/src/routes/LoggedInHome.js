@@ -4,12 +4,12 @@ import SingleSongBox from "../components/SingleSongBox";
 import { useState, useEffect, useContext } from "react";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
-import songContext from "../contexts/songContext";
+import { useAudio } from "../contexts/AudioContext";
 
 const LoggedInHome = () => {
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { currentSong } = useContext(songContext);
+  const { currentSong } = useAudio();
 
   useEffect(() => {
     const getData = async () => {
@@ -37,8 +37,7 @@ const LoggedInHome = () => {
         >
           {songData.map((item) => (
             <SingleSongBox
-              info={item}
-              playSound={() => {}}
+              item={item}
               key={JSON.stringify(item)}
             />
           ))}

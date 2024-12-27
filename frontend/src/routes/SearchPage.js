@@ -7,18 +7,17 @@ import { toast } from "react-toastify";
 import Loading from "../components/Loading";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
-import songContext from "../contexts/songContext";
+import { useAudio } from "../contexts/AudioContext";
 
 const SearchPage = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const {currentSong} = useAudio()
 
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
-
-  const { currentSong } = useContext(songContext);
 
   const searchSong = async (searchText) => {
     try {

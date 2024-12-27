@@ -1,167 +1,77 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Howl } from "howler";
+import React, { useState, useRef } from "react";
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
-import songContext from "../contexts/songContext.js";
+import { useAudio } from "../contexts/AudioContext.js";
 import { secondsToHms } from "../containers/functionContainer.js";
-import { makeGETRequest } from "../utils/serverHelpers.js";
 
 const MusicFooter = () => {
   const {
-    isPaused,
-    setIsPaused,
-    volume,
-    setVolume,
-    seek,
-    setSeek,
     currentSong,
-    soundPlayed,
-    setSoundPlayed,
-  } = useContext(songContext);
+    currentTrack,
+    isPlaying,
+    volume,
+    togglePlayPause,
+    setAudioVolume,
+    play,
+    seekTo,
+    progress,
+    duration,
+  } = useAudio();
 
-  const soundRef = useRef(null);
-  const [liked, setLiked] = useState(null);
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
   const [isLikedPopover, setIsLikedPopover] = useState(false);
+  const [liked, setLiked] = useState(false); // For like toggle simulation
 
-  const currentUser = JSON.parse(localStorage.getItem("currentUser "));
-  const userId = currentUser?._id;
-  const songId = currentSong?._id;
+  const handleSeekChange = (e) => {
+    const newTime = (e.target.value / 100) * duration;
+    seekTo(newTime);
+  };
 
-  const fetchLikedStatus = async () => {
-    try {
-      const response = await makeGETRequest(`/song/liked/${userId}/${songId}`);
-      const likedStatus =
-        response?.liked !== undefined ? response.liked : false;
-      setLiked(likedStatus);
-    } catch (err) {
-      console.error("Error fetching liked status:", err);
-      setLiked(false);
-    }
+  const handleVolumeChange = (e) => {
+    setAudioVolume(parseFloat(e.target.value));
   };
 
   const likeToggleFetch = async () => {
-    try {
-      const response = await makeGETRequest(`/song/like/${userId}/${songId}`);
-      setLiked(response.msg);
-    } catch (err) {
-      console.error("Error toggling like:", err);
-      setLiked("Error toggling like");
-    }
-  };
-
-  useEffect(() => {
-    if (currentSong) {
-      fetchLikedStatus();
-      setSoundPlayed(currentSong.track); // Set soundPlayed when currentSong changes
-    }
-  }, [currentSong, userId, songId]);
-
-  useEffect(() => {
-    const sound = new Howl({
-      src: [soundPlayed],
-      volume: volume,
-      html5: true,
-      loop: true,
-      onend: () => {
-        setIsPaused(true);
-        console.log("Song Ended");
-      },
-      onpause: () => {
-        setIsPaused(true);
-        console.log("Song Paused");
-      },
-      onplay: () => {
-        setInterval(() => {
-          setSeek(soundRef.current.seek());
-        }, 100);
-        setIsPaused(false);
-        console.log("Song Played");
-      },
-      onstop: () => {
-        setIsPaused(true);
-        setSeek(0);
-        console.log("Song Stopped");
-      },
-    });
-
-    soundRef.current = sound;
-    sound.play();
-
-    return () => {
-      sound.unload();
-    };
-  }, [soundPlayed, volume]);
-
-  const playPauseHandler = (e) => {
-    if (e.key === " ") {
-      e.preventDefault();
-      if (isPaused) {
-        soundRef.current.play();
-      } else {
-        soundRef.current.pause();
-      }
-      setIsPaused(!isPaused);
-    } else if (e.type === "click") {
-      if (isPaused) {
-        soundRef.current.play();
-      } else {
-        soundRef.current.pause();
-      }
-      setIsPaused(!isPaused);
-    }
+    // Simulate toggling like (update with actual API call if needed)
+    setLiked(!liked);
   };
 
   const nextSongHandler = () => {
-    // Logic for playing the next song
-    console.log("Click on Next Song");
+    console.log("Play next song");
+    // Implement your next song logic here
   };
 
   const prevSongHandler = () => {
-    // Logic for playing the previous song
-    console.log("Click on Previous Song");
-  };
-
-  const muteHandler = () => {
-    const newVolume = volume === 0 ? 1 : 0;
-    setVolume(newVolume);
-    soundRef.current.volume(newVolume);
-  };
-
-  const volumeChangeHandler = (e) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    soundRef.current.volume(newVolume);
-  };
-
-  const seekChangeHandler = (e) => {
-    const newSeek = parseFloat(e.target.value);
-    setSeek(newSeek);
-    soundRef.current.seek(newSeek);
+    console.log("Play previous song");
+    // Implement your previous song logic here
   };
 
   return (
     <div
-      className="fixed bottom-0 left-0 w-full bg-darkGray text-white px-4 py-1 z-100"
+      className="fixed bottom-0 left-0 w-full bg-app-black text-white px-4 py-3 z-50"
       tabIndex="0"
-      onKeyDown={(e) => playPauseHandler(e)}
     >
       <div className="flex items-center justify-between">
+        {/* Left Section */}
         <div className="flex items-center w-1/2 sm:w-1/4">
           <Link to={"/playedsong"}>
             <img
-              src={currentSong.thumbnail}
+              src={currentSong?.thumbnail || "/placeholder.jpg"}
               alt="Song Cover"
               className="w-12 h-12 sm:w-16 sm:h-16 mr-4"
             />
           </Link>
           <div>
-            <p className="text-sm">{currentSong.name}</p>
-            <p className="hidden sm:block">
-              {currentSong.artist.firstName + " " + currentSong.artist.lastName}
+            <p className="">{currentSong?.name || "No Track"}</p>
+            <p className="text-sm hidden sm:block">
+              {currentSong?.artist?.firstName +
+                " " +
+                currentSong?.artist?.lastName || "Unknown Artist"}
             </p>
           </div>
         </div>
+
+        {/* Center Section */}
         <div className="flex items-center space-x-4 flex-col w-1/4 sm:w-2/3">
           <div className="flex items-center space-x-4">
             <button onClick={prevSongHandler} className="pl-5">
@@ -172,12 +82,15 @@ const MusicFooter = () => {
               />
             </button>
 
-            <button onClick={(e) => playPauseHandler(e)} className="text-3xl">
+            <button
+              onClick={() => togglePlayPause(currentTrack)}
+              className="text-3xl"
+            >
               <Icon
                 icon={
-                  isPaused
-                    ? "ic:baseline-play-circle"
-                    : "ic:baseline-pause-circle"
+                  isPlaying
+                    ? "ic:baseline-pause-circle"
+                    : "ic:baseline-play-circle"
                 }
                 fontSize={50}
                 className="cursor-pointer text-white"
@@ -192,21 +105,21 @@ const MusicFooter = () => {
               />
             </button>
           </div>
-          <div className="hidden sm:flex items-center justify-between space-x-4 w-2/3">
-            <span className="w-1/9">{secondsToHms(seek)}</span>
+          <div className="hidden sm:flex items-center justify-between space-x-4 w-full">
+            <span className="w-12 text-sm">{secondsToHms(progress)}</span>
             <input
               type="range"
-              value={seek}
-              onChange={(e) => seekChangeHandler(e)}
+              value={(progress / duration) * 100 || 0}
+              onChange={handleSeekChange}
               min="0"
-              max={soundRef.current?.duration() || 0}
+              max="100"
               className="w-full cursor-pointer rounded appearance-none h-2 bg-gradient-to-r from-lightGray to-lightGray"
             />
-            <span className="w-1/9">
-              {secondsToHms(soundRef.current?.duration() || 0)}
-            </span>
+            <span className="w-12 text-sm">{secondsToHms(duration)}</span>
           </div>
         </div>
+
+        {/* Right Section */}
         <div className="flex items-center space-x-4 w-1/4">
           <Icon
             icon="ic:round-playlist-add"
@@ -226,9 +139,9 @@ const MusicFooter = () => {
             />
             {isLikedPopover && (
               <div className="absolute z-10 bottom-0 right-0 mb-8 mr-0 text-sm transition-opacity duration-300 border rounded-lg shadow-sm opacity-100 text-lightGray border-darkGray-light bg-darkGray">
-                <div className="px-3 py-2 border-b rounded-t-lg border-dark Gray-light bg-darkGray-light">
+                <div className="px-3 py-2 border-b rounded-t-lg border-darkGray-light bg-darkGray-light">
                   <h3 className="font-semibold text-lightGray-light">
-                    {liked ? "Like" : "Dislike"}
+                    {liked ? "Liked" : "Not Liked"}
                   </h3>
                 </div>
               </div>
@@ -236,7 +149,6 @@ const MusicFooter = () => {
           </div>
           <div className="relative">
             <button
-              onClick={muteHandler}
               onMouseEnter={() => setIsPopoverVisible(true)}
               onMouseLeave={() => setIsPopoverVisible(false)}
             >
@@ -268,7 +180,7 @@ const MusicFooter = () => {
             className="appearance-none h-2 rounded bg-lightGray hidden sm:block"
             type="range"
             value={volume}
-            onChange={(e) => volumeChangeHandler(e)}
+            onChange={handleVolumeChange}
             min="0"
             max="1"
             step="0.01"

@@ -1,16 +1,17 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import songContext from "../contexts/songContext";
 import { Howl } from "howler";
 import { Icon } from "@iconify/react";
 import { makeGETRequest } from "../utils/serverHelpers";
+import { useAudio } from "../contexts/AudioContext";
 
 const SingleSongCard = ({ info }) => {
   const [liked, setLiked] = useState(null);
-  const { setCurrentSong } = useContext(songContext);
   const [isLikedPopover, setIsLikedPopover] = useState(false);
   const currentUser = JSON.parse(localStorage.getItem("currentUser "));
   const userId = currentUser?._id;
   const songId = info?._id;
+  const { currentSong, play } = useAudio();
+
   // const musicRef = useRef(null);
 
   const fetchLikedStatus = async () => {
@@ -55,7 +56,9 @@ const SingleSongCard = ({ info }) => {
   return (
     <div className="flex hover:bg-lightGray hover:bg-opacity-20 p-2 rounded border-lightGray">
       <div
-        onClick={() => setCurrentSong(info)}
+        onClick={() => {
+          play(info);
+        }}
         className="w-12 h-12 bg-cover bg-center"
         style={{ backgroundImage: `url("${info.thumbnail}")` }}
       ></div>

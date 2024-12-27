@@ -6,17 +6,17 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
 const AudioPlayer = () => {
-  const { currentTrack, isPlaying, togglePlayPause, setAudioVolume, play } =
+  const { currentSong, isPlaying, togglePlayPause, setAudioVolume, play } =
     useAudio();
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await makeGETRequest("/song/get/logout/allsong");
         setSongData(response.data);
-        console.log(songData)
+        console.log(songData);
       } catch (error) {
         toast.error("Error fetching data");
       } finally {
@@ -30,19 +30,19 @@ const AudioPlayer = () => {
   return (
     <div className="audio-player bg-white">
       <div>
-        <Link to={"/"} >Home</Link>
+        <Link to={"/"}>Home</Link>
         <ul>
           {songData.map((song) => (
             <li key={song._id}>
               <span>{song.name}</span>
-              <button onClick={() => play(song.track)}>{" "}Play</button>
+              <button onClick={() => play(song)}> Play</button>
             </li>
           ))}
         </ul>
       </div>
-      {currentTrack && (
+      {currentSong && (
         <>
-          <h3>Now Playing: {currentTrack}</h3>
+          <h3>Now Playing: {currentSong.name}</h3>
           <button onClick={togglePlayPause}>
             {isPlaying ? "Pause" : "Play"}
           </button>

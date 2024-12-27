@@ -1,7 +1,7 @@
 {
-  "name": "spotify_backend",
+  "name": "beatflow_backend",
   "version": "1.0.0",
-  "description": "This will contain the backend code for the spotify clone",
+  "description": "This will contain the backend code for the beatflow.",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",

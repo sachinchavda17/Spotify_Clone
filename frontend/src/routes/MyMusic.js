@@ -5,12 +5,13 @@ import LoggedInContainer from "../containers/LoggedInContainer";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
 import NewHome from "../containers/LoggedInContainer";
-import songContext from "../contexts/songContext";
+import { useAudio } from "../contexts/AudioContext";
 
 const MyMusic = () => {
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { currentSong } = useContext(songContext);
+  const {currentSong} = useAudio()
+
   useEffect(() => {
     const getData = async () => {
       try {

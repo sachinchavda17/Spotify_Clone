@@ -1,35 +1,40 @@
-import { useContext } from "react";
-import songContext from "../contexts/songContext";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
+import { useAudio } from "../contexts/AudioContext";
+import spectrum from "../images/spectrum.gif";
+const SingleSongBox = ({ item, ListKey, edit }) => {
+  const { play, currentSong } = useAudio();
+  const songId = item._id;
 
-const SingleSongBox = ({ info, playSound, ListKey, edit }) => {
-  const { setCurrentSong } = useContext(songContext);
-  const songId = info._id;
   return (
     <div
       className="flex p-1 sm:p-2 rounded-sm w-full justify-between space-x-4  "
-      onClick={() => {
-        if (!edit) {
-          setCurrentSong(info);
-        }
-      }}
+      onClick={() => play(item)}
       key={ListKey}
     >
-      <div className="bg-black bg-opacity-40 w-full   rounded-lg hover:bg-lightGray hover:bg-opacity-20">
+      <div className="bg-black bg-opacity-40 w-full relative  rounded-lg hover:bg-lightGray hover:bg-opacity-20">
         <div className="overflow-hidden">
           <img
             className="h-34 sm:w-full sm:h-56  transform scale-100 hover:scale-110 transition-transform duration-10 "
-            src={info.thumbnail}
+            src={item.thumbnail}
             alt="label"
           />
         </div>
+        {currentSong && currentSong._id === item._id && (
+          // <div className="text-green-500 font-bold">Now Playing</div>
+          <img
+            src={spectrum}
+            alt="spectrum"
+            className="absolute top-0 right-0 mix-blend-multiply bg-transparent  h-10 "
+          />
+        )}
         <div className="px-4 py-3">
           <div className="text-lightGray-light text-sm sm:text-base font-semibold py-1">
-            {info.name}
+            {item.name}
           </div>
           <div className="text-lightGray  text-xs sm:text-sm py-1">
-            {info.artist.firstName + " " + info.artist.lastName}
+            {item?.artist?.firstName + " " + item?.artist?.lastName}
           </div>
           {edit && (
             <Link to={`/edit/${songId}`}>

@@ -3,14 +3,14 @@ import Loading from "../components/Loading";
 import { toast } from "react-toastify";
 import SingleSongBox from "../components/SingleSongBox";
 import { makeGETRequest } from "../utils/serverHelpers";
-import songContext from "../contexts/songContext";
 import LoggedInContainer from "../containers/LoggedInContainer";
+import { useAudio } from "../contexts/AudioContext";
 
 const EditPage = () => {
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { currentSong } = useContext(songContext);
-
+  const { currentSong } = useAudio();
+  
   useEffect(() => {
     const getData = async () => {
       try {
