@@ -40,7 +40,7 @@ const MyMusic = () => {
             {songData.map((item) => (
               <SingleSongCard
                 info={item}
-                playSound={() => { }}
+                songList={songData}
                 key={JSON.stringify(item)}
               />
             ))}

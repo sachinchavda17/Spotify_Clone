@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
 import { useAudio } from "../contexts/AudioContext.js";
@@ -7,23 +7,25 @@ import { secondsToHms } from "../containers/functionContainer.js";
 const MusicFooter = () => {
   const {
     currentSong,
-    currentTrack,
     isPlaying,
     volume,
     togglePlayPause,
     setAudioVolume,
-    play,
     seekTo,
     progress,
     duration,
+    nextTrack,
+    prevTrack,
+    shuffle,
+    toggleShuffle,
   } = useAudio();
 
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
   const [isLikedPopover, setIsLikedPopover] = useState(false);
-  const [liked, setLiked] = useState(false); // For like toggle simulation
+  const [liked, setLiked] = useState(false); 
 
-  const handleSeekChange = (e) => {
-    const newTime = (e.target.value / 100) * duration;
+  const handleSeekChange = (value) => {
+    const newTime = (value / 100) * duration;
     seekTo(newTime);
   };
 
@@ -32,18 +34,7 @@ const MusicFooter = () => {
   };
 
   const likeToggleFetch = async () => {
-    // Simulate toggling like (update with actual API call if needed)
-    setLiked(!liked);
-  };
-
-  const nextSongHandler = () => {
-    console.log("Play next song");
-    // Implement your next song logic here
-  };
-
-  const prevSongHandler = () => {
-    console.log("Play previous song");
-    // Implement your previous song logic here
+    setLiked(!liked); // Simulated like toggle (replace with API call if needed)
   };
 
   return (
@@ -74,7 +65,7 @@ const MusicFooter = () => {
         {/* Center Section */}
         <div className="flex items-center space-x-4 flex-col w-1/4 sm:w-2/3">
           <div className="flex items-center space-x-4">
-            <button onClick={prevSongHandler} className="pl-5">
+            <button onClick={()=>prevTrack()} className="pl-5">
               <Icon
                 icon="bi:skip-backward"
                 fontSize={25}
@@ -82,10 +73,7 @@ const MusicFooter = () => {
               />
             </button>
 
-            <button
-              onClick={() => togglePlayPause(currentTrack)}
-              className="text-3xl"
-            >
+            <button onClick={()=>togglePlayPause()} className="text-3xl">
               <Icon
                 icon={
                   isPlaying
@@ -97,7 +85,7 @@ const MusicFooter = () => {
               />
             </button>
 
-            <button onClick={nextSongHandler}>
+            <button onClick={()=>nextTrack()}>
               <Icon
                 icon="bi:skip-forward"
                 fontSize={25}
@@ -110,7 +98,7 @@ const MusicFooter = () => {
             <input
               type="range"
               value={(progress / duration) * 100 || 0}
-              onChange={handleSeekChange}
+              onChange={(e)=>handleSeekChange(e.target.value)}
               min="0"
               max="100"
               className="w-full cursor-pointer rounded appearance-none h-2 bg-gradient-to-r from-lightGray to-lightGray"
@@ -121,10 +109,15 @@ const MusicFooter = () => {
 
         {/* Right Section */}
         <div className="flex items-center space-x-4 w-1/4">
+          {/* Shuffle Toggle */}
+
           <Icon
-            icon="ic:round-playlist-add"
-            fontSize={30}
-            className="cursor-pointer text-lightGray hover:text-white hidden sm:block"
+            icon="mdi:shuffle-variant"
+            onClick={() => toggleShuffle()}
+            fontSize={25}
+            className={`cursor-pointer ${
+              shuffle ? "text-primary" : "text-lightGray hover:text-white"
+            }`}
           />
           <div className="relative">
             <Icon

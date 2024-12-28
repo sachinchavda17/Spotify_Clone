@@ -87,7 +87,7 @@ const SearchPage = () => {
             </div>
             {songData.map((item) => (
               <Link to={!isLoggedIn && "/login"} key={item._id}>
-                <SingleSongCard info={item} playSound={() => {}} />
+                <SingleSongCard info={item} songList={songData} />
               </Link>
             ))}
           </div>

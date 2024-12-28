@@ -21,7 +21,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
     removeCookie("token");
     localStorage.removeItem("currentUser");
     setIsLoggedIn(false);
-    toast.success("Successfully Logout.")
+    toast.success("Successfully Logout.");
   };
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -166,7 +166,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
         <aside
           id="logo-sidebar"
           className={` ${
-            currentSong ? " h-auto " : "h-full"
+            currentSong?._id ? " h-auto " : "h-full"
           } fixed top-0 left-0 z-40 w-64 pt-20  transition-all duration-200 ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } sm:translate-x-0 bg-black overflow-auto`}
@@ -222,14 +222,14 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
 
         <div
           className={`${
-            currentSong ? " h-auto " : ""
+            currentSong?._id ? " h-auto " : ""
           } p-8 h-full  rounded-lg  sm:ml-64  bg-app-black mt-14  overflow-auto `}
         >
           {children}
         </div>
       </div>
       {/* This div is the current playing song */}
-      {currentSong && <MusicFooter />}
+      {currentSong && currentSong._id && <MusicFooter />}
     </div>
   );
 };

@@ -1,99 +1,3 @@
-// // AudioContext.js
-// import React, {
-//   createContext,
-//   useContext,
-//   useState,
-//   useRef,
-//   useEffect,
-// } from "react";
-
-// const AudioContext = createContext();
-
-// export const useAudio = () => {
-//   return useContext(AudioContext);
-// };
-
-// export const AudioProvider = ({ children }) => {
-//   const [currentSong, setcurrentSong] = useState(null);
-//   const [isPlaying, setIsPlaying] = useState(false);
-//   const [volume, setVolume] = useState(1);
-//   const [progress, setProgress] = useState(0); // Track progress
-//   const [duration, setDuration] = useState(0); // Track duration
-//   const audioRef = useRef(new Audio());
-
-//   const play = (song) => {
-//     if (currentSong !== song.track) {
-//       audioRef.current.src = song.track;
-//       audioRef.current.play();
-//       setcurrentSong(song.track);
-//     } else {
-//       audioRef.current.play();
-//     }
-//     setIsPlaying(true);
-//   };
-
-//   const pause = () => {
-//     audioRef.current.pause();
-//     setIsPlaying(false);
-//   };
-
-//   const togglePlayPause = () => {
-//     if (isPlaying) {
-//       pause();
-//     } else {
-//       play(currentSong);
-//     }
-//   };
-
-//   const setAudioVolume = (newVolume) => {
-//     audioRef.current.volume = newVolume;
-//     setVolume(newVolume);
-//   };
-
-//   const seekTo = (time) => {
-//     audioRef.current.currentTime = time;
-//     setProgress(time);
-//   };
-
-//   useEffect(() => {
-//     const updateProgress = () => {
-//       setProgress(audioRef.current.currentTime);
-//     };
-
-//     const updateDuration = () => {
-//       setDuration(audioRef.current.duration || 0);
-//     };
-
-//     audioRef.current.addEventListener("timeupdate", updateProgress);
-//     audioRef.current.addEventListener("loadedmetadata", updateDuration);
-
-//     return () => {
-//       audioRef.current.removeEventListener("timeupdate", updateProgress);
-//       audioRef.current.removeEventListener("loadedmetadata", updateDuration);
-//     };
-//   }, []);
-
-//   return (
-//     <AudioContext.Provider
-//       value={{
-//         currentSong,
-//         isPlaying,
-//         volume,
-//         progress,
-//         duration,
-//         currentSong,
-//         play,
-//         pause,
-//         togglePlayPause,
-//         setAudioVolume,
-//         seekTo, // Expose the seekTo function
-//       }}
-//     >
-//       {children}
-//     </AudioContext.Provider>
-//   );
-// };
-
 import React, {
   createContext,
   useContext,
@@ -109,23 +13,53 @@ export const useAudio = () => {
 };
 
 export const AudioProvider = ({ children }) => {
-  const [currentTrack, setCurrentTrack] = useState(null); // Stores the track URL
-  const [currentSong, setCurrentSong] = useState();
+  const [playlist, setPlaylist] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
-  const [progress, setProgress] = useState(0); // Track progress
-  const [duration, setDuration] = useState(0); // Track duration
-  const audioRef = useRef(new Audio());
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [shuffle, setShuffle] = useState(false);
 
-  const play = (song) => {
-    if (song.track && typeof song.track === "string") {
+  const audioRef = useRef(new Audio());
+  // const currentSong = playlist[currentIndex] || {};
+  const currentSong =
+    currentIndex >= 0 && currentIndex < playlist.length
+      ? playlist[currentIndex]
+      : null;
+
+  // const play = (song = null) => {
+  //   // for fresh song
+  //   if (song?.track && typeof song.track === "string") {
+  //     // If song is not in playlist, add it
+  //     if (!playlist.some((s) => s._id === song._id)) {
+  //       setPlaylist((prevPlaylist) => [...prevPlaylist, song]);
+  //     }
+  //     audioRef.current.src = song.track;
+  //     setCurrentIndex(playlist.indexOf(song));
+  //   }
+  //   // current playing song
+  //   audioRef.current.play();
+  //   setIsPlaying(true);
+  // };
+
+  const play = (song = null) => {
+    if (song?.track && typeof song.track === "string") {
+      // If the song is not in the playlist, add it
+      if (!playlist.some((s) => s._id === song._id)) {
+        setPlaylist((prevPlaylist) => {
+          const newPlaylist = [...prevPlaylist, song];
+          setCurrentIndex(newPlaylist.length - 1); // Set the index to the new song
+          return newPlaylist;
+        });
+      } else {
+        // If the song is already in the playlist, just update the current index
+        setCurrentIndex(playlist.findIndex((s) => s._id === song._id));
+      }
       audioRef.current.src = song.track;
-      audioRef.current.play();
-      setCurrentTrack(song.track);
-      setCurrentSong(song); // Only keep necessary data
-    } else {
-      audioRef.current.play();
     }
+
+    audioRef.current.play();
     setIsPlaying(true);
   };
 
@@ -134,24 +68,61 @@ export const AudioProvider = ({ children }) => {
     setIsPlaying(false);
   };
 
+  const nextTrack = () => {
+    if (shuffle) {
+      console.log("suffle is on");
+      const randomIndex = Math.floor(Math.random() * playlist.length);
+      setCurrentIndex(randomIndex);
+      play(playlist[randomIndex]);
+    } else {
+      console.log("suffle is off");
+      const nextIndex = (currentIndex + 1) % playlist.length;
+      setCurrentIndex(nextIndex);
+      play(playlist[nextIndex]);
+    }
+  };
+
+  // Move to the previous song
+  const prevTrack = () => {
+    const prevIndex =
+      currentIndex === 0 ? playlist.length - 1 : currentIndex - 1;
+    setCurrentIndex(prevIndex);
+    play(playlist[prevIndex]);
+  };
+
+  // Toggle shuffle mode
+  const toggleShuffle = () => {
+    console.log("from " + shuffle);
+    setShuffle((prev) => !prev);
+    console.log("to " + shuffle);
+  };
+
+  // Toggle play/pause
   const togglePlayPause = () => {
     if (isPlaying) {
       pause();
     } else {
-      play(currentTrack);
+      if (playlist.length > 0 && currentIndex !== null) {
+        play(playlist[currentIndex].track); // Plays the song at the current index
+      }
     }
   };
 
+  // Set volume
   const setAudioVolume = (newVolume) => {
-    audioRef.current.volume = newVolume;
-    setVolume(newVolume);
+    const clampedVolume = Math.min(1, Math.max(0, newVolume)); // Ensure volume stays between 0 and 1
+    audioRef.current.volume = clampedVolume;
+    setVolume(clampedVolume);
   };
 
+  // Seek to a specific time
   const seekTo = (time) => {
-    audioRef.current.currentTime = time;
-    setProgress(time);
+    const clampedTime = Math.min(duration, Math.max(0, time)); // Ensure time stays within track duration
+    audioRef.current.currentTime = clampedTime;
+    setProgress(clampedTime);
   };
 
+  // Track progress and duration, handle song end
   useEffect(() => {
     const updateProgress = () => {
       setProgress(audioRef.current.currentTime);
@@ -161,27 +132,38 @@ export const AudioProvider = ({ children }) => {
       setDuration(audioRef.current.duration || 0);
     };
 
+    const handleEnd = () => {
+      nextTrack(); // Automatically move to next track when the current one ends
+    };
+
     audioRef.current.addEventListener("timeupdate", updateProgress);
     audioRef.current.addEventListener("loadedmetadata", updateDuration);
+    audioRef.current.addEventListener("ended", handleEnd);
 
     return () => {
       audioRef.current.removeEventListener("timeupdate", updateProgress);
       audioRef.current.removeEventListener("loadedmetadata", updateDuration);
+      audioRef.current.removeEventListener("ended", handleEnd);
     };
-  }, []);
+  }, [currentIndex, playlist, shuffle]);
 
   return (
     <AudioContext.Provider
       value={{
-        currentTrack,
+        playlist,
+        currentIndex,
         isPlaying,
         volume,
+        shuffle,
         progress,
         duration,
         currentSong,
-        setCurrentSong,
         play,
         pause,
+        nextTrack,
+        prevTrack,
+        setPlaylist,
+        toggleShuffle,
         togglePlayPause,
         setAudioVolume,
         seekTo,

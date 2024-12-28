@@ -9,7 +9,7 @@ import { useAudio } from "../contexts/AudioContext";
 const LoggedInHome = () => {
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { currentSong } = useAudio();
+  const { playlist, setPlaylist, currentSong } = useAudio();
 
   useEffect(() => {
     const getData = async () => {
@@ -38,6 +38,7 @@ const LoggedInHome = () => {
           {songData.map((item) => (
             <SingleSongBox
               item={item}
+              songList={songData}
               key={JSON.stringify(item)}
             />
           ))}

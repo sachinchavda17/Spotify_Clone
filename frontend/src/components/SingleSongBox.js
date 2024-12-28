@@ -4,19 +4,24 @@ import { Icon } from "@iconify/react";
 import { useAudio } from "../contexts/AudioContext";
 import spectrum from "../images/spectrum.gif";
 import { useCookies } from "react-cookie";
-const SingleSongBox = ({ item, ListKey, edit }) => {
-  const { play, currentSong } = useAudio() || {};
-    const [cookie, setCookie] = useCookies(["token"]);
+const SingleSongBox = ({ item, songList, ListKey, edit }) => {
+  const { play, currentSong, setPlaylist } = useAudio() || {};
+  const [cookie, setCookie] = useCookies(["token"]);
 
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
   const songId = item?._id;
 
+  const handlePlay = () => {
+    if (!edit && isLoggedIn) {
+      // Set the current playlist dynamically when the user plays a song
+      setPlaylist(songList);
+      play(item);
+    }
+  };
   return (
     <div
       className="flex p-1 sm:p-2 rounded-sm w-full justify-between space-x-4  "
-      onClick={() => {
-        if (!edit && isLoggedIn) play(item);
-      }}
+      onClick={handlePlay}
       key={ListKey}
     >
       <div className="bg-black bg-opacity-40 w-full relative  rounded-lg hover:bg-lightGray hover:bg-opacity-20">
@@ -32,7 +37,7 @@ const SingleSongBox = ({ item, ListKey, edit }) => {
           <img
             src={spectrum}
             alt="spectrum"
-            className="absolute top-0 right-0 mix-blend-multiply bg-transparent  h-10 "
+            className="absolute top-0 right-0 rounded-full bg-transparent h-10 "
           />
         )}
         <div className="px-4 py-3">

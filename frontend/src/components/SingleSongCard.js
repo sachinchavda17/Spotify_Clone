@@ -3,16 +3,17 @@ import { Howl } from "howler";
 import { Icon } from "@iconify/react";
 import { makeGETRequest } from "../utils/serverHelpers";
 import { useAudio } from "../contexts/AudioContext";
+import { useCookies } from "react-cookie";
 
-const SingleSongCard = ({ info }) => {
+const SingleSongCard = ({ info, songList }) => {
   const [liked, setLiked] = useState(null);
   const [isLikedPopover, setIsLikedPopover] = useState(false);
   const currentUser = JSON.parse(localStorage.getItem("currentUser "));
+  const [cookie, setCookie] = useCookies(["token"]);
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
   const userId = currentUser?._id;
   const songId = info?._id;
-  const { currentSong, play } = useAudio();
-
-  // const musicRef = useRef(null);
+  const { play, setPlaylist } = useAudio() || {};
 
   const fetchLikedStatus = async () => {
     try {
@@ -40,25 +41,18 @@ const SingleSongCard = ({ info }) => {
     }
   };
 
-  // useEffect(() => {
-  //   musicRef.current = new Howl({
-  //     src: [info.track],
-  //     html5: true,
-  //     onload: () => {},
-  //   });
-
-  //   return () => {
-  //     musicRef.current.unload(); // Unload the music on component unmount
-  //     // setDuration(music.duration()); // new line added
-  //   };
-  // }, [info.track]);
+  const handlePlay = () => {
+    if (isLoggedIn) {
+      // Set the current playlist dynamically when the user plays a song
+      setPlaylist(songList);
+      play(info);
+    }
+  };
 
   return (
     <div className="flex hover:bg-lightGray hover:bg-opacity-20 p-2 rounded border-lightGray">
       <div
-        onClick={() => {
-          play(info);
-        }}
+        onClick={handlePlay}
         className="w-12 h-12 bg-cover bg-center"
         style={{ backgroundImage: `url("${info.thumbnail}")` }}
       ></div>

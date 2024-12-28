@@ -20,12 +20,11 @@ import { AudioProvider } from "./contexts/AudioContext";
 function App() {
   const [cookie] = useCookies(["token"]);
 
-
   return (
     <div className="w-screen h-screen font-poppins">
       <BrowserRouter>
-        {cookie.token ? (
-          // logged in routes
+          {cookie.token ? (
+            // logged in routes
             <AudioProvider>
               <Routes>
                 <Route path="/" element={<LoggedInHomeComponent />} />
@@ -42,16 +41,16 @@ function App() {
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </AudioProvider>
-        ) : (
-          // logged out routes
-          <Routes>
-            <Route path="/" element={<HomeComponent />} />
-            <Route path="/login" element={<LoginComponent />} />
-            <Route path="/signup" element={<SignupComponent />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="*" element={<Navigate to="/login" />} />
-          </Routes>
-        )}
+          ) : (
+            // logged out routes
+            <Routes>
+              <Route path="/" element={<HomeComponent />} />
+              <Route path="/login" element={<LoginComponent />} />
+              <Route path="/signup" element={<SignupComponent />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="*" element={<Navigate to="/login" />} />
+            </Routes>
+          )}
         <ToastContainer autoClose={3000} />
       </BrowserRouter>
     </div>
