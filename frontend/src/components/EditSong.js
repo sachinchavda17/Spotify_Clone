@@ -134,7 +134,7 @@ const EditSongPage = () => {
               </div>
               <div className="py-1">
                 {thumbnailName ? (
-                  <div className="bg-green-600 rounded p-3 ">
+                  <div className="bg-primary rounded p-3 ">
                     {thumbnailName.substring(0, 35)}...
                   </div>
                 ) : (

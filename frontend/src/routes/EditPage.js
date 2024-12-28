@@ -36,7 +36,7 @@ const EditPage = () => {
           </div>
           <div className="py-5 grid gap-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 overflow-auto max-lg:grid-cols-3 max-md:grid-cols-2">
             {songData.map((item) => (
-              <SingleSongBox info={item} edit={1} key={JSON.stringify(item)} />
+              <SingleSongBox item={item} edit={1} key={JSON.stringify(item)} />
             ))}
           </div>
         </div>

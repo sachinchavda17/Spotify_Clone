@@ -16,7 +16,6 @@ import EditSongPage from "./components/EditSong";
 import LikedSongs from "./routes/LikedSongs";
 import { ToastContainer } from "react-toastify";
 import { AudioProvider } from "./contexts/AudioContext";
-import AudioPlayer from "./routes/AudioPlayer";
 
 function App() {
   const [cookie] = useCookies(["token"]);
@@ -40,7 +39,6 @@ function App() {
                 <Route path="/edit/:songId" element={<EditSongPage />} />
                 <Route path="/profileedit/:userId" element={<EditSongPage />} />
                 <Route path="/likedsong" element={<LikedSongs />} />
-                <Route path="/audio" element={<AudioPlayer />} />
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </AudioProvider>

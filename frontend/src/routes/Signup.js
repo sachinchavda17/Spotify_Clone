@@ -8,6 +8,8 @@ import { makePOSTRequest } from "../utils/serverHelpers";
 import { useForm } from "react-hook-form";
 import profileColor from "../containers/profileColor";
 import { toast } from "react-toastify";
+import logo from "../images/logo4.png";
+
 const SignupComponent = () => {
   const [cookie, setCookie] = useCookies(["token"]);
   const [loading, setLoading] = useState(null);
@@ -77,8 +79,13 @@ const SignupComponent = () => {
   return (
     <div className="w-full h-full flex flex-col items-center bg-black overflow-auto text-lightGray-light">
       <div className="logo p-5 border-b border-solid border-lightGray-light w-full flex justify-center">
-        <Link to={"/"}>
-          <Icon icon="logos:spotify" width="150" />
+        <Link to={"/"} className="">
+          <img
+            src={logo}
+            alt="BeatFlow logo"
+            width={125}
+            className="hover:opacity-80"
+          />
         </Link>
       </div>
       <div className="inputRegion w-full px-5 sm:w-1/3 py-10 flex items-center justify-center flex-col">

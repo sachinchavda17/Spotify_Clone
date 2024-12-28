@@ -14,7 +14,7 @@ const SearchPage = () => {
   const [searchText, setSearchText] = useState("");
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {currentSong} = useAudio()
+  const { currentSong } = useAudio() || {};
 
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
@@ -34,7 +34,7 @@ const SearchPage = () => {
         );
         setSongData(response.data);
       }
-      console.log(songData)
+      console.log(songData);
     } catch (error) {
       toast.error("Error fetching data");
     } finally {
@@ -57,7 +57,7 @@ const SearchPage = () => {
           <input
             type="text"
             placeholder="What do you want to listen to?"
-            style={{ all: "unset", width:"100%" }}
+            style={{ all: "unset", width: "100%" }}
             className=" text-sm bg-darkGray "
             onFocus={() => {
               setIsInputFocused(true);

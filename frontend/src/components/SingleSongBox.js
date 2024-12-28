@@ -3,26 +3,32 @@ import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { useAudio } from "../contexts/AudioContext";
 import spectrum from "../images/spectrum.gif";
+import { useCookies } from "react-cookie";
 const SingleSongBox = ({ item, ListKey, edit }) => {
-  const { play, currentSong } = useAudio();
-  const songId = item._id;
+  const { play, currentSong } = useAudio() || {};
+    const [cookie, setCookie] = useCookies(["token"]);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
+  const songId = item?._id;
 
   return (
     <div
       className="flex p-1 sm:p-2 rounded-sm w-full justify-between space-x-4  "
-      onClick={() => play(item)}
+      onClick={() => {
+        if (!edit && isLoggedIn) play(item);
+      }}
       key={ListKey}
     >
       <div className="bg-black bg-opacity-40 w-full relative  rounded-lg hover:bg-lightGray hover:bg-opacity-20">
         <div className="overflow-hidden">
           <img
             className="h-34 sm:w-full sm:h-56  transform scale-100 hover:scale-110 transition-transform duration-10 "
-            src={item.thumbnail}
+            src={item?.thumbnail}
             alt="label"
           />
         </div>
-        {currentSong && currentSong._id === item._id && (
-          // <div className="text-green-500 font-bold">Now Playing</div>
+        {currentSong && currentSong?._id === item?._id && (
+          // <div className="text-primary font-bold">Now Playing</div>
           <img
             src={spectrum}
             alt="spectrum"
@@ -31,18 +37,18 @@ const SingleSongBox = ({ item, ListKey, edit }) => {
         )}
         <div className="px-4 py-3">
           <div className="text-lightGray-light text-sm sm:text-base font-semibold py-1">
-            {item.name}
+            {item?.name}
           </div>
           <div className="text-lightGray  text-xs sm:text-sm py-1">
             {item?.artist?.firstName + " " + item?.artist?.lastName}
           </div>
           {edit && (
             <Link to={`/edit/${songId}`}>
-              <div className="bg-green-600 border border-darkGray rounded-lg p-2 w-full text-center cursor-pointer flex justify-center items-center space-x-2 ">
+              <div className="bg-primary text-lightGray-light border border-darkGray rounded-lg p-2 w-full text-center cursor-pointer flex justify-center items-center space-x-2 ">
                 <span>Edit</span>
                 <Icon
                   icon={"bitcoin-icons:edit-filled"}
-                  className={`text-darkGray hover:text-black`}
+                  className={`text-lightGray hover:text-lightGray`}
                   fontSize={25}
                 />
               </div>

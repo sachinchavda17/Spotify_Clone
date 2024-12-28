@@ -7,9 +7,7 @@ import { makePOSTRequest } from "../utils/serverHelpers";
 import { useCookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import spotify_logo2 from "../images/logo2.png";
-import spotify_logo3 from "../images/logo3.png";
-import spotify_logo1 from "../images/logo1.png";
+import logo from "../images/logo4.png";
 
 const LoginComponent = () => {
   const [cookies, setCookie] = useCookies(["token"]);
@@ -65,14 +63,12 @@ const LoginComponent = () => {
       <div className="w-full h-full flex flex-col items-center bg-black overflow-auto ">
         <div className="logo p-5 border-b border-solid border-lightGray-light w-full flex justify-center">
           <Link to={"/"} className="flex justify-center">
-            {/* <Icon icon="logos:spotify" width="150" className="w-auto h-12" /> */}
-            
-            <img
-              src={spotify_logo2}
-              alt="BeatFlow logo"
-              width={125}
-              className="hover:opacity-80"
-            />
+              <img
+                src={logo}
+                alt="BeatFlow logo"
+                width={125}
+                className="hover:opacity-80"
+              />
           </Link>
         </div>
         <div className="inputRegion w-full px-5 sm:w-1/3 py-10 flex items-center justify-center flex-col text-lightGray-light">
@@ -103,7 +99,7 @@ const LoginComponent = () => {
             <div className=" w-full flex items-center justify-end mb-8 mt-4 transition-shadow ">
               <button
                 disabled={loading}
-                className="bg-green-600 font-semibold p-3 px-8 rounded-full"
+                className="bg-primary font-semibold p-3 px-8 rounded-full"
               >
                 {loading ? (
                   <div className="px-3 py-0">

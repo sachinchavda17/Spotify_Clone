@@ -82,7 +82,7 @@ const SingleSongCard = ({ info }) => {
               icon={liked ? "ph:heart-fill" : "ph:heart-bold"}
               fontSize={25}
               className={`cursor-pointer ${
-                liked ? "text-green-500" : "text-lightGray hover:text-white"
+                liked ? "text-primary" : "text-lightGray hover:text-white"
               }`}
               onClick={likeToggleFetch}
             />

@@ -35,7 +35,7 @@ const CloudinaryUpload = ({ setUrl, setName, displayName, edit }) => {
       disabled={buttonLoading}
       className={`${
         edit ? "" : "hover:scale-105"
-      } w-full lg:w-base bg-green-600 text-black cursor-pointer  rounded-xl p-4 font-semibold transition-shadow transform  transition-transform`}
+      } w-full lg:w-base bg-primary hover:bg-primary-light text-black cursor-pointer  rounded-xl p-4 font-semibold transition-shadow transform  transition-transform`}
       onClick={() => uploadWidget()}
     >
       {buttonLoading ? (

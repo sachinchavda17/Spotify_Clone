@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useContext, useEffect } from "react";
 import IconText from "../components/IconText";
-import spotify_logo from "../images/logo3.png";
+import logo from "../images/logo4.png";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { Icon } from "@iconify/react";
@@ -10,19 +10,18 @@ import { toast } from "react-toastify";
 import { useAudio } from "../contexts/AudioContext";
 
 const LoggedInContainer = ({ children, curActiveScreen }) => {
-  const {currentSong} = useAudio()
-  console.log(currentSong)
+  const { currentSong } = useAudio() || {};
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [userData, setUserData] = useState(
     JSON.parse(localStorage.getItem("currentUser")) || null
   );
-  // console.log(userData)
+
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie?.token));
   const handleLogout = () => {
     removeCookie("token");
     localStorage.removeItem("currentUser");
     setIsLoggedIn(false);
-    // setCurrentSong(null);
+    toast.success("Successfully Logout.")
   };
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -55,9 +54,9 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
               >
                 <span className="sr-only">Open sidebar</span>
                 <svg
-                  className="w-6 h-6"
+                  className="w-6 h-6 "
                   aria-hidden="true"
-                  fill="rgba(5, 150, 105, 1)"
+                  fill="#e42012"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -70,7 +69,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
               </button>
               <Link to="/" className="flex ms-2 md:me-24">
                 <img
-                  src={spotify_logo}
+                  src={logo}
                   alt="BeatFlow logo"
                   width={125}
                   className="hover:opacity-80"
@@ -84,22 +83,22 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                     {isLoggedIn ? (
                       <Menu.Button className="flex max-w-xs items-center sm:rounded-lg sm:bg-darkGray-light text-sm  ">
                         <span className="sr-only">Open user menu</span>
-                        <div className="bg-green-700 text-white p-2 cursor-pointer hidden sm:flex items-center rounded-lg">
+                        <div className="bg-primary text-white p-2 cursor-pointer hidden sm:flex items-center rounded-lg">
                           <div className="mr-2 overflow-hidden rounded-md">
                             <Icon
                               icon="ep:user-filled"
                               width={"23"}
-                              color="black"
+                              color="white"
                             />
                           </div>
-                          <div className="mr-2 text-sm capitalize text-black">
+                          <div className="mr-2 text-sm capitalize ">
                             {isLoggedIn && userData?.firstName}
                           </div>
                           <div>
                             <Icon
                               icon="mingcute:down-fill"
                               width={"20"}
-                              color="black"
+                              color="white"
                             />
                           </div>
                         </div>
@@ -107,13 +106,13 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                           <Icon
                             icon="ri:more-2-fill"
                             width={"25"}
-                            color="green"
+                            className="text-primary"
                           />
                         </div>
                       </Menu.Button>
                     ) : (
                       <Link to="/login">
-                        <div className="text-sm text-black  bg-primary hover:bg-primary-light px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
+                        <div className="text-sm text-lightGray-light  bg-primary hover:bg-primary-light px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
                           LOGIN / SIGNUP
                         </div>
                       </Link>
@@ -187,12 +186,6 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 active={curActiveScreen === "search"}
                 targetLink={"/search"}
               />
-              <IconText
-                iconName={"material-symbols:search-rounded"}
-                displayText={"audio"}
-                active={curActiveScreen === "audio"}
-                targetLink={"/audio"}
-              />
               {isLoggedIn && (
                 <IconText
                   iconName={"basil:edit-solid"}
@@ -236,7 +229,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
         </div>
       </div>
       {/* This div is the current playing song */}
-      {currentSong && <MusicFooter /> }
+      {currentSong && <MusicFooter />}
     </div>
   );
 };

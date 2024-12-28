@@ -36,7 +36,7 @@ const Home = () => {
         <div className="py-5 grid gap-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 overflow-auto max-lg:grid-cols-3 max-md:grid-cols-2">
           {songData.map((item, ind) => (
             <Link to={"/login"} key={ind}>
-              <SingleSongBox info={item} ListKey={ind} />
+              <SingleSongBox item={item} ListKey={ind} />
             </Link>
           ))}
         </div>
