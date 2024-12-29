@@ -16,6 +16,7 @@ import EditSongPage from "./components/EditSong";
 import LikedSongs from "./routes/LikedSongs";
 import { ToastContainer } from "react-toastify";
 import { AudioProvider } from "./contexts/AudioContext";
+import { AuthContextProvider } from "./contexts/AuthContext";
 
 function App() {
   const [cookie] = useCookies(["token"]);
@@ -23,6 +24,7 @@ function App() {
   return (
     <div className="w-screen h-screen font-poppins">
       <BrowserRouter>
+        <AuthContextProvider>
           {cookie.token ? (
             // logged in routes
             <AudioProvider>
@@ -51,7 +53,8 @@ function App() {
               <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
           )}
-        <ToastContainer autoClose={3000} />
+          <ToastContainer autoClose={3000} />
+        </AuthContextProvider>
       </BrowserRouter>
     </div>
   );

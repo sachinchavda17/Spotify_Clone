@@ -61,6 +61,8 @@ export const AudioProvider = ({ children }) => {
 
     audioRef.current.play();
     setIsPlaying(true);
+    console.log(playlist[currentIndex]);
+    console.log(currentIndex);
   };
 
   const pause = () => {

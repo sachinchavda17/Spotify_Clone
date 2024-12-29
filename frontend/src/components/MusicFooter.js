@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
 import { useAudio } from "../contexts/AudioContext.js";
 import { secondsToHms } from "../containers/functionContainer.js";
+import { makeGETRequest } from "../utils/serverHelpers.js";
+import AudioPlayerControls from "./AudioPlayerControls.js";
 
 const MusicFooter = () => {
   const {
@@ -20,18 +22,32 @@ const MusicFooter = () => {
     toggleShuffle,
   } = useAudio();
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
   const [isLikedPopover, setIsLikedPopover] = useState(false);
-  const [liked, setLiked] = useState(false); 
-
-  const handleSeekChange = (value) => {
-    const newTime = (value / 100) * duration;
-    seekTo(newTime);
-  };
+  const [liked, setLiked] = useState(false);
+  const userId = currentUser?._id;
+  const songId = currentSong?._id;
 
   const handleVolumeChange = (e) => {
     setAudioVolume(parseFloat(e.target.value));
   };
+
+  const fetchLikedStatus = async () => {
+    try {
+      const response = await makeGETRequest(`/song/liked/${userId}/${songId}`);
+      const likedStatus =
+        response?.liked !== undefined ? response.liked : false;
+      setLiked(likedStatus);
+    } catch (err) {
+      console.error("Error fetching liked status:", err);
+      setLiked(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLikedStatus();
+  }, [userId, songId]);
 
   const likeToggleFetch = async () => {
     setLiked(!liked); // Simulated like toggle (replace with API call if needed)
@@ -39,73 +55,33 @@ const MusicFooter = () => {
 
   return (
     <div
-      className="fixed bottom-0 left-0 w-full bg-app-black text-white px-4 py-3 z-50"
+      className="fixed bottom-0 left-0 w-full bg-darkGray text-white px-4 py-4 sm:py-2 z-50"
       tabIndex="0"
     >
       <div className="flex items-center justify-between">
         {/* Left Section */}
-        <div className="flex items-center w-1/2 sm:w-1/4">
-          <Link to={"/playedsong"}>
-            <img
-              src={currentSong?.thumbnail || "/placeholder.jpg"}
-              alt="Song Cover"
-              className="w-12 h-12 sm:w-16 sm:h-16 mr-4"
-            />
+
+          <Link to={"/playedsong"} className="flex gap-2 items-center w-1/2 sm:w-1/4">
+          
+              <img
+                src={currentSong?.thumbnail || "/placeholder.jpg"}
+                alt="Song Cover"
+                className="w-10 h-10 rounded sm:w-16 sm:h-16 mr-4"
+              />
+              <div>
+                <p className="text-sm sm:text-base">
+                  {currentSong?.name || "No Track"}
+                </p>
+                <p className="text-sm hidden sm:block">
+                  {currentSong?.artist?.firstName +
+                    " " +
+                    currentSong?.artist?.lastName || "Unknown Artist"}
+                </p>
+              </div>
           </Link>
-          <div>
-            <p className="">{currentSong?.name || "No Track"}</p>
-            <p className="text-sm hidden sm:block">
-              {currentSong?.artist?.firstName +
-                " " +
-                currentSong?.artist?.lastName || "Unknown Artist"}
-            </p>
-          </div>
-        </div>
 
         {/* Center Section */}
-        <div className="flex items-center space-x-4 flex-col w-1/4 sm:w-2/3">
-          <div className="flex items-center space-x-4">
-            <button onClick={()=>prevTrack()} className="pl-5">
-              <Icon
-                icon="bi:skip-backward"
-                fontSize={25}
-                className="cursor-pointer text-lightGray hover:text-white hidden sm:block"
-              />
-            </button>
-
-            <button onClick={()=>togglePlayPause()} className="text-3xl">
-              <Icon
-                icon={
-                  isPlaying
-                    ? "ic:baseline-pause-circle"
-                    : "ic:baseline-play-circle"
-                }
-                fontSize={50}
-                className="cursor-pointer text-white"
-              />
-            </button>
-
-            <button onClick={()=>nextTrack()}>
-              <Icon
-                icon="bi:skip-forward"
-                fontSize={25}
-                className="cursor-pointer text-lightGray hover:text-white hidden sm:block"
-              />
-            </button>
-          </div>
-          <div className="hidden sm:flex items-center justify-between space-x-4 w-full">
-            <span className="w-12 text-sm">{secondsToHms(progress)}</span>
-            <input
-              type="range"
-              value={(progress / duration) * 100 || 0}
-              onChange={(e)=>handleSeekChange(e.target.value)}
-              min="0"
-              max="100"
-              className="w-full cursor-pointer rounded appearance-none h-2 bg-gradient-to-r from-lightGray to-lightGray"
-            />
-            <span className="w-12 text-sm">{secondsToHms(duration)}</span>
-          </div>
-        </div>
+        <AudioPlayerControls />
 
         {/* Right Section */}
         <div className="flex items-center space-x-4 w-1/4">
@@ -170,6 +146,11 @@ const MusicFooter = () => {
           </div>
 
           <input
+            style={{
+              background: `linear-gradient(to right, #e42012 ${
+                volume * 100
+              }%, lightgray ${volume}%)`,
+            }}
             className="appearance-none h-2 rounded bg-lightGray hidden sm:block"
             type="range"
             value={volume}

@@ -101,11 +101,11 @@ const SignupComponent = () => {
           <TextInput
             label="Email address"
             placeholder="Enter your email"
-            className="my-6"
+            className="my-3"
             registerName="email"
             pattern={"/^[w-.]+@([w-]+.)+[w-]{2,}$/gm"}
             patternErr={
-              "email should have \n1. 1 Uppercase\n2. 1 lowecase\n3. 1 special character\n4. 1 number"
+              "Invalid email format"
             }
             register={register}
             error={errors?.email?.message}
@@ -113,6 +113,7 @@ const SignupComponent = () => {
           <TextInput
             label="Username"
             placeholder="Enter your username"
+            className={"my-3"}
             registerName="username"
             register={register}
             pattern={"^[a-zA-Z0-9_.-]+$"}
@@ -131,7 +132,7 @@ const SignupComponent = () => {
               "create a strong password\n a number\n a lowercase\n a uppercase\n a special character"
             }
             error={errors?.password?.message}
-            className="my-6"
+            className="my-3"
           />
           <PasswordInput
             label="Confirm Password"
@@ -139,12 +140,12 @@ const SignupComponent = () => {
             registerName="confirmPassword"
             register={register}
             error={errors?.confirmPassword?.message}
-            className="my-6"
+            className="my-3"
           />
           <TextInput
             label="First Name"
             placeholder="Enter Your First Name"
-            className="my-6"
+            className="my-3"
             registerName="firstName"
             register={register}
             error={errors?.firstName?.message}
@@ -160,7 +161,7 @@ const SignupComponent = () => {
             <button
               disabled={loading}
               type="submit"
-              className="bg-green-600 font-semibold p-3 px-10 rounded-full "
+              className="bg-primary hover:bg-primary-light hover:scale-105 font-semibold p-3 px-10 rounded-full "
             >
               {loading ? (
                 <div className="px-3 py-0">
@@ -178,11 +179,11 @@ const SignupComponent = () => {
           </div>
         </form>
         <div className="w-full border border-solid border-lightGray-light"></div>
-        <div className="my-6 font-semibold text-lg">
+        <div className="my-6 font-semibold text-md">
           Already have an account?
         </div>
         <Link to="/login" className="w-full">
-          <div className="border border-lightGray hover:border-lightGray text-lightGray hover:text-lightGray  w-full flex items-center justify-center py-4 rounded-full font-bold bg-transparent transition-shadow">
+          <div className="border border-lightGray hover:border-lightGray-light text-lightGray hover:text-lightGray-light  w-full flex items-center justify-center py-4 rounded-full font-bold bg-transparent transition">
             LOG IN INSTEAD
           </div>
         </Link>

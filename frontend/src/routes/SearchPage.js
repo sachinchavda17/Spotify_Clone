@@ -44,8 +44,8 @@ const SearchPage = () => {
 
   return (
     <LoggedInContainer curActiveScreen="search">
-      <div className={`${currentSong ? " mb-20 " : ""} w-full py-6`}>
-        <div className={`  text-white text-xl font-semibold pb-4 pl-2 pt-2`}>
+      <div className={`${currentSong ? " mb-20 " : ""} w-full py-5`}>
+        <div className={`  text-white text-2xl font-semibold pb-4 pl-2 `}>
           Search Song : <span className="font-bold"> {searchText}</span>
         </div>
         <div

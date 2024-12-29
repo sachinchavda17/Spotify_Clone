@@ -53,21 +53,13 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 onClick={toggleSidebar} // Make sure the click event is handled
               >
                 <span className="sr-only">Open sidebar</span>
-                <svg
-                  className="w-6 h-6 "
-                  aria-hidden="true"
-                  fill="#e42012"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    clipRule="evenodd"
-                    fillRule="evenodd"
-                    d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-                  ></path>
-                </svg>
+                <Icon
+                  icon={"solar:hamburger-menu-broken"}
+                  className={`text-primary `}
+                  fontSize={27}
+                />
               </button>
-              <Link to="/" className="flex ms-2 md:me-24">
+              <Link to="/" className="flex ms-2 md:me-24 w-1/2 sm:w-full">
                 <img
                   src={logo}
                   alt="BeatFlow logo"
@@ -112,8 +104,8 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                       </Menu.Button>
                     ) : (
                       <Link to="/login">
-                        <div className="text-sm text-lightGray-light  bg-primary hover:bg-primary-light px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
-                          LOGIN / SIGNUP
+                        <div className="text-xs sm:text-sm text-lightGray-light  bg-primary hover:bg-primary-light px-6 py-3 flex items-center justify-center rounded-full font-semibold cursor-pointer">
+                          LOGIN
                         </div>
                       </Link>
                     )}
@@ -172,7 +164,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
           } sm:translate-x-0 bg-black overflow-auto`}
           aria-label="Sidebar"
         >
-          <div className="h-full  pb-4 overflow-y-auto ">
+          <div className="h-full pb-4 overflow-y-auto ">
             <div className="py-5 px-2 bg-app-black m-2 rounded">
               <IconText
                 iconName={"material-symbols:home"}
@@ -186,37 +178,29 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                 active={curActiveScreen === "search"}
                 targetLink={"/search"}
               />
-              {isLoggedIn && (
-                <IconText
-                  iconName={"basil:edit-solid"}
-                  displayText={"Edit Page"}
-                  active={curActiveScreen === "edit"}
-                  targetLink={"/edit"}
-                />
+              {isLoggedIn && userData?.isArtist && (
+                <>
+                  <IconText
+                    iconName={"basil:edit-solid"}
+                    displayText={"Edit Page"}
+                    active={curActiveScreen === "edit"}
+                    targetLink={"/edit"}
+                  />
+                  <IconText
+                    iconName={"material-symbols:library-music-sharp"}
+                    displayText={"My Music"}
+                    targetLink="/myMusic"
+                    active={curActiveScreen === "myMusic"}
+                  />
+                </>
               )}
-              {isLoggedIn && (
-                <IconText
-                  iconName={"material-symbols:library-music-sharp"}
-                  displayText={"My Music"}
-                  targetLink="/myMusic"
-                  active={curActiveScreen === "myMusic"}
-                />
-              )}
+              <IconText
+                iconName={"mdi:cards-heart"}
+                displayText={"Liked Songs"}
+                targetLink={"/likedsong"}
+                active={curActiveScreen === "likedsong"}
+              />
             </div>
-            {isLoggedIn && (
-              <div className="py-5 px-2 bg-app-black m-2 rounded">
-                <IconText
-                  iconName={"material-symbols:add-box"}
-                  displayText={"Create Playlist"}
-                  targetLink={"/createplaylist"}
-                />
-                <IconText
-                  iconName={"mdi:cards-heart"}
-                  displayText={"Liked Songs"}
-                  targetLink={"/likedsong"}
-                />
-              </div>
-            )}
           </div>
         </aside>
 

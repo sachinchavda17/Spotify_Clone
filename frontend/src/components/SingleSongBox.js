@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { useAudio } from "../contexts/AudioContext";
 import spectrum from "../images/spectrum.gif";
+import spectrumPng from "../images/spectrum.png";
 import { useCookies } from "react-cookie";
 const SingleSongBox = ({ item, songList, ListKey, edit }) => {
-  const { play, currentSong, setPlaylist } = useAudio() || {};
+  const { play, currentSong, setPlaylist, isPlaying } = useAudio() || {};
   const [cookie, setCookie] = useCookies(["token"]);
 
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
@@ -27,7 +28,7 @@ const SingleSongBox = ({ item, songList, ListKey, edit }) => {
       <div className="bg-black bg-opacity-40 w-full relative  rounded-lg hover:bg-lightGray hover:bg-opacity-20">
         <div className="overflow-hidden">
           <img
-            className="h-34 sm:w-full sm:h-56  transform scale-100 hover:scale-110 transition-transform duration-10 "
+            className="h-34 sm:h-44 lg:h-52  w-full transform scale-100 hover:scale-110 transition-transform duration-10 "
             src={item?.thumbnail}
             alt="label"
           />
@@ -35,7 +36,7 @@ const SingleSongBox = ({ item, songList, ListKey, edit }) => {
         {currentSong && currentSong?._id === item?._id && (
           // <div className="text-primary font-bold">Now Playing</div>
           <img
-            src={spectrum}
+            src={isPlaying ? spectrum : spectrumPng}
             alt="spectrum"
             className="absolute top-0 right-0 rounded-full bg-transparent h-10 "
           />

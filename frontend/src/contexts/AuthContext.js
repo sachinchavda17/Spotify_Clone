@@ -4,28 +4,11 @@ import { makeGETRequest } from "../utils/serverHelpers";
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   useEffect(() => {
-    // Check if the user is authenticated
-    const checkAuthStatus = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:8080/auth/verify-login",
-          { credentials: true }
-        );
-
-        if (response.success) {
-          setIsAuthenticated(true);
-          console.log("isAuthenticated", isAuthenticated);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        setIsAuthenticated(false);
-      }
-    };
-
-    checkAuthStatus();
+    const token = document.cookie;
+    if (token) setIsAuthenticated(true);
+    console.log(isAuthenticated)
   }, []);
 
   return (

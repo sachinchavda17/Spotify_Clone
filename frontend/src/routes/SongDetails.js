@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import { Link, Navigate } from "react-router-dom";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { useAudio } from "../contexts/AudioContext";
+import AudioPlayerControls from "../components/AudioPlayerControls";
 
 export default function SongDetails() {
   const { currentSong } = useAudio();
@@ -11,7 +12,7 @@ export default function SongDetails() {
       {!currentSong ? (
         <Navigate to={"/"} replace={true} />
       ) : (
-        <div className="bg-black p-8 h-full rounded text-white min-h-screen">
+        <div className="bg-black p-5 h-full rounded text-white ">
           <div className="max-w-screen-xl mx-auto flex flex-col lg:flex-row h-full">
             <div className="lg:py-8 lg:order-1  ">
               {/* <div className="aspect-w-4 aspect-h-5 lg:aspect-w-1 lg:aspect-h-1"> */}
@@ -24,14 +25,15 @@ export default function SongDetails() {
               </div>
             </div>
 
-            <div className="lg:w-1/2 lg:p-8 lg:order-2 flex flex-col items-start  ">
+            <div className="lg:w-3/4 w-full lg:p-8 lg:order-2 flex flex-col items-start  ">
               <h1 className="text-3xl font-bold text-lightGray-light mb-2">
                 {currentSong?.name}
               </h1>
               <p className="text-sm text-lightGray">
                 {currentSong?.artist?.firstName} {currentSong?.artist?.lastName}
               </p>
-              <p className="text-sm text-lightGray mt-2">
+              <AudioPlayerControls player={true} />
+              {/* <p className="text-sm text-lightGray mt-2">
                 <a
                   href={currentSong?.track}
                   target="_blank"
@@ -40,7 +42,7 @@ export default function SongDetails() {
                 >
                   Listen on BeatFlow
                 </a>
-              </p>
+              </p> */}
 
               {/* <div className="mt-8 flex justify-center lg:justify-start">
               <Link

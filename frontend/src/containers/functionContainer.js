@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const secondsToHms = (seconds) => {
   if (seconds === 0) return "00:00";
 
@@ -25,3 +27,9 @@ export const secondsToHms = (seconds) => {
     return `${min}:${sec}`;
   }
 };
+
+export const formatDate = (dateInput) => {
+  const date = dateInput ? moment(dateInput) : moment(); // Use provided date or current date
+  return date.format('DD MMM YYYY');
+};
+

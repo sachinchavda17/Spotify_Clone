@@ -76,7 +76,7 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const songs = await Song.find({}).populate("artist");
+      const songs = await Song.find({}).populate("artist")
       return res.status(200).json({ data: songs });
     } catch (error) {
       return res.status(301).json({ err: error });
@@ -160,7 +160,6 @@ router.get(
 
       // Check if the user already liked the song
       const user = await User.findById(userId);
-      console.log(user);
       if (user.likedSongs.includes(songId)) {
         // If the song is already liked, remove it from the likedSongs array
         await User.updateOne(
@@ -215,32 +214,28 @@ router.get(
       const { userId } = req.params;
 
       // Find the user by userId
-      const user = await User.findById(userId).populate();
+      const user = await User.findById(userId);
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
 
-      // Check if the songId is in the likedSongs array of the user
       const likedSongs = user.likedSongs;
-      const likedSongData = [];
-      if (likedSongs) {
-        for (let i = 0; i < likedSongs.length; i++) {
-          const element = likedSongs[i];
-          let song = await Song.findById(element);
-          likedSongData.push(song);
-        }
-        return res.status(200).json({ data: likedSongData });
-      } else {
-        return res
-          .status(200)
-          .json({ err: "You haven't Like any song till now" });
+
+      if (!likedSongs || likedSongs.length === 0) {
+        return res.status(200).json({ err: "You haven't liked any song till now" });
       }
+
+      // Fetch all liked songs and populate artist details in one query
+      const likedSongData = await Song.find({ _id: { $in: likedSongs } }).populate("artist");
+      console.log(likedSongData)
+      return res.status(200).json({ data: likedSongData });
     } catch (err) {
       console.error(err);
       return res.status(500).json({ err: "Internal Server Error" });
     }
   }
 );
+
 
 module.exports = router;

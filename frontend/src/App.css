@@ -1,7 +1,20 @@
-*{
-  transition: .2s;
+* {
+  transition: 0.1s;
 }
 
-input{
+input {
   outline: none !important;
+}
+
+input[type="range"] {
+  -webkit-appearance: none; /* Remove default styling */
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  background: #e42012;
+}
+
+input[type="range"]::-moz-range-thumb {
+  background: #e42012;
 }

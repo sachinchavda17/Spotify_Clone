@@ -22,7 +22,10 @@ const LoginComponent = () => {
   const login = async (loginData) => {
     try {
       setLoading(true);
-      const data = { email: loginData.email, password: loginData.password };
+      const data = {
+        email: loginData.email.toLowerCase(),
+        password: loginData.password,
+      };
       const response = await makePOSTRequest("/auth/login", data);
 
       if (response && !response.err) {
@@ -63,12 +66,12 @@ const LoginComponent = () => {
       <div className="w-full h-full flex flex-col items-center bg-black overflow-auto ">
         <div className="logo p-5 border-b border-solid border-lightGray-light w-full flex justify-center">
           <Link to={"/"} className="flex justify-center">
-              <img
-                src={logo}
-                alt="BeatFlow logo"
-                width={125}
-                className="hover:opacity-80"
-              />
+            <img
+              src={logo}
+              alt="BeatFlow logo"
+              width={125}
+              className="hover:opacity-80"
+            />
           </Link>
         </div>
         <div className="inputRegion w-full px-5 sm:w-1/3 py-10 flex items-center justify-center flex-col text-lightGray-light">
@@ -99,7 +102,7 @@ const LoginComponent = () => {
             <div className=" w-full flex items-center justify-end mb-8 mt-4 transition-shadow ">
               <button
                 disabled={loading}
-                className="bg-primary font-semibold p-3 px-8 rounded-full"
+                className="bg-primary hover:bg-primary-light hover:scale-105 font-semibold p-3 px-8 rounded-full"
               >
                 {loading ? (
                   <div className="px-3 py-0">
@@ -117,12 +120,12 @@ const LoginComponent = () => {
             </div>
           </form>
           <div className="w-full border border-solid border-lightGray-light"></div>
-          <div className="my-4 font-semibold text-lg">
+          <div className="my-4 font-semibold text-md">
             Don't have an account?
           </div>
 
           <Link to="/signup" className="w-full">
-            <div className="border border-lightGray hover:border-lightGray text-lightGray hover:text-lightGray w-full flex items-center justify-center py-4 rounded-full font-bold bg-transparent transition-shadow">
+            <div className="border border-lightGray hover:border-lightGray-light text-lightGray hover:text-lightGray-light w-full flex items-center justify-center py-4 rounded-full font-bold bg-transparent transition">
               SIGN UP FOR BEATFLOW
             </div>
           </Link>

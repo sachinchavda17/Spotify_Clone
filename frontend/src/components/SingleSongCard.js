@@ -8,7 +8,7 @@ import { useCookies } from "react-cookie";
 const SingleSongCard = ({ info, songList }) => {
   const [liked, setLiked] = useState(null);
   const [isLikedPopover, setIsLikedPopover] = useState(false);
-  const currentUser = JSON.parse(localStorage.getItem("currentUser "));
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [cookie, setCookie] = useCookies(["token"]);
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(cookie.token));
   const userId = currentUser?._id;

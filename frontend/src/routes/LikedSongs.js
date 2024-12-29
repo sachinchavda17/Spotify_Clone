@@ -20,6 +20,7 @@ const LikedSongs = () => {
         const response = await makeGETRequest("/song/likedsong/" + userId);
         if (response.data) {
           setSongData(response.data);
+          console.log(response.data)
         } else {
           toast.error(response.err);
         }
@@ -33,12 +34,12 @@ const LikedSongs = () => {
   }, []);
 
   return (
-    <LoggedInContainer curActiveScreen="myMusic">
+    <LoggedInContainer curActiveScreen="likedsong">
       {loading ? (
         <Loading />
       ) : (
         <div className={`${currentSong ? " mb-20 " : ""}`}>
-          <div className={`  text-white text-xl font-semibold pb-4 pl-2 pt-8`}>
+          <div className={`  text-white text-2xl font-semibold pb-4 pl-2 sm:pt-5`}>
             Your Liked Song
           </div>
           <div className="space-y-3 overflow-auto">

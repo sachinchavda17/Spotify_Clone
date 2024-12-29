@@ -4,7 +4,6 @@ import { makeGETRequest } from "../utils/serverHelpers";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
-import NewHome from "../containers/LoggedInContainer";
 import { useAudio } from "../contexts/AudioContext";
 
 const MyMusic = () => {
@@ -33,7 +32,7 @@ const MyMusic = () => {
         <Loading />
       )  : (
         <div className={`${currentSong ? " mb-20 " : ""}`}>
-          <div className={`  text-white text-xl font-semibold pb-4 pl-2 pt-8`}>
+          <div className={`  text-white text-2xl font-semibold pb-4 pl-2 sm:pt-5`}>
             My Songs
           </div>
           <div className="space-y-3 overflow-auto">

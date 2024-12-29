@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import LoggedInContainer from "../containers/LoggedInContainer";
 import { useAudio } from "../contexts/AudioContext";
+import { formatDate } from "../containers/functionContainer";
 const UserProfile = () => {
   const user = JSON.parse(localStorage.getItem("currentUser"));
 const {currentSong} = useAudio()
@@ -48,11 +49,11 @@ const {currentSong} = useAudio()
               </div>
               <div className="w-full text-center bg-darkGray py-2 px-5 rounded-xl">
                 <span className="font-semibold">UserId : </span>
-                <span>{user._id}</span>
+                <span>#{user._id}</span>
               </div>
               <div className="w-full text-center bg-darkGray py-2 px-5 rounded-xl ">
                 <span className="font-semibold">Join Date : </span>
-                <span>{user.joinDate ? user.joinDate : date}</span>
+                <span>{user.joinDate ? formatDate(user.joinDate) : date}</span>
               </div>
               <div className="w-full text-center bg-darkGray py-2 px-5 rounded-xl ">
                 <span className="font-semibold">Is Artist : </span>

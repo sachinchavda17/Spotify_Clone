@@ -69,7 +69,7 @@ const UploadSong = () => {
           <div className="w-full lg:w-2/3 flex flex-col lg:flex-row lg:space-x-3">
             <div className=" pt-5">
               {thumbnailName ? (
-                <div className="bg-green-600 rounded-full p-3  ">
+                <div className="bg-primary text-lightGray-light rounded-full p-3  ">
                   {thumbnailName.substring(0, 50)}...
                 </div>
               ) : (
@@ -82,7 +82,7 @@ const UploadSong = () => {
             </div>
             <div className="py-5">
               {uploadedSongFileName ? (
-                <div className="bg-green-600 rounded-full p-3 ">
+                <div className="bg-primary text-lightGray-light rounded-full p-3 ">
                   {uploadedSongFileName.substring(0, 35)}...
                 </div>
               ) : (
@@ -97,7 +97,7 @@ const UploadSong = () => {
 
           <button
             disabled={buttonLoading}
-            className="bg-green-600 w-40 flex items-center justify-center p-4 rounded-full cursor-pointer font-semibold transition-shadow transform hover:scale-105 transition-transform"
+            className="bg-primary hover:bg-primary-light text-lightGray-light w-40 flex items-center justify-center p-4 rounded-full cursor-pointer font-semibold transition-shadow transform hover:scale-105 transition-transform"
             type="submit"
           >
             {buttonLoading ? (
