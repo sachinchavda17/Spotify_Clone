@@ -41,7 +41,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
   return (
     <div className="bg-black w-full h-full">
       <nav className="fixed top-0 z-50 w-full text-white border-b  bg-app-black border-darkGray-light">
-        <div className="px-3 py-3 lg:px-5 lg:pl-3">
+        <div className="px-3 py-1 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
               <button
@@ -194,12 +194,14 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
                   />
                 </>
               )}
-              <IconText
-                iconName={"mdi:cards-heart"}
-                displayText={"Liked Songs"}
-                targetLink={"/likedsong"}
-                active={curActiveScreen === "likedsong"}
-              />
+              {isLoggedIn && (
+                <IconText
+                  iconName={"mdi:cards-heart"}
+                  displayText={"Liked Songs"}
+                  targetLink={"/likedsong"}
+                  active={curActiveScreen === "likedsong"}
+                />
+              )}
             </div>
           </div>
         </aside>
