@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { useAudio } from "../contexts/AudioContext";
 
 const LoggedInContainer = ({ children, curActiveScreen }) => {
-  const { currentSong } = useAudio() || {};
+  const { currentSong, stopMusicLogout } = useAudio() || {};
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [userData, setUserData] = useState(
     JSON.parse(localStorage.getItem("currentUser")) || null
@@ -21,6 +21,7 @@ const LoggedInContainer = ({ children, curActiveScreen }) => {
     removeCookie("token");
     localStorage.removeItem("currentUser");
     setIsLoggedIn(false);
+    stopMusicLogout()
     toast.success("Successfully Logout.");
   };
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

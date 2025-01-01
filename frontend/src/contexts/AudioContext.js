@@ -124,6 +124,13 @@ export const AudioProvider = ({ children }) => {
     setProgress(clampedTime);
   };
 
+  // Function to stop music when user logs out
+  const stopMusicLogout = () => {
+    pause(); // Pauses the music
+    setPlaylist([]); // Optionally, you can clear the playlist
+    setCurrentIndex(0); // Reset current index if needed
+  };
+
   // Track progress and duration, handle song end
   useEffect(() => {
     const updateProgress = () => {
@@ -169,6 +176,7 @@ export const AudioProvider = ({ children }) => {
         togglePlayPause,
         setAudioVolume,
         seekTo,
+        stopMusicLogout
       }}
     >
       {children}
